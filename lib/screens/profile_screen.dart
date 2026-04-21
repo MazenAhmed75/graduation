@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
+import '../models/user_model.dart';
+import '../services/user_service.dart';
+import '../services/auth_service.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final UserService _userService = UserService();
+    final AuthService _authService = AuthService();
+
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
@@ -39,246 +45,391 @@ class ProfileScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppTheme.primaryContainer, width: 2),
-                image: const DecorationImage(
-                  image: NetworkImage(
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuAuesGY15IOAcmh8K-KWr6K5Fz_e5e3kCBm2y2P9Y96hjEW7zBb8sIA8dactkct_syX1ZFZaDZ4MZU5p1GaeBQUe5dC05kWvFEB0r5thwXCaWKbjT-Z-yc4t-R2laaf0K6Sc9mJrXFqUvtWvifODvMM1d2sugtIbilhuwhQ9Xyfz7IFwBXtoTbEQyQT3rYavbtYDkW3b41H9XasCzD4-XZP5dALhlkSAj6Y-7eGJFwjiOWrk0oOZ6Ei7WUlcV7ghBV8cV6aUPi1pVmV',
+
+            // ========================================================
+            // STEAMBUILDER #1: Profile picture in app bar
+            // Shows user's photo or default icon
+            // ========================================================
+            StreamBuilder<UserModel?>(
+              stream: _userService.getUserStream(_authService.currentUser!.uid),
+              builder: (context, snapshot) {
+                final user = snapshot.data;
+                return Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppTheme.primaryContainer, width: 2),
+                    color: AppTheme.surfaceContainerLow,
                   ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
+                  child: user?.photoUrl != null && user!.photoUrl.isNotEmpty
+                      ? ClipOval(
+                    child: Image.network(
+                      user.photoUrl,
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stack) =>
+                      const Icon(Icons.person, color: AppTheme.primary),
+                    ),
+                  )
+                      : const Icon(Icons.person, color: AppTheme.primary),
+                );
+              },
+            ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
-        child: Column(
-          children: [
-            // Hero Profile Section
-            Center(
-              child: Column(
-                children: [
-                  Stack(
+
+      // ========================================================
+      // STREAMBUILDER #2: Main content area
+      // This is where ALL the profile data comes from Firebase
+      // ========================================================
+      body: StreamBuilder<UserModel?>(
+        stream: _userService.getUserStream(_authService.currentUser!.uid),
+        builder: (context, snapshot) {
+          // Show loading spinner while fetching data
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // Show error if something went wrong
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          // If no user data found, show error
+          if (!snapshot.hasData || snapshot.data == null) {
+            return const Center(child: Text('User data not found'));
+          }
+
+          // ✅ THIS IS THE KEY: user comes from Firebase now
+          final UserModel user = snapshot.data!;
+
+          return SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 24, 24, 120),
+            child: Column(
+              children: [
+                // Hero Profile Section
+                Center(
+                  child: Column(
                     children: [
-                      Container(
-                        width: 140,
-                        height: 140,
-                        margin: const EdgeInsets.only(bottom: 16),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(color: AppTheme.surfaceContainerLowest, width: 4),
-                          boxShadow: [
-                            BoxShadow(
-                              color: const Color(0xFF2E342B).withOpacity(0.06),
-                              blurRadius: 40,
-                              offset: const Offset(0, 20),
+                      Stack(
+                        children: [
+                          Container(
+                            width: 140,
+                            height: 140,
+                            margin: const EdgeInsets.only(bottom: 16),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                  color: AppTheme.surfaceContainerLowest, width: 4),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: const Color(0xFF2E342B).withOpacity(0.06),
+                                  blurRadius: 40,
+                                  offset: const Offset(0, 20),
+                                ),
+                              ],
+                              color: AppTheme.surfaceContainerLow,
                             ),
-                          ],
-                          image: const DecorationImage(
-                            image: NetworkImage(
-                              'https://lh3.googleusercontent.com/aida-public/AB6AXuDwRQ0PESKI69gLBzSGGiSrexF3Oc7M6vyqCdgyPGcItVdPJw9Sk0KpTmSnHpVZ9ga2_Z3W2jMvp42OWYyV6ipPB3Djo68-EikLvQC-TSRIqygjvsBb7nTIVKAsHz2_4DwTyFqp5UgR718VYH_kcJfVDLoAyWpLjLsSqQR5aJCDXNGkVbPMg0k_93vtaRuVFjdmqEL7avLkhncrbi3loTyoLqi_B0Fb9nMixpLIUQesRodlT5IvPf4_Jwkie-DsdHKoGzWBdx2svNJA',
-                            ),
-                            fit: BoxFit.cover,
+                            // ← CHANGED: Show real photo or default icon
+                            child: user.photoUrl.isNotEmpty
+                                ? ClipOval(
+                              child: Image.network(
+                                user.photoUrl,
+                                fit: BoxFit.cover,
+                                errorBuilder: (context, error, stack) =>
+                                const Icon(Icons.person,
+                                    size: 80, color: AppTheme.primary),
+                              ),
+                            )
+                                : const Icon(Icons.person,
+                                size: 80, color: AppTheme.primary),
                           ),
+                          Positioned(
+                            bottom: 16,
+                            right: 0,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              decoration: const BoxDecoration(
+                                color: AppTheme.primary,
+                                shape: BoxShape.circle,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black26,
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(Icons.photo_camera,
+                                  color: Color(0xFFEBFFE0), size: 18),
+                            ),
+                          ),
+                        ],
+                      ),
+                      // ← CHANGED: Show real name from Firebase
+                      Text(
+                        user.name,
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.onSurface,
                         ),
                       ),
-                      Positioned(
-                        bottom: 16,
-                        right: 0,
-                        child: Container(
-                          padding: const EdgeInsets.all(10),
-                          decoration: const BoxDecoration(
-                            color: AppTheme.primary,
-                            shape: BoxShape.circle,
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26,
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
-                              ),
-                            ],
+                      const SizedBox(height: 4),
+                      const Text(
+                        'Curating mindfulness since 2024',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: AppTheme.onSurfaceVariant,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      TextButton(
+                        onPressed: () {
+                          // TODO: Implement photo upload later
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Photo upload coming soon!'),
+                            ),
+                          );
+                        },
+                        style: TextButton.styleFrom(
+                          backgroundColor: AppTheme.secondaryContainer,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 24, vertical: 12),
+                        ),
+                        child: const Text(
+                          'CHANGE PROFILE PICTURE',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            letterSpacing: 1.2,
+                            color: AppTheme.onSecondaryContainer,
                           ),
-                          child: const Icon(Icons.photo_camera, color: Color(0xFFEBFFE0), size: 18),
                         ),
                       ),
                     ],
                   ),
-                  const Text(
-                    'Eleanor Vance',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  const Text(
-                    'Curating mindfulness since 2022',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: AppTheme.onSurfaceVariant,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  TextButton(
-                    onPressed: () {},
-                    style: TextButton.styleFrom(
-                      backgroundColor: AppTheme.secondaryContainer,
-                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                    ),
-                    child: const Text(
-                      'CHANGE PROFILE PICTURE',
+                ),
+                const SizedBox(height: 32),
+
+                // Account Details Component
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                    child: Text(
+                      'Account Details',
                       style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        letterSpacing: 1.2,
-                        color: AppTheme.onSecondaryContainer,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.onSurfaceVariant,
                       ),
                     ),
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 32),
-
-            // Account Details Component
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Text(
-                  'Account Details',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.onSurfaceVariant,
-                  ),
                 ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2E342B).withOpacity(0.02),
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _buildListTile(
-                    'FULL NAME', 'Eleanor Vance', Icons.person, 
-                    AppTheme.primaryContainer.withOpacity(0.5), AppTheme.primary
-                  ),
-                  _buildListTile(
-                    'EMAIL ADDRESS', 'eleanor.v@mindfulcurator.io', Icons.mail, 
-                    AppTheme.secondaryContainer, AppTheme.secondary
-                  ),
-                  _buildListTile(
-                    'MEMBERSHIP', 'Premium Curator', Icons.workspace_premium, 
-                    AppTheme.tertiaryContainer, AppTheme.tertiary
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Settings Component
-            const Align(
-              alignment: Alignment.centerLeft,
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
-                child: Text(
-                  'Settings',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.onSurfaceVariant,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2E342B).withOpacity(0.02),
-                    blurRadius: 20,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  _buildSettingsTile(
-                    'Notifications', Icons.notifications, 
-                    trailing: Container(
-                      width: 44,
-                      height: 24,
-                      decoration: BoxDecoration(
-                        color: AppTheme.primaryContainer,
-                        borderRadius: BorderRadius.circular(12),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF2E342B).withOpacity(0.02),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
                       ),
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.all(2),
-                      child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: const BoxDecoration(
-                          color: AppTheme.primary,
-                          shape: BoxShape.circle,
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // ← CHANGED: Show real name
+                      _buildListTile(
+                        'FULL NAME',
+                        user.name,
+                        Icons.person,
+                        AppTheme.primaryContainer.withOpacity(0.5),
+                        AppTheme.primary,
+                        onTap: () => _showEditNameDialog(context, user, _userService),
+                      ),
+                      // ← CHANGED: Show real email
+                      _buildListTile(
+                        'EMAIL ADDRESS',
+                        user.email,
+                        Icons.mail,
+                        AppTheme.secondaryContainer,
+                        AppTheme.secondary,
+                        onTap: null, // Email can't be changed
+                      ),
+                      _buildListTile(
+                        'MEMBERSHIP',
+                        'Free Plan',
+                        Icons.workspace_premium,
+                        AppTheme.tertiaryContainer,
+                        AppTheme.tertiary,
+                        onTap: null,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Settings Component
+                const Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+                    child: Text(
+                      'Settings',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceContainerLowest,
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: const Color(0xFF2E342B).withOpacity(0.02),
+                        blurRadius: 20,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // ← CHANGED: Real toggle that saves to Firebase
+                      _buildSettingsTile(
+                        'Notifications',
+                        Icons.notifications,
+                        trailing: GestureDetector(
+                          onTap: () {
+                            _userService.updateNotifications(
+                              user.id,
+                              !user.notificationsEnabled,
+                            );
+                          },
+                          child: Container(
+                            width: 44,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: user.notificationsEnabled
+                                  ? AppTheme.primaryContainer
+                                  : AppTheme.surfaceContainer,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            alignment: user.notificationsEnabled
+                                ? Alignment.centerRight
+                                : Alignment.centerLeft,
+                            padding: const EdgeInsets.all(2),
+                            child: Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: user.notificationsEnabled
+                                    ? AppTheme.primary
+                                    : AppTheme.outline,
+                                shape: BoxShape.circle,
+                              ),
+                            ),
+                          ),
                         ),
                       ),
+                      _buildSettingsTile('Privacy & Security', Icons.security),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24),
+
+                // Logout Action
+                SizedBox(
+                  width: double.infinity,
+                  child: ElevatedButton.icon(
+                    // ← CHANGED: Actually logs out now
+                    onPressed: () async {
+                      await _authService.logout();
+                      // App will automatically navigate to LoginScreen
+                      // because of the StreamBuilder in main.dart
+                    },
+                    icon: const Icon(Icons.logout),
+                    label: const Text('Logout',
+                        style:
+                        TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.errorContainer,
+                      foregroundColor: AppTheme.onErrorContainer,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      elevation: 0,
                     ),
                   ),
-                  _buildSettingsTile('Privacy & Security', Icons.security),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Logout Action
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.logout),
-                label: const Text('Logout', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppTheme.errorContainer,
-                  foregroundColor: AppTheme.onErrorContainer,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  elevation: 0,
                 ),
-              ),
+                const SizedBox(height: 16),
+                const Text(
+                  'App Version 2.4.0 • Build 882',
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: AppTheme.outline,
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            const Text(
-              'App Version 2.4.0 • Build 882',
-              style: TextStyle(
-                fontSize: 12,
-                color: AppTheme.outline,
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  Widget _buildListTile(String label, String value, IconData icon, Color iconBg, Color iconColor) {
+  // ========================================================
+  // HELPER: Show dialog to edit name
+  // ========================================================
+  static void _showEditNameDialog(
+      BuildContext context, UserModel user, UserService userService) {
+    final controller = TextEditingController(text: user.name);
+
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Name'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(
+            labelText: 'Full Name',
+            hintText: 'Enter your name',
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              final newName = controller.text.trim();
+              if (newName.isNotEmpty) {
+                await userService.updateName(user.id, newName);
+              }
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static Widget _buildListTile(
+      String label,
+      String value,
+      IconData icon,
+      Color iconBg,
+      Color iconColor, {
+        VoidCallback? onTap,
+      }) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
@@ -309,13 +460,16 @@ class ProfileScreen extends StatelessWidget {
             color: AppTheme.onSurface,
           ),
         ),
-        trailing: const Icon(Icons.chevron_right, color: AppTheme.outlineVariant),
-        onTap: () {},
+        trailing: onTap != null
+            ? const Icon(Icons.chevron_right, color: AppTheme.outlineVariant)
+            : null,
+        onTap: onTap,
       ),
     );
   }
 
-  Widget _buildSettingsTile(String title, IconData icon, {Widget? trailing}) {
+  static Widget _buildSettingsTile(String title, IconData icon,
+      {Widget? trailing}) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
@@ -337,8 +491,9 @@ class ProfileScreen extends StatelessWidget {
             color: AppTheme.onSurface,
           ),
         ),
-        trailing: trailing ?? const Icon(Icons.chevron_right, color: AppTheme.outlineVariant),
-        onTap: () {},
+        trailing: trailing ??
+            const Icon(Icons.chevron_right, color: AppTheme.outlineVariant),
+        onTap: trailing == null ? () {} : null,
       ),
     );
   }

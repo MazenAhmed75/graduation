@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
-import '../models/budget_item_model.dart';
+import '../models/budget_model.dart';  // ← CHANGED: Use BudgetModel instead of BudgetItemModel
 import '../utils/currency_formatter.dart';
 import '../widgets/budget_card.dart';
+import '../services/budget_service.dart';  // ← NEW: Import the service
+import '../services/auth_service.dart';    // ← NEW: Import auth service
 
 class BudgetsScreen extends StatefulWidget {
   const BudgetsScreen({super.key});
@@ -12,75 +14,20 @@ class BudgetsScreen extends StatefulWidget {
 }
 
 class _BudgetsScreenState extends State<BudgetsScreen> {
-  List<BudgetItemModel> budgets = [];
+  // ============================================================
+  // STEP 1: Create service instances (replaces hardcoded list)
+  // ============================================================
+  final BudgetService _budgetService = BudgetService();
+  final AuthService _authService = AuthService();
 
-  @override
-  void initState() {
-    super.initState();
-    budgets = [
-      BudgetItemModel(
-        id: '1',
-        title: 'Groceries',
-        subtitle: '8 items this week',
-        allocated: 450.0,
-        spent: 324.0,
-        insight: "Insight: Try meal prepping this Sunday to save ~15% on daily lunch costs.",
-        insightIcon: Icons.auto_awesome,
-        insightColor: AppTheme.primary,
-        progressColor: AppTheme.primary,
-        iconData: Icons.shopping_cart,
-        iconBg: AppTheme.secondaryContainer,
-        iconColor: AppTheme.onSecondaryContainer,
-      ),
-      BudgetItemModel(
-        id: '2',
-        title: 'Rent',
-        subtitle: 'Monthly Payment',
-        allocated: 2100.0,
-        spent: 2100.0,
-        insight: "Insight: Rent is consistent. Consider setting up an auto-transfer to your savings account today.",
-        insightIcon: Icons.lightbulb,
-        insightColor: AppTheme.tertiary,
-        progressColor: AppTheme.tertiary,
-        iconData: Icons.home,
-        iconBg: AppTheme.tertiaryContainer,
-        iconColor: AppTheme.onTertiaryContainer,
-        spentColor: AppTheme.tertiary,
-      ),
-      BudgetItemModel(
-        id: '3',
-        title: 'Entertainment',
-        subtitle: 'Subscriptions & Outings',
-        allocated: 300.0,
-        spent: 135.0,
-        insight: "Insight: You're 20% under budget, consider moving the surplus to your emergency fund.",
-        insightIcon: Icons.auto_awesome,
-        insightColor: AppTheme.secondary,
-        progressColor: AppTheme.secondary,
-        iconData: Icons.theater_comedy,
-        iconBg: AppTheme.secondaryFixed,
-        iconColor: AppTheme.onSecondaryFixed,
-        spentColor: AppTheme.secondary,
-      ),
-      BudgetItemModel(
-        id: '4',
-        title: 'Travel',
-        subtitle: 'Summer Trip Fund',
-        allocated: 1400.0,
-        spent: 420.0,
-        insight: "Insight: Flight prices to Europe are dipping. Booking now could save you \$240 on your fund.",
-        insightIcon: Icons.tips_and_updates,
-        insightColor: AppTheme.primaryDim,
-        progressColor: AppTheme.primaryDim,
-        iconData: Icons.flight_takeoff,
-        iconBg: AppTheme.primaryContainer,
-        iconColor: AppTheme.onPrimaryContainer,
-        spentColor: AppTheme.primaryDim,
-      ),
-    ];
-  }
+  // ============================================================
+  // REMOVED: No more hardcoded budgets list or initState
+  // ============================================================
 
-  void _showAddMoneyDialog(BudgetItemModel budget) {
+  // ============================================================
+  // DIALOG: Add Money (Deposit) - NOW CALLS FIREBASE
+  // ============================================================
+  void _showAddMoneyDialog(BudgetModel budget) {
     final controller = TextEditingController();
     showDialog(
       context: context,
@@ -89,19 +36,28 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(labelText: 'Amount (\$)', hintText: 'Enter amount to deposit'),
+          decoration: const InputDecoration(
+            labelText: 'Amount (\$)',
+            hintText: 'Enter amount to deposit',
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
-            onPressed: () {
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
               final amount = double.tryParse(controller.text) ?? 0.0;
               if (amount > 0) {
-                setState(() {
-                  budget.spent = (budget.spent - amount) < 0 ? 0.0 : (budget.spent - amount);
-                });
+                // ← CHANGED: Call Firebase service instead of setState
+                await _budgetService.deposit(
+                  userId: _authService.currentUser!.uid,
+                  budget: budget,
+                  amount: amount,
+                );
               }
-              Navigator.pop(context);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Deposit'),
           ),
@@ -110,7 +66,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
   }
 
-  void _showSubtractMoneyDialog(BudgetItemModel budget) {
+  // ============================================================
+  // DIALOG: Subtract Money (Withdraw) - NOW CALLS FIREBASE
+  // ============================================================
+  void _showSubtractMoneyDialog(BudgetModel budget) {
     final controller = TextEditingController();
     showDialog(
       context: context,
@@ -119,19 +78,28 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(labelText: 'Amount (\$)', hintText: 'Enter amount to withdraw'),
+          decoration: const InputDecoration(
+            labelText: 'Amount (\$)',
+            hintText: 'Enter amount to withdraw',
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
-            onPressed: () {
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
               final amount = double.tryParse(controller.text) ?? 0.0;
               if (amount > 0) {
-                setState(() {
-                  budget.spent += amount;
-                });
+                // ← CHANGED: Call Firebase service instead of setState
+                await _budgetService.withdraw(
+                  userId: _authService.currentUser!.uid,
+                  budget: budget,
+                  amount: amount,
+                );
               }
-              Navigator.pop(context);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Withdraw'),
           ),
@@ -140,8 +108,13 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
   }
 
-  void _showEditBudgetDialog(BudgetItemModel budget) {
-    final controller = TextEditingController(text: budget.allocated.toStringAsFixed(2));
+  // ============================================================
+  // DIALOG: Edit Budget Amount - NOW CALLS FIREBASE
+  // ============================================================
+  void _showEditBudgetDialog(BudgetModel budget) {
+    final controller = TextEditingController(
+      text: budget.allocated.toStringAsFixed(2),
+    );
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -149,19 +122,28 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(labelText: 'Allocated Amount (\$)', hintText: 'Enter new total budget'),
+          decoration: const InputDecoration(
+            labelText: 'Allocated Amount (\$)',
+            hintText: 'Enter new total budget',
+          ),
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
-            onPressed: () {
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
               final amount = double.tryParse(controller.text) ?? 0.0;
               if (amount > 0) {
-                setState(() {
-                  budget.allocated = amount;
-                });
+                // ← CHANGED: Call Firebase service instead of setState
+                await _budgetService.editAllocated(
+                  userId: _authService.currentUser!.uid,
+                  budgetId: budget.id,
+                  newAllocated: amount,
+                );
               }
-              Navigator.pop(context);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Save'),
           ),
@@ -170,20 +152,30 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
   }
 
-  void _deleteBudget(BudgetItemModel budget) {
+  // ============================================================
+  // DIALOG: Delete Budget - NOW CALLS FIREBASE
+  // ============================================================
+  void _deleteBudget(BudgetModel budget) {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Delete Budget'),
-        content: Text('Are you sure you want to delete the "${budget.title}" budget?'),
+        content: Text(
+          'Are you sure you want to delete the "${budget.title}" budget?',
+        ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
-            onPressed: () {
-              setState(() {
-                budgets.remove(budget);
-              });
-              Navigator.pop(context);
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
+              // ← CHANGED: Call Firebase service instead of setState
+              await _budgetService.deleteBudget(
+                userId: _authService.currentUser!.uid,
+                budgetId: budget.id,
+              );
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
@@ -192,10 +184,13 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
   }
 
+  // ============================================================
+  // DIALOG: Add New Budget - NOW CALLS FIREBASE
+  // ============================================================
   void _addBudgetDialog() {
     final titleController = TextEditingController();
     final amountController = TextEditingController();
-    
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -205,41 +200,46 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           children: [
             TextField(
               controller: titleController,
-              decoration: const InputDecoration(labelText: 'Budget Name', hintText: 'e.g. Dining Out'),
+              decoration: const InputDecoration(
+                labelText: 'Budget Name',
+                hintText: 'e.g. Dining Out',
+              ),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: amountController,
               keyboardType: const TextInputType.numberWithOptions(decimal: true),
-              decoration: const InputDecoration(labelText: 'Allocated Amount (\$)', hintText: 'Enter total budget'),
+              decoration: const InputDecoration(
+                labelText: 'Allocated Amount (\$)',
+                hintText: 'Enter total budget',
+              ),
             ),
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
           TextButton(
-            onPressed: () {
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () async {
               final amount = double.tryParse(amountController.text) ?? 0.0;
-              final title = titleController.text.trim().isEmpty ? 'New Budget' : titleController.text.trim();
+              final title = titleController.text.trim().isEmpty
+                  ? 'New Budget'
+                  : titleController.text.trim();
+
               if (amount > 0) {
-                setState(() {
-                  budgets.add(BudgetItemModel(
-                    id: DateTime.now().toString(),
-                    title: title,
-                    subtitle: 'Custom Budget',
-                    allocated: amount,
-                    spent: 0,
-                    insight: "Insight: Let's stick to this new budget!",
-                    insightIcon: Icons.star,
-                    insightColor: AppTheme.primary,
-                    progressColor: AppTheme.primary,
-                    iconData: Icons.category,
-                    iconBg: AppTheme.neutral,
-                    iconColor: AppTheme.onSurface,
-                  ));
-                });
+                // ← CHANGED: Call Firebase service instead of setState
+                await _budgetService.addBudget(
+                  userId: _authService.currentUser!.uid,
+                  title: title,
+                  subtitle: 'Custom Budget',
+                  allocated: amount,
+                  iconName: 'category',
+                  colorScheme: 'green',
+                );
               }
-              Navigator.pop(context);
+              if (mounted) Navigator.pop(context);
             },
             child: const Text('Add'),
           ),
@@ -248,15 +248,77 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     );
   }
 
+  // ============================================================
+  // HELPER: Map color scheme string to actual Color objects
+  // BudgetModel stores "green", "blue", etc. as strings
+  // BudgetCard needs actual Color objects
+  // ============================================================
+  Map<String, Color> _getColorsForScheme(String colorScheme) {
+    switch (colorScheme) {
+      case 'green':
+        return {
+          'iconBg': AppTheme.primaryContainer,
+          'iconColor': AppTheme.onPrimaryContainer,
+          'progressColor': AppTheme.primary,
+          'spentColor': AppTheme.primary,
+        };
+      case 'blue':
+        return {
+          'iconBg': AppTheme.secondaryContainer,
+          'iconColor': AppTheme.onSecondaryContainer,
+          'progressColor': AppTheme.secondary,
+          'spentColor': AppTheme.secondary,
+        };
+      case 'yellow':
+        return {
+          'iconBg': AppTheme.tertiaryContainer,
+          'iconColor': AppTheme.onTertiaryContainer,
+          'progressColor': AppTheme.tertiary,
+          'spentColor': AppTheme.tertiary,
+        };
+      default:
+        return {
+          'iconBg': AppTheme.surfaceContainer,
+          'iconColor': AppTheme.onSurface,
+          'progressColor': AppTheme.primary,
+          'spentColor': AppTheme.primary,
+        };
+    }
+  }
+
+  // ============================================================
+  // HELPER: Map icon name string to IconData
+  // BudgetModel stores "shopping_cart" as a string
+  // BudgetCard needs actual IconData objects
+  // ============================================================
+  IconData _getIconData(String iconName) {
+    switch (iconName) {
+      case 'shopping_cart':
+        return Icons.shopping_cart;
+      case 'home':
+        return Icons.home;
+      case 'theater_comedy':
+        return Icons.theater_comedy;
+      case 'flight_takeoff':
+        return Icons.flight_takeoff;
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'directions_car':
+        return Icons.directions_car;
+      case 'local_hospital':
+        return Icons.local_hospital;
+      case 'school':
+        return Icons.school;
+      default:
+        return Icons.category;
+    }
+  }
+
+  // ============================================================
+  // BUILD METHOD - THIS IS WHERE StreamBuilder GOES
+  // ============================================================
   @override
   Widget build(BuildContext context) {
-    double totalAllocated = budgets.fold(0, (sum, item) => sum + item.allocated);
-    double totalSpent = budgets.fold(0, (sum, item) => sum + item.spent);
-    double totalRemaining = (totalAllocated - totalSpent);
-    double utilRatio = totalAllocated > 0 ? (totalSpent / totalAllocated) : 0.0;
-    if (utilRatio > 1.0) utilRatio = 1.0;
-    int utilPercent = (utilRatio * 100).round();
-
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
@@ -314,168 +376,252 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         shape: const CircleBorder(),
         child: const Icon(Icons.add, size: 32),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
-        child: Column(
-          children: [
-            // Summary Section
-            Container(
-              padding: const EdgeInsets.all(32),
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Stack(
+
+      // ========================================================
+      // STEP 2: Replace body with StreamBuilder
+      // This listens to Firestore and rebuilds automatically
+      // ========================================================
+      body: StreamBuilder<List<BudgetModel>>(
+        stream: _budgetService.getBudgetsStream(_authService.currentUser!.uid),
+        builder: (context, snapshot) {
+          // Show loading spinner while waiting for data
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          // Show error if something went wrong
+          if (snapshot.hasError) {
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
+          }
+
+          // Show empty state if no budgets yet
+          if (!snapshot.hasData || snapshot.data!.isEmpty) {
+            return const Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Positioned(
-                    top: -20,
-                    right: -20,
-                    child: Opacity(
-                      opacity: 0.1,
-                      child: const Icon(Icons.account_balance_wallet, size: 120, color: AppTheme.onSurface),
-                    ),
+                  Icon(Icons.account_balance_wallet, size: 80, color: AppTheme.outlineVariant),
+                  SizedBox(height: 16),
+                  Text(
+                    'No budgets yet!',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  SizedBox(height: 8),
+                  Text('Tap the + button to create your first budget'),
+                ],
+              ),
+            );
+          }
+
+          // ← THIS IS THE KEY PART: budgets comes from Firebase now
+          List<BudgetModel> budgets = snapshot.data!;
+
+          // Calculate totals from real data
+          double totalAllocated = budgets.fold(0, (sum, b) => sum + b.allocated);
+          double totalSpent = budgets.fold(0, (sum, b) => sum + b.spent);
+          double totalRemaining = totalAllocated - totalSpent;
+          double utilRatio = totalAllocated > 0 ? (totalSpent / totalAllocated).clamp(0.0, 1.0) : 0.0;
+          int utilPercent = (utilRatio * 100).round();
+
+          // ========================================================
+          // REST OF THE UI - SAME AS BEFORE
+          // ========================================================
+          return SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
+            child: Column(
+              children: [
+                // Summary Section
+                Container(
+                  padding: const EdgeInsets.all(32),
+                  decoration: BoxDecoration(
+                    color: AppTheme.surfaceContainerLow,
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  child: Stack(
                     children: [
-                      const Text(
-                        'TOTAL MONTHLY BUDGET',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: AppTheme.onSurfaceVariant,
-                          letterSpacing: 1.5,
+                      Positioned(
+                        top: -20,
+                        right: -20,
+                        child: Opacity(
+                          opacity: 0.1,
+                          child: const Icon(
+                            Icons.account_balance_wallet,
+                            size: 120,
+                            color: AppTheme.onSurface,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8),
-                      Text(
-                        CurrencyFormatter.format(totalAllocated),
-                        style: const TextStyle(
-                          fontSize: 36,
-                          fontWeight: FontWeight.w800,
-                          color: AppTheme.onSurface,
-                          letterSpacing: -1,
-                        ),
-                      ),
-                      const SizedBox(height: 32),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.end,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                CurrencyFormatter.format(totalRemaining).replaceAll('.00', ''),
-                                style: const TextStyle(
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.w800,
-                                  color: AppTheme.primary,
-                                ),
-                              ),
-                              const Text(
-                                'REMAINING',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.onSurfaceVariant,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text(
-                                CurrencyFormatter.format(totalSpent).replaceAll('.00', ''),
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.onSurfaceVariant,
-                                ),
-                              ),
-                              const Text(
-                                'SPENT SO FAR',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.outline,
-                                  letterSpacing: 1.5,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16),
-                      Container(
-                        height: 16,
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFDEE5D7),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: FractionallySizedBox(
-                          alignment: Alignment.centerLeft,
-                          widthFactor: utilRatio,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              color: AppTheme.primary,
-                              borderRadius: BorderRadius.circular(8),
+                          const Text(
+                            'TOTAL MONTHLY BUDGET',
+                            style: TextStyle(
+                              fontSize: 11,
+                              fontWeight: FontWeight.w600,
+                              color: AppTheme.onSurfaceVariant,
+                              letterSpacing: 1.5,
                             ),
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text('0%', style: _progressLabelStyle),
-                          Text('$utilPercent% UTILIZED', style: _progressLabelStyle),
-                          Text('100%', style: _progressLabelStyle),
+                          const SizedBox(height: 8),
+                          Text(
+                            CurrencyFormatter.format(totalAllocated),
+                            style: const TextStyle(
+                              fontSize: 36,
+                              fontWeight: FontWeight.w800,
+                              color: AppTheme.onSurface,
+                              letterSpacing: -1,
+                            ),
+                          ),
+                          const SizedBox(height: 32),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    CurrencyFormatter.format(totalRemaining)
+                                        .replaceAll('.00', ''),
+                                    style: const TextStyle(
+                                      fontSize: 30,
+                                      fontWeight: FontWeight.w800,
+                                      color: AppTheme.primary,
+                                    ),
+                                  ),
+                                  const Text(
+                                    'REMAINING',
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.onSurfaceVariant,
+                                      letterSpacing: 1.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    CurrencyFormatter.format(totalSpent)
+                                        .replaceAll('.00', ''),
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.onSurfaceVariant,
+                                    ),
+                                  ),
+                                  const Text(
+                                    'SPENT SO FAR',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                      color: AppTheme.outline,
+                                      letterSpacing: 1.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 16),
+                          Container(
+                            height: 16,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFDEE5D7),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: FractionallySizedBox(
+                              alignment: Alignment.centerLeft,
+                              widthFactor: utilRatio,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primary,
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('0%', style: _progressLabelStyle),
+                              Text('$utilPercent% UTILIZED', style: _progressLabelStyle),
+                              Text('100%', style: _progressLabelStyle),
+                            ],
+                          ),
                         ],
                       ),
                     ],
                   ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
-
-            // Budget Items
-            ...budgets.map((budget) {
-              double fillRatio = budget.allocated > 0 ? (budget.spent / budget.allocated) : 0.0;
-              if (fillRatio > 1.0) fillRatio = 1.0;
-              double left = (budget.allocated - budget.spent);
-              String leftText = left > 0 ? '\$${left.toStringAsFixed(2)} left' : 'Fully Paid/Spent';
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 24.0),
-                child: BudgetCard(
-                  title: budget.title,
-                  subtitle: budget.subtitle,
-                  amount: CurrencyFormatter.format(budget.allocated),
-                  spentText: '\$${budget.spent.toStringAsFixed(2)} spent',
-                  leftText: leftText,
-                  fillRatio: fillRatio,
-                  insight: budget.insight,
-                  insightIcon: budget.insightIcon,
-                  insightColor: budget.insightColor,
-                  progressColor: budget.progressColor,
-                  iconData: budget.iconData,
-                  iconBg: budget.iconBg,
-                  iconColor: budget.iconColor,
-                  spentColor: budget.spentColor,
-                  onDeposit: () => _showAddMoneyDialog(budget),
-                  onWithdraw: () => _showSubtractMoneyDialog(budget),
-                  onEdit: () => _showEditBudgetDialog(budget),
-                  onDelete: () => _deleteBudget(budget),
                 ),
-              );
-            }),
-          ],
-        ),
+                const SizedBox(height: 24),
+
+                // Budget Cards - Map from BudgetModel to BudgetCard
+                ...budgets.map((budget) {
+                  // Get colors for this budget's color scheme
+                  final colors = _getColorsForScheme(budget.colorScheme);
+
+                  // Calculate display values
+                  double fillRatio = budget.spentRatio;
+                  double left = budget.remaining;
+                  String leftText = left > 0
+                      ? '\$${left.toStringAsFixed(2)} left'
+                      : 'Fully Paid/Spent';
+
+                  // Generate insight based on spending
+                  String insight;
+                  IconData insightIcon;
+                  Color insightColor;
+
+                  if (budget.isOverBudget) {
+                    insight = "⚠️ You've exceeded this budget. Consider adjusting your spending.";
+                    insightIcon = Icons.warning;
+                    insightColor = AppTheme.errorContainer;
+                  } else if (budget.isNearLimit) {
+                    insight = "⚠️ You're using ${(budget.spentRatio * 100).toStringAsFixed(0)}% of this budget. Be mindful of remaining expenses.";
+                    insightIcon = Icons.info;
+                    insightColor = AppTheme.tertiary;
+                  } else {
+                    insight = "✓ You're doing great! ${(budget.spentRatio * 100).toStringAsFixed(0)}% used so far.";
+                    insightIcon = Icons.auto_awesome;
+                    insightColor = AppTheme.primary;
+                  }
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 24.0),
+                    child: BudgetCard(
+                      title: budget.title,
+                      subtitle: budget.subtitle,
+                      amount: CurrencyFormatter.format(budget.allocated),
+                      spentText: '\$${budget.spent.toStringAsFixed(2)} spent',
+                      leftText: leftText,
+                      fillRatio: fillRatio,
+                      insight: insight,
+                      insightIcon: insightIcon,
+                      insightColor: insightColor,
+                      progressColor: colors['progressColor']!,
+                      iconData: _getIconData(budget.iconName),
+                      iconBg: colors['iconBg']!,
+                      iconColor: colors['iconColor']!,
+                      spentColor: colors['spentColor']!,
+                      onDeposit: () => _showAddMoneyDialog(budget),
+                      onWithdraw: () => _showSubtractMoneyDialog(budget),
+                      onEdit: () => _showEditBudgetDialog(budget),
+                      onDelete: () => _deleteBudget(budget),
+                    ),
+                  );
+                }),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
