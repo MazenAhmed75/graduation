@@ -1,4 +1,4 @@
-import 'dart:io';
+import 'dart:typed_data';
 import 'package:firebase_storage/firebase_storage.dart';
 
 class StorageService {
@@ -6,14 +6,19 @@ class StorageService {
 
   /// Upload profile picture to Firebase Storage
   /// Returns the download URL of the uploaded image
-  Future<String> uploadProfilePicture(String userId, File imageFile) async {
+  /// Updated to accept Uint8List for cross-platform support
+  Future<String> uploadProfilePicture(String userId, Uint8List imageBytes) async {
     try {
       // Create a reference to the storage location
       // Path: profile_pictures/{userId}/profile.jpg
       final ref = _storage.ref().child('profile_pictures/$userId/profile.jpg');
 
-      // Upload the file
-      final uploadTask = ref.putFile(imageFile);
+      // Upload the bytes directly using putData
+      // Added SettableMetadata to ensure the file is recognized as an image
+      final uploadTask = ref.putData(
+        imageBytes,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
 
       // Wait for upload to complete
       final snapshot = await uploadTask;

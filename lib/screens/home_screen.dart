@@ -116,8 +116,16 @@ class HomeScreen extends StatelessWidget {
               final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
               final daysLeft = lastDayOfMonth.day - now.day;
 
+              // ── LIVE savings calculation ──────────────────────────
+              // "Saved" = money you allocated but haven't spent yet.
+              // This updates instantly whenever any budget changes.
+              final totalAllocated = budgets.fold(0.0, (sum, b) => sum + b.allocated);
+              final totalSpent = budgets.fold(0.0, (sum, b) => sum + b.spent);
+              final liveSavings = (totalAllocated - totalSpent).clamp(0.0, double.infinity);
+
               final savingsPercent = user.monthlySavingsGoal > 0
-                  ? ((user.savingsCurrentAmount / user.monthlySavingsGoal) * 100)
+                  ? ((liveSavings / user.monthlySavingsGoal) * 100)
+                  .clamp(0.0, 100.0)
                   .round()
                   : 0;
 
@@ -301,7 +309,7 @@ class HomeScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
-                                  'Saved: ${CurrencyFormatter.format(user.savingsCurrentAmount)} • Goal: ${CurrencyFormatter.format(user.monthlySavingsGoal)}',
+                                  'Saved: ${CurrencyFormatter.format(liveSavings)} • Goal: ${CurrencyFormatter.format(user.monthlySavingsGoal)}',
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: AppTheme.onSurfaceVariant,
