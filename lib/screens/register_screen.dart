@@ -67,6 +67,24 @@ class _RegisterScreenState extends State<RegisterScreen> {
       }
     }
   }
+  Future<void> _handleGoogleSignIn() async {
+    setState(() => _isLoading = true);
+
+    final error = await _authService.signInWithGoogle();
+
+    if (mounted) {
+      setState(() => _isLoading = false);
+
+      if (error != null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(error),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +171,36 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
+                        // Google Sign-In Button (at top for quick sign-up)
+                        SizedBox(
+                          height: 56,
+                          child: OutlinedButton.icon(
+                            onPressed: _isLoading ? null : _handleGoogleSignIn,
+                            icon: Image.asset(
+                              'assets/google_logo.png',
+                              height: 24,
+                              width: 24,
+                              errorBuilder: (context, error, stack) =>
+                              const Icon(Icons.login, color: AppTheme.primary),
+                            ),
+                            label: const Text(
+                              'Continue with Google',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: AppTheme.onSurface,
+                              ),
+                            ),
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(
+                                color: AppTheme.outline.withOpacity(0.3),
+                              ),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                            ),
+                          ),
+                        ),
                         // Name Field
                         TextFormField(
                           controller: _nameController,

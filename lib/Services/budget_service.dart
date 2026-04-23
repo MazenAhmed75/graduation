@@ -22,13 +22,12 @@ class BudgetService {
   // -------------------------------------------------------
   Stream<List<BudgetModel>> getBudgetsStream(String userId) {
     return _budgetsRef(userId)
-        .orderBy('createdAt', descending: false)
         .snapshots()
         .map((snapshot) {
       // Convert each Firebase document into a BudgetModel object
-      return snapshot.docs
-          .map((doc) => BudgetModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
-          .toList();
+      final budgets = snapshot.docs.map((doc) => BudgetModel.fromMap(doc.id, doc.data() as Map<String, dynamic>)).toList();
+      budgets.sort((a, b) => a.createdAt.compareTo(b.createdAt)); // ← Sort here
+      return budgets;
     });
   }
 
@@ -172,12 +171,17 @@ class BudgetService {
   }) {
     return _transactionsRef(userId)
         .where('budgetId', isEqualTo: budgetId)
-        .orderBy('createdAt', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs
-          .map((doc) => TransactionModel.fromMap(doc.id, doc.data() as Map<String, dynamic>))
+      final transactions = snapshot.docs
+          .map((doc) => TransactionModel.fromMap(
+          doc.id, doc.data() as Map<String, dynamic>))
           .toList();
+
+      // Sort newest first, client-side
+      transactions.sort((a, b) => b.createdAt.compareTo(a.createdAt));
+
+      return transactions;
     });
   }
 }

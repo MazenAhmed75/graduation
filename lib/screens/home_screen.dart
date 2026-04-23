@@ -1,11 +1,31 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
+import '../models/user_model.dart';
+import '../models/budget_model.dart';
+import '../services/user_service.dart';
+import '../services/budget_service.dart';
+import '../services/auth_service.dart';
+import '../utils/currency_formatter.dart';
 
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  // ============================================================
+  // onNavigateToBudgets is a callback from MainScreen.
+  // When called, MainScreen switches to the Budgets tab (index 1).
+  // ============================================================
+  final VoidCallback onNavigateToBudgets;
+
+  const HomeScreen({
+    super.key,
+    required this.onNavigateToBudgets,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final UserService userService = UserService();
+    final BudgetService budgetService = BudgetService();
+    final AuthService authService = AuthService();
+    final String userId = authService.currentUser!.uid;
+
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
@@ -39,358 +59,475 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: AppTheme.primaryContainer, width: 2),
-                image: const DecorationImage(
-                  image: NetworkImage(
-                    'https://lh3.googleusercontent.com/aida-public/AB6AXuDpyCUZ2hjZLqgDMXKk-49c7qclo9P2O-Z0mNmZZQx-HwfGAAyARq8nXgpV8-VNWWEYTg4OHQVE1GNl-FKcKhg5VCkNd4sbl1dpj64w76kC45S3Zg8B2shofafua98qDm9iTH9yKeV3t1sMUa5uX8oxoqxPQfQ_FyBiPhQeWcNJnkKZ1xwD6Ai7lmFnawy4ni5XQdfU4RTNiTD_4jEStgycUr1I2zCf9-dVYoqDywsTvx0dRS61aDrCLyvLTRay4F-F67VL_DV4RDp0',
+            // Profile picture in top right — tap to go to profile tab
+            StreamBuilder<UserModel?>(
+              stream: userService.getUserStream(userId),
+              builder: (context, snapshot) {
+                final user = snapshot.data;
+                return GestureDetector(
+                  // This does nothing here because we can't switch to profile
+                  // tab from HomeScreen directly. User can tap the nav bar icon.
+                  onTap: () {},
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border:
+                      Border.all(color: AppTheme.primaryContainer, width: 2),
+                      color: AppTheme.surfaceContainerLow,
+                    ),
+                    child: user?.photoUrl != null && user!.photoUrl.isNotEmpty
+                        ? ClipOval(
+                      child: Image.network(
+                        user.photoUrl,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stack) =>
+                        const Icon(Icons.person,
+                            color: AppTheme.primary),
+                      ),
+                    )
+                        : const Icon(Icons.person, color: AppTheme.primary),
                   ),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            )
+                );
+              },
+            ),
           ],
         ),
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.fromLTRB(24, 16, 24, 120), // padding bottom for fab/nav
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Welcome Section
-            const Text(
-              'EVENING, ALEX',
-              style: TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: AppTheme.onSurfaceVariant,
-                letterSpacing: 1.2,
-              ),
-            ),
-            const SizedBox(height: 8),
-            const Text(
-              'Welcome back!',
-              style: TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 36,
-                fontWeight: FontWeight.w800,
-                color: AppTheme.onSurface,
-                letterSpacing: -1,
-              ),
-            ),
-            const SizedBox(height: 24),
-            
-            // Monthly Savings Goal Card
-            Container(
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceContainerLowest,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.1)),
-                boxShadow: [
-                  BoxShadow(
-                    color: const Color(0xFF2E342B).withOpacity(0.06),
-                    blurRadius: 40,
-                    offset: const Offset(0, 20),
-                  ),
-                ],
-              ),
-              child: Stack(
-                children: [
-                  // Decorative blur blob
-                  Positioned(
-                    top: -48,
-                    right: -48,
-                    child: Container(
-                      width: 192,
-                      height: 192,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppTheme.primaryContainer.withOpacity(0.2),
+      body: StreamBuilder<UserModel?>(
+        stream: userService.getUserStream(userId),
+        builder: (context, userSnapshot) {
+          if (userSnapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final user = userSnapshot.data;
+          if (user == null) {
+            return const Center(child: Text('User data not found'));
+          }
+
+          return StreamBuilder<List<BudgetModel>>(
+            stream: budgetService.getBudgetsStream(userId),
+            builder: (context, budgetsSnapshot) {
+              final budgets = budgetsSnapshot.data ?? [];
+
+              final now = DateTime.now();
+              final lastDayOfMonth = DateTime(now.year, now.month + 1, 0);
+              final daysLeft = lastDayOfMonth.day - now.day;
+
+              final savingsPercent = user.monthlySavingsGoal > 0
+                  ? ((user.savingsCurrentAmount / user.monthlySavingsGoal) * 100)
+                  .round()
+                  : 0;
+
+              return SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(24, 16, 24, 120),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    // Welcome Section
+                    Text(
+                      _getGreeting().toUpperCase(),
+                      style: const TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: AppTheme.onSurfaceVariant,
+                        letterSpacing: 1.2,
                       ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(24.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                    const SizedBox(height: 8),
+                    Text(
+                      'Welcome back, ${user.name.split(' ')[0]}!',
+                      style: const TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 36,
+                        fontWeight: FontWeight.w800,
+                        color: AppTheme.onSurface,
+                        letterSpacing: -1,
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    // Monthly Savings Goal Card
+                    Container(
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceContainerLowest,
+                        borderRadius: BorderRadius.circular(24),
+                        border: Border.all(
+                            color: AppTheme.outlineVariant.withOpacity(0.1)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: const Color(0xFF2E342B).withOpacity(0.06),
+                            blurRadius: 40,
+                            offset: const Offset(0, 20),
+                          ),
+                        ],
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            top: -48,
+                            right: -48,
+                            child: Container(
+                              width: 192,
+                              height: 192,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color:
+                                AppTheme.primaryContainer.withOpacity(0.2),
+                              ),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(24.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
-                                Text(
-                                  'MONTHLY SAVINGS GOAL',
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w600,
-                                    color: AppTheme.onSurfaceVariant,
-                                    letterSpacing: 1.2,
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'MONTHLY SAVINGS GOAL',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w600,
+                                            color: AppTheme.onSurfaceVariant,
+                                            letterSpacing: 1.2,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4),
+                                        // Tap to edit savings goal
+                                        GestureDetector(
+                                          onTap: () =>
+                                              _showEditSavingsGoalDialog(
+                                                  context, user, userService),
+                                          child: Row(
+                                            children: [
+                                              Text(
+                                                CurrencyFormatter.format(
+                                                    user.monthlySavingsGoal)
+                                                    .replaceAll('.00', ''),
+                                                style: const TextStyle(
+                                                  fontSize: 30,
+                                                  fontWeight: FontWeight.bold,
+                                                  color: AppTheme.primary,
+                                                ),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              const Icon(Icons.edit,
+                                                  size: 16,
+                                                  color: AppTheme.primary),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 4),
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.secondaryContainer,
+                                        borderRadius:
+                                        BorderRadius.circular(16),
+                                      ),
+                                      child: Text(
+                                        '$daysLeft Days Left',
+                                        style: const TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          color:
+                                          AppTheme.onSecondaryContainer,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 24),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '$savingsPercent%',
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.w800,
+                                        color: AppTheme.onSurface,
+                                      ),
+                                    ),
+                                    const Padding(
+                                      padding: EdgeInsets.only(bottom: 6.0),
+                                      child: Text(
+                                        'COMPLETED',
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          fontWeight: FontWeight.bold,
+                                          letterSpacing: 1.5,
+                                          color: AppTheme.onSurfaceVariant,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 12),
+                                Container(
+                                  width: double.infinity,
+                                  height: 16,
+                                  decoration: BoxDecoration(
+                                    color: AppTheme.surfaceContainer,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: FractionallySizedBox(
+                                    alignment: Alignment.centerLeft,
+                                    widthFactor: (savingsPercent / 100)
+                                        .clamp(0.0, 1.0),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: AppTheme.primary,
+                                        borderRadius:
+                                        BorderRadius.circular(8),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 12),
                                 Text(
-                                  '\$2,000',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppTheme.primary,
+                                  'Saved: ${CurrencyFormatter.format(user.savingsCurrentAmount)} • Goal: ${CurrencyFormatter.format(user.monthlySavingsGoal)}',
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    color: AppTheme.onSurfaceVariant,
                                   ),
                                 ),
                               ],
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                              decoration: BoxDecoration(
-                                color: AppTheme.secondaryContainer,
-                                borderRadius: BorderRadius.circular(16),
-                              ),
-                              child: const Text(
-                                '12 Days Left',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  color: AppTheme.onSecondaryContainer,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            const Text(
-                              '70%',
-                              style: TextStyle(
-                                fontSize: 36,
-                                fontWeight: FontWeight.w800,
-                                color: AppTheme.onSurface,
-                              ),
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 6.0),
-                              child: Text(
-                                'COMPLETED',
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  fontWeight: FontWeight.bold,
-                                  letterSpacing: 1.5,
-                                  color: AppTheme.onSurfaceVariant,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 12),
-                        Container(
-                          width: double.infinity,
-                          height: 16,
-                          decoration: BoxDecoration(
-                            color: AppTheme.surfaceContainer,
-                            borderRadius: BorderRadius.circular(8),
                           ),
-                          child: FractionallySizedBox(
-                            alignment: Alignment.centerLeft,
-                            widthFactor: 0.7,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: AppTheme.primary,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // ============================================================
+                    // Quick Actions — all same size, matching style
+                    // ============================================================
+                    SizedBox(
+                      height: 144,
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                // New Budget — calls onNavigateToBudgets to switch tab
+                                Expanded(
+                                  child: _buildActionCard(
+                                    'New Budget',
+                                    Icons.add_circle,
+                                    AppTheme.primaryContainer,
+                                    AppTheme.onPrimaryContainer,
+                                    onNavigateToBudgets, // ← THE FIX
+                                  ),
+                                ),
+                                const SizedBox(height: 12),
+                                // Reports
+                                Expanded(
+                                  child: _buildActionCard(
+                                    'Reports',
+                                    Icons.analytics,
+                                    AppTheme.secondaryContainer,
+                                    AppTheme.onSecondaryContainer,
+                                        () {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Reports coming soon!')),
+                                      );
+                                    },
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                        const SizedBox(height: 16),
+                          const SizedBox(width: 12),
+                          // Insights — full height
+                          Expanded(
+                            child: _buildActionCard(
+                              'Insights',
+                              Icons.tips_and_updates,
+                              AppTheme.tertiaryContainer,
+                              AppTheme.onTertiaryContainer,
+                                  () {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                      content:
+                                      Text('Insights coming soon!')),
+                                );
+                              },
+                              isFullHeight: true,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 32),
+
+                    // Active Budgets section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
                         const Text(
-                          '"Small steps everyday lead to curated freedom."',
-                          textAlign: TextAlign.center,
+                          'Active Budgets',
                           style: TextStyle(
-                            fontStyle: FontStyle.italic,
-                            fontSize: 14,
+                            fontSize: 20,
+                            fontWeight: FontWeight.w600,
                             color: AppTheme.onSurfaceVariant,
                           ),
                         ),
+                        TextButton(
+                          // ← THE FIX: calls callback to switch to Budgets tab
+                          onPressed: onNavigateToBudgets,
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: const Size(50, 30),
+                            alignment: Alignment.centerRight,
+                          ),
+                          child: const Text(
+                            'Manage',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 14,
+                              color: AppTheme.primary,
+                              decoration: TextDecoration.underline,
+                              decorationColor: AppTheme.primaryContainer,
+                              decorationThickness: 2,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
+                    const SizedBox(height: 12),
 
-            // Quick Actions section
-            const Text(
-              'Quick Actions',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.onSurfaceVariant,
-              ),
-            ),
-            const SizedBox(height: 12),
-            Row(
-              children: [
-                Expanded(
-                  child: Container(
-                    height: 144,
-                    padding: const EdgeInsets.all(24),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primary,
-                      borderRadius: BorderRadius.circular(16),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppTheme.primary.withOpacity(0.2),
-                          blurRadius: 8,
-                          offset: const Offset(0, 4),
+                    // Budget List
+                    if (budgets.isEmpty)
+                      Container(
+                        padding: const EdgeInsets.all(32),
+                        decoration: BoxDecoration(
+                          color: AppTheme.surfaceContainerLow,
+                          borderRadius: BorderRadius.circular(24),
                         ),
-                      ],
-                    ),
-                    child: const Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.add_circle, color: Color(0xFFEBFFE0), size: 32),
-                        Text(
-                          'Log\nExpense',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFFEBFFE0),
-                            height: 1.2,
-                          ),
+                        child: Column(
+                          children: [
+                            const Icon(Icons.account_balance_wallet,
+                                size: 48, color: AppTheme.outlineVariant),
+                            const SizedBox(height: 16),
+                            const Text(
+                              'No budgets yet',
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: AppTheme.onSurfaceVariant),
+                            ),
+                            const SizedBox(height: 8),
+                            const Text(
+                              'Tap "New Budget" above to start tracking',
+                              style: TextStyle(
+                                  fontSize: 12,
+                                  color: AppTheme.onSurfaceVariant),
+                            ),
+                            const SizedBox(height: 16),
+                            ElevatedButton.icon(
+                              onPressed: onNavigateToBudgets,
+                              icon: const Icon(Icons.add),
+                              label: const Text('Create First Budget'),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: AppTheme.primary,
+                                foregroundColor: const Color(0xFFEBFFE0),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      )
+                    else
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: AppTheme.surfaceContainerLow,
+                          borderRadius: BorderRadius.circular(24),
+                        ),
+                        child: Column(
+                          children: budgets.take(3).map((budget) {
+                            final colors =
+                            _getColorsForScheme(budget.colorScheme);
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 4.0),
+                              child: _buildMiniBudgetCard(
+                                budget.title,
+                                '\$${budget.remaining.toStringAsFixed(0)} left',
+                                budget.spentRatio,
+                                _getIconData(budget.iconName),
+                                colors['iconBg']!,
+                                colors['iconColor']!,
+                                colors['progressColor']!,
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                  ],
                 ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: SizedBox(
-                    height: 144,
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: AppTheme.secondaryContainer,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const Row(
-                              children: [
-                                Icon(Icons.analytics, color: AppTheme.onSecondaryContainer),
-                                SizedBox(width: 12),
-                                Text(
-                                  'Reports',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppTheme.onSecondaryContainer,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: AppTheme.tertiaryContainer,
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const Row(
-                              children: [
-                                Icon(Icons.tips_and_updates, color: AppTheme.onTertiaryContainer),
-                                SizedBox(width: 12),
-                                Text(
-                                  'Insights',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w600,
-                                    color: AppTheme.onTertiaryContainer,
-                                    fontSize: 14,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 32),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
 
-            // Other Active Budgets
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                const Text(
-                  'Other Active Budgets',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.onSurfaceVariant,
-                  ),
+  String _getGreeting() {
+    final hour = DateTime.now().hour;
+    if (hour < 12) return 'Good Morning';
+    if (hour < 17) return 'Good Afternoon';
+    return 'Good Evening';
+  }
+
+  Widget _buildActionCard(
+      String title,
+      IconData icon,
+      Color bg,
+      Color color,
+      VoidCallback onTap, {
+        bool isFullHeight = false,
+      }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: isFullHeight ? double.infinity : null,
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: color, size: 22),
+            const SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  color: color,
+                  fontSize: 14,
                 ),
-                TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    padding: EdgeInsets.zero,
-                    minimumSize: const Size(50, 30),
-                    alignment: Alignment.centerRight,
-                  ),
-                  child: const Text(
-                    'Manage',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                      color: AppTheme.primary,
-                      decoration: TextDecoration.underline,
-                      decorationColor: AppTheme.primaryContainer,
-                      decorationThickness: 2,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: AppTheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(24),
-              ),
-              child: Column(
-                children: [
-                  _buildMiniBudgetCard(
-                    'Groceries', '\$120 left', 0.65, Icons.shopping_cart, 
-                    AppTheme.secondaryContainer, AppTheme.onSecondaryContainer, AppTheme.primary
-                  ),
-                  const SizedBox(height: 4),
-                  _buildMiniBudgetCard(
-                    'Entertainment', '\$45 left', 0.8, Icons.movie, 
-                    AppTheme.tertiaryContainer, AppTheme.onTertiaryContainer, AppTheme.tertiary
-                  ),
-                  const SizedBox(height: 4),
-                  _buildMiniBudgetCard(
-                    'Travel', '\$400 left', 0.2, Icons.flight_takeoff, 
-                    AppTheme.primaryContainer, AppTheme.onPrimaryContainer, AppTheme.primary
-                  ),
-                ],
               ),
             ),
           ],
@@ -399,7 +536,15 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildMiniBudgetCard(String title, String subtitle, double fillRatio, IconData iconData, Color iconBg, Color iconColor, Color progressColor) {
+  Widget _buildMiniBudgetCard(
+      String title,
+      String subtitle,
+      double fillRatio,
+      IconData iconData,
+      Color iconBg,
+      Color iconColor,
+      Color progressColor,
+      ) {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -423,23 +568,17 @@ class HomeScreen extends StatelessWidget {
                     child: Icon(iconData, color: iconColor),
                   ),
                   const SizedBox(width: 12),
-                  Text(
-                    title,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.onSurface,
-                    ),
-                  ),
+                  Text(title,
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: AppTheme.onSurface)),
                 ],
               ),
-              Text(
-                subtitle,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: AppTheme.onSurfaceVariant,
-                ),
-              ),
+              Text(subtitle,
+                  style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: AppTheme.onSurfaceVariant)),
             ],
           ),
           const SizedBox(height: 12),
@@ -460,6 +599,89 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Map<String, Color> _getColorsForScheme(String colorScheme) {
+    switch (colorScheme) {
+      case 'green':
+        return {
+          'iconBg': AppTheme.primaryContainer,
+          'iconColor': AppTheme.onPrimaryContainer,
+          'progressColor': AppTheme.primary,
+        };
+      case 'blue':
+        return {
+          'iconBg': AppTheme.secondaryContainer,
+          'iconColor': AppTheme.onSecondaryContainer,
+          'progressColor': AppTheme.secondary,
+        };
+      case 'yellow':
+        return {
+          'iconBg': AppTheme.tertiaryContainer,
+          'iconColor': AppTheme.onTertiaryContainer,
+          'progressColor': AppTheme.tertiary,
+        };
+      default:
+        return {
+          'iconBg': AppTheme.surfaceContainer,
+          'iconColor': AppTheme.onSurface,
+          'progressColor': AppTheme.primary,
+        };
+    }
+  }
+
+  IconData _getIconData(String iconName) {
+    switch (iconName) {
+      case 'shopping_cart':
+        return Icons.shopping_cart;
+      case 'home':
+        return Icons.home;
+      case 'theater_comedy':
+        return Icons.theater_comedy;
+      case 'flight_takeoff':
+        return Icons.flight_takeoff;
+      case 'restaurant':
+        return Icons.restaurant;
+      case 'directions_car':
+        return Icons.directions_car;
+      default:
+        return Icons.category;
+    }
+  }
+
+  static void _showEditSavingsGoalDialog(
+      BuildContext context, UserModel user, UserService userService) {
+    final controller =
+    TextEditingController(text: user.monthlySavingsGoal.toStringAsFixed(0));
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Edit Savings Goal'),
+        content: TextField(
+          controller: controller,
+          keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          decoration: const InputDecoration(
+            labelText: 'Monthly Goal (\$)',
+            hintText: 'Enter your monthly savings goal',
+          ),
+        ),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel')),
+          TextButton(
+            onPressed: () async {
+              final newGoal = double.tryParse(controller.text) ?? 0.0;
+              if (newGoal > 0) {
+                await userService.updateSavingsGoal(user.id, newGoal);
+              }
+              if (context.mounted) Navigator.pop(context);
+            },
+            child: const Text('Save'),
           ),
         ],
       ),
