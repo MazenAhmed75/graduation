@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "196484785411",
+    "project_id": "aifinancaltracker",
+    "storage_bucket": "aifinancaltracker.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196484785411:android:5a2cce49fcd8cbb2117536",
+        "android_client_info": {
+          "package_name": "com.example.ai_financial_tracker"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpdlLc59f6ped8ikbyd0xGMpdOBNDzjuA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:196484785411:android:8015f27c6107689d117536",
+        "android_client_info": {
+          "package_name": "com.example.mindful_curator"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCpdlLc59f6ped8ikbyd0xGMpdOBNDzjuA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
