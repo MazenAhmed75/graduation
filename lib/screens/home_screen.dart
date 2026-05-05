@@ -26,6 +26,11 @@ class HomeScreen extends StatelessWidget {
     final AuthService authService = AuthService();
     final String userId = authService.currentUser!.uid;
 
+    // ── FIX 1: Generate the current month ID ──────────────────────────
+    // This allows us to fetch only the budgets for the active month.
+    final now = DateTime.now();
+    final monthId = '${now.year}-${now.month.toString().padLeft(2, '0')}';
+
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
@@ -108,7 +113,8 @@ class HomeScreen extends StatelessWidget {
           }
 
           return StreamBuilder<List<BudgetModel>>(
-            stream: budgetService.getBudgetsStream(userId),
+            // ── FIX 2: Call the correct method with monthId ─────────────
+            stream: budgetService.getCategoryBudgetsStream(userId, monthId),
             builder: (context, budgetsSnapshot) {
               final budgets = budgetsSnapshot.data ?? [];
 
@@ -340,7 +346,7 @@ class HomeScreen extends StatelessWidget {
                                     Icons.add_circle,
                                     AppTheme.primaryContainer,
                                     AppTheme.onPrimaryContainer,
-                                    onNavigateToBudgets, // ← THE FIX
+                                    onNavigateToBudgets,
                                   ),
                                 ),
                                 const SizedBox(height: 12),
