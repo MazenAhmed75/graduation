@@ -1,17 +1,19 @@
 class BudgetModel {
-  final String id;           // Firebase document ID
-  final String userId;       // Which user owns this budget
-  String title;              // e.g. "Groceries"
-  String subtitle;           // e.g. "Weekly shopping"
-  double allocated;          // Total budget amount (e.g. 450.0)
-  double spent;              // How much has been spent (e.g. 324.0)
-  String iconName;           // Icon name as text (e.g. "shopping_cart")
-  String colorScheme;        // Color label (e.g. "green", "blue")
-  final DateTime createdAt;  // When it was created
+  final String id;                     // Firebase document ID
+  final String userId;                // Which user owns this budget
+  final String monthlyBudgetId;      // links this category to a monthly budget
+  String title;                     // e.g. "Groceries"
+  String subtitle;                 // e.g. "Weekly shopping"
+  double allocated;               // Total budget amount (e.g. 450.0)
+  double spent;                  // How much has been spent (e.g. 324.0)
+  String iconName;              // Icon name as text (e.g. "shopping_cart")
+  String colorScheme;          // Color label (e.g. "green", "blue")
+  final DateTime createdAt;   // When it was created
 
   BudgetModel({
     required this.id,
     required this.userId,
+    required this.monthlyBudgetId,
     required this.title,
     required this.subtitle,
     required this.allocated,
@@ -40,6 +42,7 @@ class BudgetModel {
   Map<String, dynamic> toMap() {
     return {
       'userId': userId,
+      'monthlyBudgetId': monthlyBudgetId,
       'title': title,
       'subtitle': subtitle,
       'allocated': allocated,
@@ -58,6 +61,7 @@ class BudgetModel {
     return BudgetModel(
       id: id,
       userId: map['userId'] ?? '',
+      monthlyBudgetId: map['monthlyBudgetId'] as String? ?? '',
       title: map['title'] ?? 'Unnamed Budget',
       subtitle: map['subtitle'] ?? '',
       allocated: (map['allocated'] ?? 0).toDouble(),
