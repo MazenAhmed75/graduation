@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Mindful Curator - Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#2e342b",
+                    "secondary": "#4b6368",
+                    "surface-container-low": "#f1f5eb",
+                    "on-secondary-fixed": "#2b4348",
+                    "inverse-on-surface": "#9b9e97",
+                    "inverse-surface": "#0c0f0b",
+                    "on-primary-container": "#2d5a27",
+                    "on-secondary-fixed-variant": "#475f64",
+                    "surface": "#f8faf2",
+                    "error": "#a73b21",
+                    "tertiary-dim": "#555621",
+                    "background": "#f8faf2",
+                    "primary-fixed": "#b9eeab",
+                    "primary-container": "#b9eeab",
+                    "on-tertiary-fixed": "#4d4e1a",
+                    "surface-container-highest": "#dee5d7",
+                    "on-error": "#fff7f6",
+                    "on-background": "#2e342b",
+                    "on-secondary": "#edfcff",
+                    "on-secondary-container": "#3e565a",
+                    "inverse-primary": "#b9eeab",
+                    "secondary-container": "#cde7ed",
+                    "tertiary-fixed-dim": "#edeca8",
+                    "on-tertiary-container": "#60602a",
+                    "on-primary": "#ebffe0",
+                    "secondary-fixed": "#cde7ed",
+                    "outline": "#767d71",
+                    "surface-container": "#ebefe4",
+                    "tertiary": "#62622c",
+                    "primary-fixed-dim": "#abdf9e",
+                    "surface-container-high": "#e5eade",
+                    "surface-bright": "#f8faf2",
+                    "secondary-fixed-dim": "#bfd9df",
+                    "primary": "#3c6a35",
+                    "error-container": "#fd795a",
+                    "on-error-container": "#6e1400",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed-variant": "#6a6b34",
+                    "tertiary-container": "#fbfab5",
+                    "tertiary-fixed": "#fbfab5",
+                    "error-dim": "#791903",
+                    "secondary-dim": "#3f575c",
+                    "surface-dim": "#d6dccf",
+                    "surface-tint": "#3c6a35",
+                    "on-primary-fixed-variant": "#376430",
+                    "outline-variant": "#adb4a7",
+                    "primary-dim": "#305d2a",
+                    "surface-variant": "#dee5d7",
+                    "on-primary-fixed": "#1a4716",
+                    "on-surface-variant": "#5a6156",
+                    "on-tertiary": "#fefdb8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "2xl": "1rem",
+                    "3xl": "1.5rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .bloom-shadow {
+            box-shadow: 0 20px 40px rgba(46, 52, 43, 0.06);
+        }
+    </style>
+<style>
+        body {
+          min-height: max(884px, 100dvh);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-[#f8faf2] dark:bg-stone-950">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-xl mx-auto">
+<button class="text-[#3c6a35] dark:text-[#ebffe0] active:scale-95 duration-200 hover:bg-[#f1f5eb] dark:hover:bg-stone-900 p-2 rounded-full transition-colors">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-manrope text-xl font-bold text-[#3c6a35] dark:text-[#ebffe0] tracking-tighter">Mindful Curator</h1>
+<div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-container">
+<img alt="User profile photo" class="w-full h-full object-cover" data-alt="Portrait of a professional woman with a calm expression in soft natural daylight" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDpyCUZ2hjZLqgDMXKk-49c7qclo9P2O-Z0mNmZZQx-HwfGAAyARq8nXgpV8-VNWWEYTg4OHQVE1GNl-FKcKhg5VCkNd4sbl1dpj64w76kC45S3Zg8B2shofafua98qDm9iTH9yKeV3t1sMUa5uX8oxoqxPQfQ_FyBiPhQeWcNJnkKZ1xwD6Ai7lmFnawy4ni5XQdfU4RTNiTD_4jEStgycUr1I2zCf9-dVYoqDywsTvx0dRS61aDrCLyvLTRay4F-F67VL_DV4RDp0"/>
+</div>
+</div>
+<div class="bg-gradient-to-b from-[#f1f5eb] to-transparent h-2"></div>
+</header>
+<main class="max-w-xl mx-auto px-6 pt-4 space-y-6">
+<!-- Welcome Title -->
+<section class="space-y-2">
+<h2 class="text-on-surface-variant font-medium tracking-wide body-md uppercase">Evening, Alex</h2>
+<p class="font-headline text-4xl font-extrabold tracking-tight text-on-surface">Welcome back!</p>
+</section>
+<!-- Progress Bar / Main Goal Card -->
+<section class="relative">
+<div class="bg-surface-container-lowest bloom-shadow rounded-3xl overflow-hidden relative border border-outline-variant/10 p-6 space-y-4">
+<!-- Background decorative element -->
+<div class="absolute top-0 right-0 -mr-12 -mt-12 w-48 h-48 bg-primary-container/20 rounded-full blur-3xl"></div>
+<div class="space-y-6 relative z-10">
+<div class="flex justify-between items-start">
+<div class="space-y-1">
+<p class="text-on-surface-variant text-sm font-semibold tracking-wide uppercase">Monthly Savings Goal</p>
+<p class="text-3xl font-bold text-primary">$2,000</p>
+</div>
+<div class="bg-secondary-container text-on-secondary-container px-3 py-1 rounded-full text-xs font-bold">
+                        12 Days Left
+                    </div>
+</div>
+<!-- Signature Component: Horizontal Progress Bar -->
+<div class="space-y-3">
+<div class="flex justify-between items-end">
+<span class="text-4xl font-extrabold text-on-surface">70%</span>
+<span class="text-[10px] uppercase font-bold tracking-widest text-on-surface-variant mb-1.5">Completed</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-4 overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[70%]"></div>
+</div>
+</div>
+<p class="text-on-surface-variant body-md text-center italic">"Small steps everyday lead to curated freedom."</p>
+</div>
+</div>
+</section>
+<!-- Quick Actions Bento -->
+<section class="space-y-3">
+<h3 class="headline-sm font-semibold text-on-surface-variant px-1">Quick Actions</h3>
+<div class="grid grid-cols-2 gap-4">
+<button class="bg-primary text-on-primary rounded-2xl p-6 flex flex-col items-start justify-between h-36 active:scale-95 transition-transform duration-200 shadow-sm">
+<span class="material-symbols-outlined text-3xl">add_circle</span>
+<span class="font-bold text-lg leading-tight">Log<br/>Expense</span>
+</button>
+<div class="grid grid-rows-2 gap-4">
+<button class="bg-secondary-container text-on-secondary-container rounded-2xl px-4 py-2 flex items-center gap-3 active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-semibold text-sm">Reports</span>
+</button>
+<button class="bg-tertiary-container text-on-tertiary-container rounded-2xl px-4 py-2 flex items-center gap-3 active:scale-95 transition-transform duration-200">
+<span class="material-symbols-outlined">tips_and_updates</span>
+<span class="font-semibold text-sm">Insights</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Other Active Budgets Section -->
+<section class="pb-8 space-y-3">
+<div class="flex justify-between items-end px-1">
+<h3 class="headline-sm font-semibold text-on-surface-variant">Other Active Budgets</h3>
+<button class="text-primary font-bold text-sm hover:underline underline-offset-4 decoration-primary-container decoration-2">Manage</button>
+</div>
+<div class="bg-surface-container-low rounded-3xl p-2 space-y-0.5">
+<!-- Budget Item: Groceries -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-secondary-container text-on-secondary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">shopping_cart</span>
+</div>
+<p class="font-bold text-on-surface">Groceries</p>
+</div>
+<p class="text-xs font-bold text-on-surface-variant">$120 left</p>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[65%]"></div>
+</div>
+</div>
+<!-- Budget Item: Entertainment -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-tertiary-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">movie</span>
+</div>
+<p class="font-bold text-on-surface">Entertainment</p>
+</div>
+<p class="text-xs font-bold text-on-surface-variant">$45 left</p>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-tertiary h-full rounded-full w-[80%]"></div>
+</div>
+</div>
+<!-- Budget Item: Travel -->
+<div class="bg-surface-container-lowest rounded-2xl p-4 space-y-3">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-primary-container text-on-primary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">flight_takeoff</span>
+</div>
+<p class="font-bold text-on-surface">Travel</p>
+</div>
+<p class="text-xs font-bold text-on-surface-variant">$400 left</p>
+</div>
+<div class="w-full bg-surface-container rounded-full h-1.5 overflow-hidden">
+<div class="bg-primary h-full rounded-full w-[20%]"></div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#ffffff]/70 dark:bg-stone-900/70 backdrop-blur-xl rounded-t-[1.5rem] shadow-[0_-10px_30px_rgba(46,52,43,0.04)] border-t border-[#adb4a7]/15">
+<!-- Home Tab (Active) -->
+<a class="flex flex-col items-center justify-center bg-[#3c6a35] text-[#ebffe0] rounded-full px-5 py-1.5 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home_app_logo</span>
+<span class="font-manrope text-[11px] font-semibold uppercase tracking-wider mt-0.5">Home</span>
+</a>
+<!-- Budgets Tab -->
+<a class="flex flex-col items-center justify-center text-[#5a6156] px-5 py-1.5 hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-manrope text-[11px] font-semibold uppercase tracking-wider mt-0.5">Budgets</span>
+</a>
+<!-- Profile Tab -->
+<a class="flex flex-col items-center justify-center text-[#5a6156] px-5 py-1.5 hover:opacity-80 active:scale-90 transition-all duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-manrope text-[11px] font-semibold uppercase tracking-wider mt-0.5">Profile</span>
+</a>
+</nav>
+</body></html>
