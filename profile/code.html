@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile - Mindful Curator</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface": "#2e342b",
+                    "secondary": "#4b6368",
+                    "surface-container-low": "#f1f5eb",
+                    "on-secondary-fixed": "#2b4348",
+                    "inverse-on-surface": "#9b9e97",
+                    "inverse-surface": "#0c0f0b",
+                    "on-primary-container": "#2d5a27",
+                    "on-secondary-fixed-variant": "#475f64",
+                    "surface": "#f8faf2",
+                    "error": "#a73b21",
+                    "tertiary-dim": "#555621",
+                    "background": "#f8faf2",
+                    "primary-fixed": "#b9eeab",
+                    "primary-container": "#b9eeab",
+                    "on-tertiary-fixed": "#4d4e1a",
+                    "surface-container-highest": "#dee5d7",
+                    "on-error": "#fff7f6",
+                    "on-background": "#2e342b",
+                    "on-secondary": "#edfcff",
+                    "on-secondary-container": "#3e565a",
+                    "inverse-primary": "#b9eeab",
+                    "secondary-container": "#cde7ed",
+                    "tertiary-fixed-dim": "#edeca8",
+                    "on-tertiary-container": "#60602a",
+                    "on-primary": "#ebffe0",
+                    "secondary-fixed": "#cde7ed",
+                    "outline": "#767d71",
+                    "surface-container": "#ebefe4",
+                    "tertiary": "#62622c",
+                    "primary-fixed-dim": "#abdf9e",
+                    "surface-container-high": "#e5eade",
+                    "surface-bright": "#f8faf2",
+                    "secondary-fixed-dim": "#bfd9df",
+                    "primary": "#3c6a35",
+                    "error-container": "#fd795a",
+                    "on-error-container": "#6e1400",
+                    "surface-container-lowest": "#ffffff",
+                    "on-tertiary-fixed-variant": "#6a6b34",
+                    "tertiary-container": "#fbfab5",
+                    "tertiary-fixed": "#fbfab5",
+                    "error-dim": "#791903",
+                    "secondary-dim": "#3f575c",
+                    "surface-dim": "#d6dccf",
+                    "surface-tint": "#3c6a35",
+                    "on-primary-fixed-variant": "#376430",
+                    "outline-variant": "#adb4a7",
+                    "primary-dim": "#305d2a",
+                    "surface-variant": "#dee5d7",
+                    "on-primary-fixed": "#1a4716",
+                    "on-surface-variant": "#5a6156",
+                    "on-tertiary": "#fefdb8"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "fontFamily": {
+                    "headline": ["Manrope"],
+                    "body": ["Manrope"],
+                    "label": ["Manrope"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body { font-family: 'Manrope', sans-serif; }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .headline-sm { font-size: 1.5rem; line-height: 2rem; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface min-h-screen pb-32">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-[#f8faf2] dark:bg-stone-950">
+<div class="flex items-center justify-between px-6 py-4 w-full max-w-xl mx-auto">
+<div class="flex items-center gap-4">
+<button class="text-[#3c6a35] dark:text-[#ebffe0] hover:bg-[#f1f5eb] dark:hover:bg-stone-900 transition-colors p-2 rounded-full active:scale-95 duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-manrope headline-sm font-semibold tracking-tight text-[#3c6a35] dark:text-[#ebffe0]">Mindful Curator</h1>
+</div>
+<div class="w-10 h-10 rounded-full overflow-hidden bg-surface-container-high ring-2 ring-primary-container">
+<img alt="User Profile" data-alt="close-up portrait of a woman with a serene expression, soft natural lighting, earthy background tones, high-end editorial photography style" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAuesGY15IOAcmh8K-KWr6K5Fz_e5e3kCBm2y2P9Y96hjEW7zBb8sIA8dactkct_syX1ZFZaDZ4MZU5p1GaeBQUe5dC05kWvFEB0r5thwXCaWKbjT-Z-yc4t-R2laaf0K6Sc9mJrXFqUvtWvifODvMM1d2sugtIbilhuwhQ9Xyfz7IFwBXtoTbEQyQT3rYavbtYDkW3b41H9XasCzD4-XZP5dALhlkSAj6Y-7eGJFwjiOWrk0oOZ6Ei7WUlcV7ghBV8cV6aUPi1pVmV"/>
+</div>
+</div>
+<div class="bg-gradient-to-b from-[#f1f5eb] to-transparent h-2"></div>
+</header>
+<main class="max-w-xl mx-auto px-6 pt-12">
+<!-- Hero Profile Section -->
+<section class="flex flex-col items-center mb-12">
+<div class="relative mb-6">
+<div class="w-40 h-40 rounded-full overflow-hidden shadow-[0_20px_40px_rgba(46,52,43,0.06)] border-4 border-surface-container-lowest">
+<img alt="Profile Picture" class="w-full h-full object-cover" data-alt="professional editorial headshot of a woman, warm morning light, soft focus organic background, cinematic color grading" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwRQ0PESKI69gLBzSGGiSrexF3Oc7M6vyqCdgyPGcItVdPJw9Sk0KpTmSnHpVZ9ga2_Z3W2jMvp42OWYyV6ipPB3Djo68-EikLvQC-TSRIqygjvsBb7nTIVKAsHz2_4DwTyFqp5UgR718VYH_kcJfVDLoAyWpLjLsSqQR5aJCDXNGkVbPMg0k_93vtaRuVFjdmqEL7avLkhncrbi3loTyoLqi_B0Fb9nMixpLIUQesRodlT5IvPf4_Jwkie-DsdHKoGzWBdx2svNJA"/>
+</div>
+<button class="absolute bottom-1 right-1 bg-primary text-on-primary p-3 rounded-full shadow-lg active:scale-90 transition-transform duration-150">
+<span class="material-symbols-outlined text-xl">photo_camera</span>
+</button>
+</div>
+<div class="text-center">
+<h2 class="text-2xl font-bold tracking-tight text-on-surface mb-1">Eleanor Vance</h2>
+<p class="text-on-surface-variant body-md mb-6">Curating mindfulness since 2022</p>
+<button class="bg-secondary-container text-on-secondary-container font-semibold px-6 py-2.5 rounded-full hover:opacity-80 transition-opacity active:scale-95 text-sm uppercase tracking-wider">
+                    Change Profile Picture
+                </button>
+</div>
+</section>
+<!-- Information Bento List -->
+<section class="space-y-4 mb-12">
+<h3 class="headline-sm text-on-surface-variant font-medium px-2">Account Details</h3>
+<div class="bg-surface-container-lowest rounded-xl p-1 shadow-[0_4px_20px_rgba(46,52,43,0.02)]">
+<!-- Name Row -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-primary-container/30 flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Full Name</p>
+<p class="font-semibold text-on-surface">Eleanor Vance</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+<!-- Email Row -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-secondary-container/50 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined">mail</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Email Address</p>
+<p class="font-semibold text-on-surface">eleanor.v@mindfulcurator.io</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+<!-- Plan Row -->
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/50 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined">workspace_premium</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant uppercase tracking-widest font-bold">Membership</p>
+<p class="font-semibold text-on-surface">Premium Curator</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Preference Section -->
+<section class="space-y-4 mb-16">
+<h3 class="headline-sm text-on-surface-variant font-medium px-2">Settings</h3>
+<div class="bg-surface-container-lowest rounded-xl p-1 shadow-[0_4px_20px_rgba(46,52,43,0.02)]">
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">notifications</span>
+</div>
+<p class="font-semibold text-on-surface">Notifications</p>
+</div>
+<div class="w-12 h-6 bg-primary-container rounded-full relative">
+<div class="absolute right-1 top-1 w-4 h-4 bg-primary rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors rounded-lg">
+<div class="flex items-center gap-4">
+<div class="w-10 h-10 rounded-full bg-surface-container-highest flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">security</span>
+</div>
+<p class="font-semibold text-on-surface">Privacy &amp; Security</p>
+</div>
+<span class="material-symbols-outlined text-outline-variant">chevron_right</span>
+</div>
+</div>
+</section>
+<!-- Actions -->
+<div class="flex flex-col gap-4 px-2">
+<button class="w-full bg-error-container text-on-error-container font-bold py-4 rounded-full flex items-center justify-center gap-2 active:scale-95 transition-all shadow-sm">
+<span class="material-symbols-outlined">logout</span>
+                Logout
+            </button>
+<p class="text-center text-outline text-xs mt-4">App Version 2.4.0 • Build 882</p>
+</div>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 pb-6 pt-3 bg-[#ffffff]/70 dark:bg-stone-900/70 backdrop-blur-xl rounded-t-[1.5rem] border-t border-[#adb4a7]/15 shadow-[0_-10px_30px_rgba(46,52,43,0.04)]">
+<a class="flex flex-col items-center justify-center text-[#5a6156] px-5 py-1.5 hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">home_app_logo</span>
+<span class="font-manrope text-[11px] font-semibold uppercase tracking-wider mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-[#5a6156] px-5 py-1.5 hover:opacity-80 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">account_balance_wallet</span>
+<span class="font-manrope text-[11px] font-semibold uppercase tracking-wider mt-1">Budgets</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-[#3c6a35] text-[#ebffe0] rounded-full px-5 py-1.5 transition-all active:scale-90 duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-manrope text-[11px] font-semibold uppercase tracking-wider mt-1">Profile</span>
+</a>
+</nav>
+</body></html>
