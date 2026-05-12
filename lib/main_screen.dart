@@ -16,6 +16,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   // 0=Home 1=Budgets 2=Invest 3=Profile
+  final ValueNotifier<bool> _isDrawerOpen = ValueNotifier(false);
 
   // ============================================================
   // This function lets child screens switch the tab.
@@ -31,7 +32,15 @@ class _MainScreenState extends State<MainScreen> {
   Widget build(BuildContext context) {
     // Build screens here so we can pass the callback to HomeScreen
     final List<Widget> screens = [
-      HomeScreen(onNavigateToBudgets: () => _switchToTab(1)),
+      // Pass the _switchToTab function directly to HomeScreen
+      // READ DRAWER STATE FROM HOME SCREEN
+      HomeScreen(
+        onNavigateToBudgets: () => _switchToTab(1),
+        onNavigateToTab: _switchToTab,
+        onDrawerChanged: (isOpen) {
+          _isDrawerOpen.value = isOpen;
+        },
+      ),
       const BudgetsScreen(),
       const InvestScreen(),
       ProfileScreen(onNavigateToTab: _switchToTab),
@@ -43,37 +52,65 @@ class _MainScreenState extends State<MainScreen> {
         index: _currentIndex,
         children: screens,
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.7),
-          border: Border(
-            top: BorderSide(
-              color: AppTheme.outlineVariant.withOpacity(0.15),
-              width: 1,
+      bottomNavigationBar: ValueListenableBuilder<bool>(
+        valueListenable: _isDrawerOpen,
+        builder: (context, isDrawerOpen, child) {
+          return AnimatedSlide(
+            duration: const Duration(milliseconds: 180),
+            offset: isDrawerOpen
+                ? const Offset(0, 1.5)
+                : Offset.zero,
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 180),
+              opacity: isDrawerOpen ? 0 : 1,
+              child: child,
             ),
+          );
+        },
+
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white.withOpacity(0.7),
+            border: Border(
+              top: BorderSide(
+                color: AppTheme.outlineVariant.withOpacity(0.15),
+                width: 1,
+              ),
+            ),
+            borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(24)),
+            boxShadow: [
+              BoxShadow(
+                color: const Color(0xFF2E342B).withOpacity(0.04),
+                offset: const Offset(0, -10),
+                blurRadius: 30,
+              ),
+            ],
           ),
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(0xFF2E342B).withOpacity(0.04),
-              offset: const Offset(0, -10),
-              blurRadius: 30,
-            ),
-          ],
-        ),
-        height: 90,
-        child: ClipRRect(
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(0, Icons.home_rounded, 'Home'),
-                _buildNavItem(1, Icons.account_balance_wallet_rounded, 'Budgets'),
-                _buildNavItem(2, Icons.trending_up_rounded, 'Invest'),
-                _buildNavItem(3, Icons.person_rounded, 'Profile'),
-              ],
+          height: 90,
+          child: ClipRRect(
+            borderRadius:
+            const BorderRadius.vertical(top: Radius.circular(24)),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _buildNavItem(0, Icons.home_rounded, 'Home'),
+                  _buildNavItem(
+                      1,
+                      Icons.account_balance_wallet_rounded,
+                      'Budgets'),
+                  _buildNavItem(
+                      2,
+                      Icons.trending_up_rounded,
+                      'Invest'),
+                  _buildNavItem(
+                      3,
+                      Icons.person_rounded,
+                      'Profile'),
+                ],
+              ),
             ),
           ),
         ),
