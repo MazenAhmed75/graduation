@@ -4,6 +4,7 @@ import 'package:mindful_curator/theme.dart';
 import 'package:mindful_curator/screens/home_screen.dart';
 import 'package:mindful_curator/screens/budgets_screen.dart';
 import 'package:mindful_curator/screens/profile_screen.dart';
+import 'package:mindful_curator/screens/invest_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -14,6 +15,7 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
+  // 0=Home 1=Budgets 2=Invest 3=Profile
 
   // ============================================================
   // This function lets child screens switch the tab.
@@ -31,6 +33,7 @@ class _MainScreenState extends State<MainScreen> {
     final List<Widget> screens = [
       HomeScreen(onNavigateToBudgets: () => _switchToTab(1)),
       const BudgetsScreen(),
+      const InvestScreen(),
       ProfileScreen(onNavigateToTab: _switchToTab),
     ];
 
@@ -68,7 +71,8 @@ class _MainScreenState extends State<MainScreen> {
               children: [
                 _buildNavItem(0, Icons.home_rounded, 'Home'),
                 _buildNavItem(1, Icons.account_balance_wallet_rounded, 'Budgets'),
-                _buildNavItem(2, Icons.person_rounded, 'Profile'),
+                _buildNavItem(2, Icons.trending_up_rounded, 'Invest'),
+                _buildNavItem(3, Icons.person_rounded, 'Profile'),
               ],
             ),
           ),
