@@ -1,0 +1,327 @@
+import 'package:flutter/material.dart';
+import '../theme.dart';
+import '../models/recurring_transaction_model.dart';
+import '../services/recurring_service.dart';
+import '../services/auth_service.dart';
+
+// ============================================================
+// RecurringScreen
+//
+// A standalone screen that lists all the user's recurring
+// transactions. Users can pause, resume, or delete them.
+// ============================================================
+class RecurringScreen extends StatelessWidget {
+  const RecurringScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final auth = AuthService();
+    final service = RecurringService();
+    final userId = auth.currentUser?.uid ?? '';
+
+    return Scaffold(
+      backgroundColor: AppTheme.neutral,
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF8FAF2),
+        elevation: 0,
+        surfaceTintColor: Colors.transparent,
+        toolbarHeight: 70,
+        titleSpacing: 24,
+        title: const Text(
+          'Recurring',
+          style: TextStyle(
+            fontFamily: 'Manrope',
+            fontSize: 22,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ),
+      body: StreamBuilder<List<RecurringTransactionModel>>(
+        stream: service.getRecurringStream(userId),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final items = snapshot.data ?? [];
+
+          // ── Empty state ─────────────────────────────────────
+          if (items.isEmpty) {
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(40),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: AppTheme.primaryContainer,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        Icons.repeat_rounded,
+                        size: 40,
+                        color: AppTheme.onPrimaryContainer,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    const Text(
+                      'No recurring transactions',
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'When you add or spend money, check\n"Make recurring" to set it on repeat.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 13,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          }
+
+          // ── List of recurring items ──────────────────────────
+          return ListView.builder(
+            padding: EdgeInsets.only(
+              top: 16,
+              left: 16,
+              right: 16,
+              bottom: MediaQuery.of(context).padding.bottom + 32,
+            ),
+            itemCount: items.length,
+            itemBuilder: (context, index) {
+              final item = items[index];
+              return _RecurringCard(
+                item: item,
+                onToggle: (newValue) async {
+                  await service.toggleActive(
+                    userId: userId,
+                    recurringId: item.id,
+                    isActive: newValue,
+                  );
+                },
+                onDelete: () async {
+                  final confirmed = await showDialog<bool>(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Delete recurring transaction?'),
+                      content: Text(
+                        '"${item.note}" will no longer be applied automatically.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, false),
+                          child: const Text('Cancel'),
+                        ),
+                        TextButton(
+                          onPressed: () => Navigator.pop(context, true),
+                          child: const Text('Delete',
+                              style: TextStyle(color: Colors.red)),
+                        ),
+                      ],
+                    ),
+                  );
+                  if (confirmed == true) {
+                    await service.deleteRecurring(
+                      userId: userId,
+                      recurringId: item.id,
+                    );
+                  }
+                },
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
+
+// ============================================================
+// _RecurringCard
+// A single recurring transaction card with toggle + delete
+// ============================================================
+class _RecurringCard extends StatelessWidget {
+  final RecurringTransactionModel item;
+  final ValueChanged<bool> onToggle;
+  final VoidCallback onDelete;
+
+  const _RecurringCard({
+    required this.item,
+    required this.onToggle,
+    required this.onDelete,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isWithdraw = item.type == 'withdraw';
+    final color = isWithdraw ? const Color(0xFFE24B4A) : AppTheme.primary;
+    final bgColor = isWithdraw
+        ? const Color(0xFFE24B4A).withOpacity(0.08)
+        : AppTheme.primaryContainer;
+    final amountLabel =
+    isWithdraw ? '- \$${item.amount.toStringAsFixed(2)}' : '+ \$${item.amount.toStringAsFixed(2)}';
+
+    // Format next due date as "Jun 12"
+    const months = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+    final due =
+        '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day}';
+
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      decoration: BoxDecoration(
+        color: item.isActive
+            ? Colors.white
+            : Colors.grey[50],
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: item.isActive
+              ? Colors.transparent
+              : Colors.grey.withOpacity(0.2),
+        ),
+        boxShadow: item.isActive
+            ? [
+          BoxShadow(
+            color: const Color(0xFF2E342B).withOpacity(0.06),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          )
+        ]
+            : [],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          // ── Icon ──────────────────────────────────────────────
+          Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Icon(
+              isWithdraw ? Icons.arrow_upward_rounded : Icons.arrow_downward_rounded,
+              color: color,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 14),
+
+          // ── Details ───────────────────────────────────────────
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  item.note,
+                  style: TextStyle(
+                    fontFamily: 'Manrope',
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: item.isActive
+                        ? AppTheme.onSurface
+                        : Colors.grey,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                const SizedBox(height: 3),
+                Row(
+                  children: [
+                    // Category badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 7, vertical: 2),
+                      decoration: BoxDecoration(
+                        color: AppTheme.surfaceContainerLow,
+                        borderRadius: BorderRadius.circular(6),
+                      ),
+                      child: Text(
+                        item.budgetTitle,
+                        style: const TextStyle(
+                          fontFamily: 'Manrope',
+                          fontSize: 11,
+                          color: AppTheme.onSurfaceVariant,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(Icons.repeat_rounded,
+                        size: 12, color: Colors.grey[400]),
+                    const SizedBox(width: 3),
+                    Text(
+                      item.frequencyLabel,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 11,
+                        color: Colors.grey[500],
+                      ),
+                    ),
+                  ],
+                ),
+                // Next due date
+                if (item.isActive) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    'Next: $due',
+                    style: TextStyle(
+                      fontFamily: 'Manrope',
+                      fontSize: 11,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ],
+              ],
+            ),
+          ),
+
+          // ── Amount ────────────────────────────────────────────
+          Text(
+            amountLabel,
+            style: TextStyle(
+              fontFamily: 'Manrope',
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: color,
+            ),
+          ),
+          const SizedBox(width: 12),
+
+          // ── Actions: toggle + delete ──────────────────────────
+          Column(
+            children: [
+              Switch(
+                value: item.isActive,
+                onChanged: onToggle,
+                activeColor: AppTheme.primary,
+                materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              ),
+              GestureDetector(
+                onTap: onDelete,
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: Icon(Icons.delete_outline_rounded,
+                      size: 18, color: Colors.grey[400]),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}

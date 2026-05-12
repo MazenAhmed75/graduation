@@ -5,6 +5,7 @@ import '../models/user_model.dart';
 import '../services/user_service.dart';
 import '../services/auth_service.dart';
 import '../services/Storage_service.dart';
+import 'security_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final void Function(int) onNavigateToTab;
@@ -458,7 +459,15 @@ class ProfileScreen extends StatelessWidget {
                       ),
                       const Divider(height: 1, indent: 72),
                       _buildSettingsTile(
-                          'Privacy & Security', Icons.security),
+                        'Privacy & Security',
+                        Icons.security,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (context) => const SecurityScreen()),
+                          );
+                        },
+                      ),
                     ],
                   ),
                 ),
@@ -631,28 +640,42 @@ class ProfileScreen extends StatelessWidget {
   }
 
   static Widget _buildSettingsTile(String title, IconData icon,
-      {Widget? trailing}) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: ListTile(
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        leading: Container(
-          width: 44,
-          height: 44,
-          decoration: const BoxDecoration(
-              color: Color(0xFFDEE5D7), shape: BoxShape.circle),
-          child: Icon(icon, color: AppTheme.onSurfaceVariant),
-        ),
-        title: Text(title,
-            style: const TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.onSurface)),
-        trailing: trailing ??
-            const Icon(Icons.chevron_right, color: AppTheme.outlineVariant),
-        onTap: trailing == null ? () {} : null,
-      ),
-    );
+   {
+  Widget? trailing,
+  VoidCallback? onTap,
+  }) {
+  return Padding(
+  padding: const EdgeInsets.all(8.0),
+  child: ListTile(
+  shape:
+  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+  leading: Container(
+  width: 44,
+  height: 44,
+  decoration: const BoxDecoration(
+  color: Color(0xFFDEE5D7),
+  shape: BoxShape.circle,
+  ),
+  child: Icon(icon, color: AppTheme.onSurfaceVariant),
+  ),
+  title: Text(
+  title,
+  style: const TextStyle(
+  fontSize: 15,
+  fontWeight: FontWeight.bold,
+  color: AppTheme.onSurface,
+  ),
+  ),
+
+  trailing: trailing ??
+  const Icon(
+  Icons.chevron_right,
+  color: AppTheme.outlineVariant,
+  ),
+
+  // supports custom onTap
+  onTap: onTap ?? (trailing == null ? () {} : null),
+  ),
+  );
   }
 }

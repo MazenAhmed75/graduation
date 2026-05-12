@@ -190,6 +190,52 @@ class AuthService {
       return 'An unexpected error occurred. Please try again.';
     }
   }
+  // ------------------------------------------------------------------------
+// WANT TO CHANGE PASSWORD : CHECK IF ITS A GOOGLE SIGN IN OR NOT FIRST
+// --------------------------------------------------------------------------
+
+// Check if the user signed in with Google
+  bool isGoogleUser() {
+    final user = _auth.currentUser;
+    if (user == null) return false;
+
+    // Check provider data for 'google.com'
+    for (final profile in user.providerData) {
+      if (profile.providerId == 'google.com') return true;
+    }
+    return false;
+  }
+
+// Change Password Logic
+  Future<String?> changePassword({
+    required String oldPassword,
+    required String newPassword,
+  }) async {
+    try {
+      User? user = _auth.currentUser;
+      if (user == null || user.email == null) return 'User not found.';
+
+      // 1. Re-authenticate the user (Crucial for security)
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: oldPassword,
+      );
+
+      await user.reauthenticateWithCredential(credential);
+
+      // 2. Update the password
+      await user.updatePassword(newPassword);
+
+      return null; // Success
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'wrong-password') {
+        return 'The old password you entered is incorrect.';
+      }
+      return e.message;
+    } catch (e) {
+      return 'An unexpected error occurred.';
+    }
+  }
   // -------------------------------------------------------
   // LOGOUT: Sign out from both Firebase and Google
   // -------------------------------------------------------

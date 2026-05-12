@@ -13,10 +13,14 @@ class HomeScreen extends StatelessWidget {
   // When called, MainScreen switches to the Budgets tab (index 1).
   // ============================================================
   final VoidCallback onNavigateToBudgets;
+  final Function(int) onNavigateToTab;
+  final Function(bool) onDrawerChanged;
 
   const HomeScreen({
     super.key,
     required this.onNavigateToBudgets,
+    required this.onNavigateToTab,
+    required this.onDrawerChanged,
   });
 
   @override
@@ -26,14 +30,19 @@ class HomeScreen extends StatelessWidget {
     final AuthService authService = AuthService();
     final String userId = authService.currentUser!.uid;
 
-    // ── FIX 1: Generate the current month ID ──────────────────────────
+    // ──  Generate the current month ID ──────────────────────────
     // This allows us to fetch only the budgets for the active month.
     final now = DateTime.now();
     final monthId = '${now.year}-${now.month.toString().padLeft(2, '0')}';
 
     return Scaffold(
       backgroundColor: AppTheme.neutral,
+      //   THE DRAWER
+      drawer: _buildDrawer(context, userService, userId),
+      //CHECK IF DRAWER IS OPEN
+      onDrawerChanged: onDrawerChanged,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: const Color(0xFFF8FAF2),
         elevation: 0,
         surfaceTintColor: Colors.transparent,
@@ -44,11 +53,14 @@ class HomeScreen extends StatelessWidget {
           children: [
             Row(
               children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.menu, color: AppTheme.primary),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppTheme.surfaceContainerLow,
+                // 2. BUILDER WRAPPER: Required to open drawer from a button
+                Builder(
+                  builder: (context) => IconButton(
+                    onPressed: () => Scaffold.of(context).openDrawer(),
+                    icon: const Icon(Icons.menu, color: AppTheme.primary),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.surfaceContainerLow,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 12),
@@ -113,7 +125,7 @@ class HomeScreen extends StatelessWidget {
           }
 
           return StreamBuilder<List<BudgetModel>>(
-            // ── FIX 2: Call the correct method with monthId ─────────────
+            // ──  Call the correct method with monthId ─────────────
             stream: budgetService.getCategoryBudgetsStream(userId, monthId),
             builder: (context, budgetsSnapshot) {
               final budgets = budgetsSnapshot.data ?? [];
@@ -406,7 +418,7 @@ class HomeScreen extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          // ← THE FIX: calls callback to switch to Budgets tab
+                          //  calls callback to switch to Budgets tab
                           onPressed: onNavigateToBudgets,
                           style: TextButton.styleFrom(
                             padding: EdgeInsets.zero,
@@ -511,6 +523,8 @@ class HomeScreen extends StatelessWidget {
     if (hour < 17) return 'Good Afternoon';
     return 'Good Evening';
   }
+
+
 
   Widget _buildActionCard(
       String title,
@@ -699,6 +713,79 @@ class HomeScreen extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+  // DRAWER UI DESIGN
+  Widget _buildDrawer(BuildContext context, UserService userService, String userId) {
+    return Drawer(
+      backgroundColor: AppTheme.neutral,
+      child: StreamBuilder<UserModel?>(
+        stream: userService.getUserStream(userId),
+        builder: (context, snapshot) {
+          final user = snapshot.data;
+
+          return Column(
+            children: [
+              // Header with Profile Pic and Name
+              UserAccountsDrawerHeader(
+                decoration: const BoxDecoration(color: AppTheme.primary),
+                currentAccountPicture: CircleAvatar(
+                  backgroundColor: AppTheme.primaryContainer,
+                  backgroundImage: (user?.photoUrl != null && user!.photoUrl.isNotEmpty)
+                      ? NetworkImage(user.photoUrl)
+                      : null,
+                  child: (user?.photoUrl == null || user!.photoUrl.isEmpty)
+                      ? const Icon(Icons.person, color: AppTheme.primary, size: 40)
+                      : null,
+                ),
+                accountName: Text(
+                  user?.name ?? 'Loading...',
+                  style: const TextStyle(
+                    fontFamily: 'Manrope',
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18,
+                  ),
+                ),
+                accountEmail: Text(user?.email ?? ''),
+              ),
+
+              // Navigation Options - Matches Bottom Nav
+              _buildDrawerItem(context, 'Home', Icons.home_rounded, 0),
+              _buildDrawerItem(context, 'Budgets', Icons.account_balance_wallet_rounded, 1),
+              _buildDrawerItem(context, 'Invest', Icons.trending_up_rounded, 2),
+              _buildDrawerItem(context, 'Profile', Icons.person_rounded, 3),
+
+              const Spacer(),
+              const Divider(),
+
+              // Logout Option
+              ListTile(
+                leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
+                title: const Text('Logout', style: TextStyle(color: Colors.redAccent)),
+                onTap: () async {
+                  await AuthService().logout();
+                },
+              ),
+              const SizedBox(height: 20),
+            ],
+          );
+        },
+      ),
+    );
+  }
+
+  // Helper to build drawer items consistently
+  Widget _buildDrawerItem(BuildContext context, String title, IconData icon, int index) {
+    return ListTile(
+      leading: Icon(icon, color: AppTheme.primary),
+      title: Text(
+        title,
+        style: const TextStyle(fontWeight: FontWeight.w600, fontFamily: 'Manrope'),
+      ),
+      onTap: () {
+        Navigator.pop(context); // Close the drawer first
+        onNavigateToTab(index); // Switch the tab in MainScreen
+      },
     );
   }
 }
