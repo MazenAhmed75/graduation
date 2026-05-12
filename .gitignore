@@ -44,5 +44,6 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# Secret config file
+# secrets
 lib/utils/constants.dart
+.env

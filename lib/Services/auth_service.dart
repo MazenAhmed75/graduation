@@ -168,7 +168,28 @@ class AuthService {
       return 'Google sign-in failed. Please try again.';
     }
   }
-
+// -------------------------------------------------------
+// FORGOT PASSWORD: Send a password reset email
+// -------------------------------------------------------
+  Future<String?> sendPasswordResetEmail(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+      print('✅ Password reset email sent to $email');
+      return null; // Success
+    } on FirebaseAuthException catch (e) {
+      print('❌ Password reset error: ${e.code}');
+      if (e.code == 'user-not-found') {
+        return 'No account found with this email.';
+      }
+      if (e.code == 'invalid-email') {
+        return 'Please enter a valid email address.';
+      }
+      return 'Failed to send reset email: ${e.message}';
+    } catch (e) {
+      print('❌ Unexpected error: $e');
+      return 'An unexpected error occurred. Please try again.';
+    }
+  }
   // -------------------------------------------------------
   // LOGOUT: Sign out from both Firebase and Google
   // -------------------------------------------------------
