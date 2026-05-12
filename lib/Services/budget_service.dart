@@ -239,4 +239,17 @@ class BudgetService {
       return transactions;
     });
   }
+  // -------------------------------------------------------
+// STREAM: Get ALL transactions for a user (all categories)
+// Used by TransactionsScreen for full history + search
+// -------------------------------------------------------
+  Stream<List<TransactionModel>> getAllTransactionsStream(String userId) {
+    return _transactionsRef(userId)
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+        .map((doc) => TransactionModel.fromMap(
+        doc.id, doc.data() as Map<String, dynamic>))
+        .toList());
+  }
 }
