@@ -780,7 +780,12 @@ class _InvestScreenState extends State<InvestScreen>
                 }),
       ),
       Container(
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 24),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          10,
+          16,
+          MediaQuery.of(context).padding.bottom + 20,
+        ),
         decoration: BoxDecoration(
           color: AppTheme.surfaceContainerLowest,
           border: Border(top: BorderSide(

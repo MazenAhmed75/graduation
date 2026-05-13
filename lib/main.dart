@@ -4,13 +4,15 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'theme.dart';
 import 'main_screen.dart';
-import 'screens/login_screen.dart';  // ← ADD THIS
+import 'screens/login_screen.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await dotenv.load(fileName: ".env");
 
   runApp(const MindfulCuratorApp());
 }

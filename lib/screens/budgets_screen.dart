@@ -2,12 +2,15 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/budget_model.dart';
 import '../models/monthly_budget_model.dart';
-import '../models/user_model.dart'; // ← NEW: User model for profile image
+import '../models/user_model.dart';
 import '../utils/currency_formatter.dart';
 import '../widgets/budget_card.dart';
 import '../services/budget_service.dart';
 import '../services/auth_service.dart';
-import '../services/user_service.dart'; // ← NEW: User service
+import '../services/user_service.dart';
+import '../services/recurring_service.dart';
+import '../screens/recurring_screen.dart';
+import '../screens/transactions_screen.dart';
 
 class BudgetsScreen extends StatefulWidget {
   const BudgetsScreen({super.key});
@@ -22,7 +25,17 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   final BudgetService _budgetService = BudgetService();
   final AuthService _authService = AuthService();
-  final UserService _userService = UserService(); // ← NEW
+  final UserService _userService = UserService();
+  final RecurringService _recurringService = RecurringService();
+
+  @override
+  void initState() {
+    super.initState();
+    final userId = _authService.currentUser?.uid;
+    if (userId != null) {
+      _recurringService.processDueTransactions(userId);
+    }
+  }
 
   // ─── Helpers: current month as "YYYY-MM" and display name ─────────────────
 
@@ -249,38 +262,116 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showAddMoneyDialog(BudgetModel budget) {
     final controller = TextEditingController();
+    final noteController = TextEditingController();
+    bool isRecurring = false;
+    String frequency = 'monthly';
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Add Money (Deposit)'),
-        content: TextField(
-          controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(
-            labelText: 'Amount (\$)',
-            hintText: 'Enter amount to deposit',
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Add Money (Deposit)'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                keyboardType:
+                const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  labelText: 'Amount (\$)',
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              TextField(
+                controller: noteController,
+                decoration: const InputDecoration(
+                  labelText: 'Note (optional)',
+                  hintText: 'e.g. Salary',
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ── Recurring toggle ──────────────────────────
+              Row(
+                children: [
+                  Checkbox(
+                    value: isRecurring,
+                    activeColor: AppTheme.primary,
+                    onChanged: (v) {
+                      setDialogState(() {
+                        isRecurring = v ?? false;
+                      });
+                    },
+                  ),
+                  const Text('Make recurring'),
+                ],
+              ),
+
+              if (isRecurring)
+                DropdownButton<String>(
+                  value: frequency,
+                  isExpanded: true,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'monthly',
+                      child: Text('Every month'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'weekly',
+                      child: Text('Every week'),
+                    ),
+                  ],
+                  onChanged: (v) {
+                    setDialogState(() {
+                      frequency = v ?? 'monthly';
+                    });
+                  },
+                ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final amount = double.tryParse(controller.text) ?? 0.0;
-              if (amount > 0) {
+
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+
+            TextButton(
+              onPressed: () async {
+                final amount =
+                    double.tryParse(controller.text) ?? 0.0;
+
+                if (amount <= 0) return;
+
+                final userId = _authService.currentUser!.uid;
+
                 await _budgetService.deposit(
-                  userId: _authService.currentUser!.uid,
+                  userId: userId,
                   budget: budget,
                   amount: amount,
                 );
-              }
-              if (mounted) Navigator.pop(context);
-            },
-            child: const Text('Deposit'),
-          ),
-        ],
+
+                // ── Save recurring transaction ──
+                if (isRecurring) {
+                  await _recurringService.addRecurringTransaction(
+                    userId: userId,
+                    budget: budget,
+                    amount: amount,
+                    type: 'deposit',
+                    frequency: frequency,
+                    note: noteController.text,
+                  );
+                }
+
+                if (mounted) Navigator.pop(context);
+              },
+              child: const Text('Deposit'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -290,38 +381,118 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showSubtractMoneyDialog(BudgetModel budget) {
     final controller = TextEditingController();
+    final noteController = TextEditingController();
+    bool isRecurring = false;
+    String frequency = 'monthly';
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Subtract Money (Withdraw/Spend)'),
-        content: TextField(
-          controller: controller,
-          keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(
-            labelText: 'Amount (\$)',
-            hintText: 'Enter amount to withdraw',
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: const Text('Subtract Money (Spend)'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: controller,
+                keyboardType:
+                const TextInputType.numberWithOptions(decimal: true),
+                decoration: const InputDecoration(
+                  labelText: 'Amount (\$)',
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              TextField(
+                controller: noteController,
+                decoration: const InputDecoration(
+                  labelText: 'Note (optional)',
+                  hintText: 'e.g. Netflix subscription',
+                ),
+              ),
+
+              const SizedBox(height: 16),
+
+              // ── Recurring toggle ──────────────────────────
+              Row(
+                children: [
+                  Checkbox(
+                    value: isRecurring,
+                    activeColor: AppTheme.primary,
+                    onChanged: (v) {
+                      setDialogState(() {
+                        isRecurring = v ?? false;
+                      });
+                    },
+                  ),
+                  const Text('Make recurring'),
+                ],
+              ),
+
+              if (isRecurring)
+                DropdownButton<String>(
+                  value: frequency,
+                  isExpanded: true,
+                  items: const [
+                    DropdownMenuItem(
+                      value: 'monthly',
+                      child: Text('Every month'),
+                    ),
+                    DropdownMenuItem(
+                      value: 'weekly',
+                      child: Text('Every week'),
+                    ),
+                  ],
+                  onChanged: (v) {
+                    setDialogState(() {
+                      frequency = v ?? 'monthly';
+                    });
+                  },
+                ),
+            ],
           ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          TextButton(
-            onPressed: () async {
-              final amount = double.tryParse(controller.text) ?? 0.0;
-              if (amount > 0) {
+
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+
+            TextButton(
+              onPressed: () async {
+                final amount =
+                    double.tryParse(controller.text) ?? 0.0;
+
+                if (amount <= 0) return;
+
+                final userId = _authService.currentUser!.uid;
+
                 await _budgetService.withdraw(
-                  userId: _authService.currentUser!.uid,
+                  userId: userId,
                   budget: budget,
                   amount: amount,
+                  note: noteController.text,
                 );
-              }
-              if (mounted) Navigator.pop(context);
-            },
-            child: const Text('Withdraw'),
-          ),
-        ],
+
+                // ── Save recurring transaction ──
+                if (isRecurring) {
+                  await _recurringService.addRecurringTransaction(
+                    userId: userId,
+                    budget: budget,
+                    amount: amount,
+                    type: 'withdraw',
+                    frequency: frequency,
+                    note: noteController.text,
+                  );
+                }
+
+                if (mounted) Navigator.pop(context);
+              },
+              child: const Text('Withdraw'),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -619,25 +790,54 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           children: [
             const Text('Budgets'),
 
-            // ← NEW: Live user profile image
-            StreamBuilder<UserModel?>(
-              stream: _userService.getUserStream(userId),
-              builder: (context, snapshot) {
-                final user = snapshot.data;
-                return Container(
-                  width: 40,
-                  height: 40,
-                  decoration:
-                  const BoxDecoration(shape: BoxShape.circle),
-                  child: ClipOval(
-                    child: user?.photoUrl != null &&
-                        user!.photoUrl.isNotEmpty
-                        ? Image.network(user.photoUrl,
-                        fit: BoxFit.cover)
-                        : const Icon(Icons.person),
+            Row(
+              children: [
+
+                // ── Transaction Screen Button ──
+                IconButton(
+                  icon: const Icon(Icons.receipt_long_rounded),
+                  tooltip: 'Transaction history',
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const TransactionsScreen()),
                   ),
-                );
-              },
+                ),
+
+                // ── Recurring Screen Button ──
+                IconButton(
+                  icon: const Icon(Icons.repeat_rounded),
+                  onPressed: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const RecurringScreen(),
+                    ),
+                  ),
+                ),
+
+                // ── Profile Image ──
+                StreamBuilder<UserModel?>(
+                  stream: _userService.getUserStream(userId),
+                  builder: (context, snapshot) {
+                    final user = snapshot.data;
+
+                    return Container(
+                      width: 40,
+                      height: 40,
+                      decoration:
+                      const BoxDecoration(shape: BoxShape.circle),
+                      child: ClipOval(
+                        child: user?.photoUrl != null &&
+                            user!.photoUrl.isNotEmpty
+                            ? Image.network(
+                          user.photoUrl,
+                          fit: BoxFit.cover,
+                        )
+                            : const Icon(Icons.person),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
