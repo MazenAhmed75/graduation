@@ -6,6 +6,9 @@ import '../services/user_service.dart';
 import '../services/auth_service.dart';
 import '../services/Storage_service.dart';
 import 'security_screen.dart';
+import '../main.dart' show appLocale; // ARABIC LANGUAGE SUPPORT
+import '../services/locale_service.dart'; // ARABIC LANGUAGE SUPPORT
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class ProfileScreen extends StatelessWidget {
   final void Function(int) onNavigateToTab;
@@ -19,6 +22,7 @@ class ProfileScreen extends StatelessWidget {
   // PHOTO UPLOAD: Opens camera or gallery, uploads to Firebase
   // ============================================================
   Future<void> _pickAndUploadImage(BuildContext context, String userId) async {
+    final l10n = AppLocalizations.of(context);
     final ImagePicker picker = ImagePicker();
     final StorageService storageService = StorageService();
     final UserService userService = UserService();
@@ -27,7 +31,7 @@ class ProfileScreen extends StatelessWidget {
     final source = await showDialog<ImageSource>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Choose Photo Source'),
+        title: Text(l10n.choosePhotoSource),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,8 +46,8 @@ class ProfileScreen extends StatelessWidget {
                 ),
                 child: const Icon(Icons.camera_alt, color: AppTheme.primary),
               ),
-              title: const Text('Take Photo',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              title: Text(l10n.takePhoto,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
             ListTile(
@@ -57,8 +61,8 @@ class ProfileScreen extends StatelessWidget {
                 child: const Icon(Icons.photo_library,
                     color: AppTheme.secondary),
               ),
-              title: const Text('Choose from Gallery',
-                  style: TextStyle(fontWeight: FontWeight.w600)),
+              title: Text(l10n.chooseFromGallery,
+                  style: const TextStyle(fontWeight: FontWeight.w600)),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
           ],
@@ -82,16 +86,16 @@ class ProfileScreen extends StatelessWidget {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => const Center(
+      builder: (context) => Center(
         child: Card(
           child: Padding(
-            padding: EdgeInsets.all(24),
+            padding: const EdgeInsets.all(24),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                CircularProgressIndicator(),
-                SizedBox(height: 16),
-                Text('Uploading photo...'),
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text(l10n.uploadingPhoto),
               ],
             ),
           ),
@@ -115,8 +119,8 @@ class ProfileScreen extends StatelessWidget {
       if (context.mounted) {
         Navigator.pop(context); // Close loading dialog
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('✅ Profile picture updated!'),
+          SnackBar(
+            content: Text(l10n.profileUpdated),
             backgroundColor: AppTheme.primary,
           ),
         );
@@ -139,6 +143,7 @@ class ProfileScreen extends StatelessWidget {
   // ============================================================
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final UserService userService = UserService();
     final AuthService authService = AuthService();
     final String userId = authService.currentUser!.uid;
@@ -168,9 +173,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'Mindful Curator',
-                  style: TextStyle(
+                Text(
+                  l10n.appName,
+                  style: const TextStyle(
                     fontFamily: 'Manrope',
                     fontSize: 24,
                     fontWeight: FontWeight.w600,
@@ -196,8 +201,7 @@ class ProfileScreen extends StatelessWidget {
                           color: AppTheme.primaryContainer, width: 2),
                       color: AppTheme.surfaceContainerLow,
                     ),
-                    child: user?.photoUrl != null &&
-                        user!.photoUrl.isNotEmpty
+                    child: user?.photoUrl != null && user!.photoUrl.isNotEmpty
                         ? ClipOval(
                       child: Image.network(
                         user.photoUrl,
@@ -246,7 +250,6 @@ class ProfileScreen extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-
                 // ============================================================
                 // PROFILE HEADER — large avatar + name + email
                 // ============================================================
@@ -317,7 +320,7 @@ class ProfileScreen extends StatelessWidget {
                 // ============================================================
                 // ACCOUNT SECTION
                 // ============================================================
-                _buildSectionHeader('Account'),
+                _buildSectionHeader(l10n.account),
                 const SizedBox(height: 8),
                 Container(
                   decoration: _cardDecoration(),
@@ -329,12 +332,12 @@ class ProfileScreen extends StatelessWidget {
                         Icons.person_outline,
                         AppTheme.primaryContainer,
                         AppTheme.onPrimaryContainer,
-                        onTap: () => _showEditNameDialog(
-                            context, user, userService),
+                        onTap: () =>
+                            _showEditNameDialog(context, user, userService),
                       ),
                       const Divider(height: 1, indent: 72),
                       _buildListTile(
-                        'EMAIL',
+                        l10n.email,
                         user.email,
                         Icons.email_outlined,
                         AppTheme.secondaryContainer,
@@ -348,7 +351,7 @@ class ProfileScreen extends StatelessWidget {
                 // ============================================================
                 // MEMBERSHIP SECTION
                 // ============================================================
-                _buildSectionHeader('Membership'),
+                _buildSectionHeader(l10n.membership),
                 const SizedBox(height: 8),
                 Container(
                   decoration: _cardDecoration(),
@@ -359,7 +362,7 @@ class ProfileScreen extends StatelessWidget {
                         Container(
                           width: 44,
                           height: 44,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: AppTheme.tertiaryContainer,
                             shape: BoxShape.circle,
                           ),
@@ -367,23 +370,23 @@ class ProfileScreen extends StatelessWidget {
                               color: AppTheme.tertiary),
                         ),
                         const SizedBox(width: 16),
-                        const Expanded(
+                        Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'CURRENT PLAN',
-                                style: TextStyle(
+                                l10n.currentPlan,
+                                style: const TextStyle(
                                   fontSize: 11,
                                   fontWeight: FontWeight.bold,
                                   letterSpacing: 1.5,
                                   color: AppTheme.onSurfaceVariant,
                                 ),
                               ),
-                              SizedBox(height: 2),
+                              const SizedBox(height: 2),
                               Text(
-                                'Free',
-                                style: TextStyle(
+                                l10n.free,
+                                style: const TextStyle(
                                   fontSize: 15,
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.onSurface,
@@ -399,9 +402,9 @@ class ProfileScreen extends StatelessWidget {
                             color: AppTheme.tertiaryContainer,
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          child: const Text(
-                            'Upgrade',
-                            style: TextStyle(
+                          child: Text(
+                            l10n.upgrade,
+                            style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
                               color: AppTheme.tertiary,
@@ -417,14 +420,14 @@ class ProfileScreen extends StatelessWidget {
                 // ============================================================
                 // SETTINGS SECTION
                 // ============================================================
-                _buildSectionHeader('Settings'),
+                _buildSectionHeader(l10n.settings),
                 const SizedBox(height: 8),
                 Container(
                   decoration: _cardDecoration(),
                   child: Column(
                     children: [
                       _buildSettingsTile(
-                        'Notifications',
+                        l10n.notifications,
                         Icons.notifications_outlined,
                         trailing: GestureDetector(
                           onTap: () {
@@ -458,13 +461,52 @@ class ProfileScreen extends StatelessWidget {
                         ),
                       ),
                       const Divider(height: 1, indent: 72),
+                      // ── Language toggle ──────────────────────────────────────────
+                      StatefulBuilder(
+                        builder: (context, setTileState) {
+                          final isArabic = appLocale.value.languageCode == 'ar';
+                          return _buildSettingsTile(
+                            'Language / اللغة',
+                            Icons.language_rounded,
+                            trailing: GestureDetector(
+                              onTap: () async {
+                                final newLocale = isArabic
+                                    ? const Locale('en')
+                                    : const Locale('ar');
+                                appLocale.value = newLocale;
+                                await LocaleService.saveLocale(newLocale);
+                                setTileState(() {});
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 6),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(
+                                  isArabic ? 'English' : 'العربية',
+                                  style: const TextStyle(
+                                    fontFamily: 'Manrope',
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppTheme.primary,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 1, indent: 72),
                       _buildSettingsTile(
-                        'Privacy & Security',
+                        l10n.privacySecurity,
                         Icons.security,
                         onTap: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => const SecurityScreen()),
+                            MaterialPageRoute(
+                                builder: (context) => const SecurityScreen()),
                           );
                         },
                       ),
@@ -483,20 +525,17 @@ class ProfileScreen extends StatelessWidget {
                       final confirm = await showDialog<bool>(
                         context: context,
                         builder: (context) => AlertDialog(
-                          title: const Text('Log Out'),
-                          content: const Text(
-                              'Are you sure you want to log out?'),
+                          title: Text(l10n.logoutConfirmTitle),
+                          content: Text(l10n.logoutConfirmMessage),
                           actions: [
                             TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(context, false),
-                              child: const Text('Cancel'),
+                              onPressed: () => Navigator.pop(context, false),
+                              child: Text(l10n.cancel),
                             ),
                             TextButton(
-                              onPressed: () =>
-                                  Navigator.pop(context, true),
-                              child: const Text('Log Out',
-                                  style: TextStyle(color: Colors.red)),
+                              onPressed: () => Navigator.pop(context, true),
+                              child: Text(l10n.logout,
+                                  style: const TextStyle(color: Colors.red)),
                             ),
                           ],
                         ),
@@ -504,13 +543,11 @@ class ProfileScreen extends StatelessWidget {
 
                       if (confirm == true) {
                         await authService.logout();
-                        // main.dart StreamBuilder automatically
-                        // navigates back to LoginScreen
                       }
                     },
                     icon: const Icon(Icons.logout),
-                    label: const Text('Logout',
-                        style: TextStyle(
+                    label: Text(l10n.logout,
+                        style: const TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 16)),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.errorContainer,
@@ -521,9 +558,9 @@ class ProfileScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Text(
-                  'App Version 1.0.0',
-                  style: TextStyle(fontSize: 12, color: AppTheme.outline),
+                Text(
+                  l10n.appVersion,
+                  style: const TextStyle(fontSize: 12, color: AppTheme.outline),
                 ),
               ],
             ),
@@ -538,20 +575,21 @@ class ProfileScreen extends StatelessWidget {
   // ============================================================
   static void _showEditNameDialog(
       BuildContext context, UserModel user, UserService userService) {
+    final l10n = AppLocalizations.of(context); // Fixed: Added missing localizations lookup
     final controller = TextEditingController(text: user.name);
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Name'),
+        title: Text(l10n.editName), // Fixed syntax: Removed double "title:"
         content: TextField(
           controller: controller,
-          decoration: const InputDecoration(
-              labelText: 'Full Name', hintText: 'Enter your name'),
+          decoration: InputDecoration(
+              labelText: l10n.fullName, hintText: l10n.fullNameHint),
         ),
         actions: [
           TextButton(
               onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')),
+              child: Text(l10n.cancel)),
           TextButton(
             onPressed: () async {
               final newName = controller.text.trim();
@@ -560,7 +598,7 @@ class ProfileScreen extends StatelessWidget {
               }
               if (context.mounted) Navigator.pop(context);
             },
-            child: const Text('Save'),
+            child: Text(l10n.save),
           ),
         ],
       ),
@@ -572,7 +610,7 @@ class ProfileScreen extends StatelessWidget {
   // ============================================================
   static Widget _buildSectionHeader(String title) {
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: AlignmentDirectional.centerStart, // Fixed: Swapped to Directional alignment to support Arabic RTL mirror flips
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         child: Text(
@@ -612,8 +650,7 @@ class ProfileScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: ListTile(
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         leading: Container(
           width: 44,
           height: 44,
@@ -639,43 +676,40 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  static Widget _buildSettingsTile(String title, IconData icon,
-   {
-  Widget? trailing,
-  VoidCallback? onTap,
-  }) {
-  return Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: ListTile(
-  shape:
-  RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-  leading: Container(
-  width: 44,
-  height: 44,
-  decoration: const BoxDecoration(
-  color: Color(0xFFDEE5D7),
-  shape: BoxShape.circle,
-  ),
-  child: Icon(icon, color: AppTheme.onSurfaceVariant),
-  ),
-  title: Text(
-  title,
-  style: const TextStyle(
-  fontSize: 15,
-  fontWeight: FontWeight.bold,
-  color: AppTheme.onSurface,
-  ),
-  ),
-
-  trailing: trailing ??
-  const Icon(
-  Icons.chevron_right,
-  color: AppTheme.outlineVariant,
-  ),
-
-  // supports custom onTap
-  onTap: onTap ?? (trailing == null ? () {} : null),
-  ),
-  );
+  static Widget _buildSettingsTile(
+      String title,
+      IconData icon, {
+        Widget? trailing,
+        VoidCallback? onTap,
+      }) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: ListTile(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        leading: Container(
+          width: 44,
+          height: 44,
+          decoration: const BoxDecoration(
+            color: Color(0xFFDEE5D7),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(icon, color: AppTheme.onSurfaceVariant),
+        ),
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontSize: 15,
+            fontWeight: FontWeight.bold,
+            color: AppTheme.onSurface,
+          ),
+        ),
+        trailing: trailing ??
+            const Icon(
+              Icons.chevron_right,
+              color: AppTheme.outlineVariant,
+            ),
+        onTap: onTap ?? (trailing == null ? () {} : null),
+      ),
+    );
   }
 }

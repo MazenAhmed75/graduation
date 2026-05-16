@@ -6,6 +6,7 @@ import '../services/user_service.dart';
 import '../services/budget_service.dart';
 import '../services/auth_service.dart';
 import '../utils/currency_formatter.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class HomeScreen extends StatelessWidget {
   // ============================================================
@@ -25,6 +26,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     final UserService userService = UserService();
     final BudgetService budgetService = BudgetService();
     final AuthService authService = AuthService();
@@ -64,8 +66,8 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Text(
-                  'Mindful Curator',
+                 Text(
+                   l10n.appName,
                   style: TextStyle(
                     fontFamily: 'Manrope',
                     fontSize: 20,
@@ -121,7 +123,7 @@ class HomeScreen extends StatelessWidget {
 
           final user = userSnapshot.data;
           if (user == null) {
-            return const Center(child: Text('User data not found'));
+            return Center(child: Text(l10n.userDataNotFound));
           }
 
           return StreamBuilder<List<BudgetModel>>(
@@ -154,7 +156,7 @@ class HomeScreen extends StatelessWidget {
                   children: [
                     // Welcome Section
                     Text(
-                      _getGreeting().toUpperCase(),
+                      _getGreeting(context).toUpperCase(),
                       style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 14,
@@ -165,7 +167,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'Welcome back, ${user.name.split(' ')[0]}!',
+                      l10n.welcomeUser(user.name.split(' ')[0]),
                       style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 36,
@@ -220,8 +222,8 @@ class HomeScreen extends StatelessWidget {
                                       crossAxisAlignment:
                                       CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'MONTHLY SAVINGS GOAL',
+                                         Text(
+                                          l10n.monthlyBudgetGoal.toUpperCase(),
                                           style: TextStyle(
                                             fontSize: 12,
                                             fontWeight: FontWeight.w600,
@@ -265,7 +267,7 @@ class HomeScreen extends StatelessWidget {
                                         BorderRadius.circular(16),
                                       ),
                                       child: Text(
-                                        '$daysLeft Days Left',
+                                        l10n.daysLeftText(daysLeft),
                                         style: const TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
@@ -290,10 +292,10 @@ class HomeScreen extends StatelessWidget {
                                         color: AppTheme.onSurface,
                                       ),
                                     ),
-                                    const Padding(
+                                    Padding(
                                       padding: EdgeInsets.only(bottom: 6.0),
                                       child: Text(
-                                        'COMPLETED',
+                                        l10n.completed,
                                         style: TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
@@ -313,7 +315,7 @@ class HomeScreen extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: FractionallySizedBox(
-                                    alignment: Alignment.centerLeft,
+                                    alignment: AlignmentDirectional.centerStart,
                                     widthFactor: (savingsPercent / 100)
                                         .clamp(0.0, 1.0),
                                     child: Container(
@@ -327,7 +329,10 @@ class HomeScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 12),
                                 Text(
-                                  'Saved: ${CurrencyFormatter.format(liveSavings)} • Goal: ${CurrencyFormatter.format(user.monthlySavingsGoal)}',
+                                  l10n.savedGoalText(
+                                    CurrencyFormatter.format(liveSavings),
+                                    CurrencyFormatter.format(user.monthlySavingsGoal),
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 12,
                                     color: AppTheme.onSurfaceVariant,
@@ -354,7 +359,7 @@ class HomeScreen extends StatelessWidget {
                                 // New Budget — calls onNavigateToBudgets to switch tab
                                 Expanded(
                                   child: _buildActionCard(
-                                    'New Budget',
+                                    l10n.newBudget,
                                     Icons.add_circle,
                                     AppTheme.primaryContainer,
                                     AppTheme.onPrimaryContainer,
@@ -365,15 +370,15 @@ class HomeScreen extends StatelessWidget {
                                 // Reports
                                 Expanded(
                                   child: _buildActionCard(
-                                    'Reports',
+                                    l10n.reports,
                                     Icons.analytics,
                                     AppTheme.secondaryContainer,
                                     AppTheme.onSecondaryContainer,
                                         () {
                                       ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(
-                                            content: Text(
-                                                'Reports coming soon!')),
+                                        SnackBar(
+                                          content: Text(l10n.reportsComingSoon),
+                                        ),
                                       );
                                     },
                                   ),
@@ -385,15 +390,15 @@ class HomeScreen extends StatelessWidget {
                           // Insights — full height
                           Expanded(
                             child: _buildActionCard(
-                              'Insights',
+                              l10n.insights,
                               Icons.tips_and_updates,
                               AppTheme.tertiaryContainer,
                               AppTheme.onTertiaryContainer,
                                   () {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                      Text('Insights coming soon!')),
+                                  SnackBar(
+                                    content: Text(l10n.insightsComingSoon),
+                                  ),
                                 );
                               },
                               isFullHeight: true,
@@ -409,8 +414,8 @@ class HomeScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text(
-                          'Active Budgets',
+                        Text(
+                          l10n.activeBudgets,
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w600,
@@ -425,8 +430,8 @@ class HomeScreen extends StatelessWidget {
                             minimumSize: const Size(50, 30),
                             alignment: Alignment.centerRight,
                           ),
-                          child: const Text(
-                            'Manage',
+                          child:  Text(
+                            l10n.manage,
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 14,
@@ -454,16 +459,16 @@ class HomeScreen extends StatelessWidget {
                             const Icon(Icons.account_balance_wallet,
                                 size: 48, color: AppTheme.outlineVariant),
                             const SizedBox(height: 16),
-                            const Text(
-                              'No budgets yet',
+                             Text(
+                              l10n.noBudgetsYet,
                               style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: AppTheme.onSurfaceVariant),
                             ),
                             const SizedBox(height: 8),
-                            const Text(
-                              'Tap "New Budget" above to start tracking',
+                             Text(
+                              l10n.tapNewBudgetToStart,
                               style: TextStyle(
                                   fontSize: 12,
                                   color: AppTheme.onSurfaceVariant),
@@ -472,7 +477,7 @@ class HomeScreen extends StatelessWidget {
                             ElevatedButton.icon(
                               onPressed: onNavigateToBudgets,
                               icon: const Icon(Icons.add),
-                              label: const Text('Create First Budget'),
+                              label:  Text(l10n.createFirstBudget),
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: AppTheme.primary,
                                 foregroundColor: const Color(0xFFEBFFE0),
@@ -496,7 +501,9 @@ class HomeScreen extends StatelessWidget {
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: _buildMiniBudgetCard(
                                 budget.title,
-                                '\$${budget.remaining.toStringAsFixed(0)} left',
+                                l10n.amountLeftText(
+                                  budget.remaining.toStringAsFixed(0),
+                                ),
                                 budget.spentRatio,
                                 _getIconData(budget.iconName),
                                 colors['iconBg']!,
@@ -517,11 +524,14 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  String _getGreeting() {
+  String _getGreeting(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final hour = DateTime.now().hour;
-    if (hour < 12) return 'Good Morning';
-    if (hour < 17) return 'Good Afternoon';
-    return 'Good Evening';
+
+    if (hour < 12) return l10n.goodMorning;
+    if (hour < 17) return l10n.goodAfternoon;
+    return l10n.goodEvening;
   }
 
 
@@ -618,7 +628,7 @@ class HomeScreen extends StatelessWidget {
               borderRadius: BorderRadius.circular(3),
             ),
             child: FractionallySizedBox(
-              alignment: Alignment.centerLeft,
+              alignment: AlignmentDirectional.centerStart,
               widthFactor: fillRatio,
               child: Container(
                 decoration: BoxDecoration(
@@ -688,19 +698,23 @@ class HomeScreen extends StatelessWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Edit Savings Goal'),
+        title: Text(
+          AppLocalizations.of(context)!.editSavingsGoal,
+        ),
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration: const InputDecoration(
-            labelText: 'Monthly Goal (\$)',
-            hintText: 'Enter your monthly savings goal',
+          decoration:  InputDecoration(
+            labelText: AppLocalizations.of(context)!.monthlyGoal,
+            hintText: AppLocalizations.of(context)!
+                .enterMonthlySavingsGoal,
           ),
         ),
         actions: [
           TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel')),
+            onPressed: () => Navigator.pop(context),
+            child: Text(AppLocalizations.of(context)!.cancel),
+          ),
           TextButton(
             onPressed: () async {
               final newGoal = double.tryParse(controller.text) ?? 0.0;
@@ -709,7 +723,7 @@ class HomeScreen extends StatelessWidget {
               }
               if (context.mounted) Navigator.pop(context);
             },
-            child: const Text('Save'),
+            child: Text(AppLocalizations.of(context)!.save),
           ),
         ],
       ),
@@ -717,6 +731,7 @@ class HomeScreen extends StatelessWidget {
   }
   // DRAWER UI DESIGN
   Widget _buildDrawer(BuildContext context, UserService userService, String userId) {
+    final l10n = AppLocalizations.of(context)!;
     return Drawer(
       backgroundColor: AppTheme.neutral,
       child: StreamBuilder<UserModel?>(
@@ -739,7 +754,7 @@ class HomeScreen extends StatelessWidget {
                       : null,
                 ),
                 accountName: Text(
-                  user?.name ?? 'Loading...',
+                  user?.name ?? AppLocalizations.of(context)!.loading,
                   style: const TextStyle(
                     fontFamily: 'Manrope',
                     fontWeight: FontWeight.bold,
@@ -750,10 +765,10 @@ class HomeScreen extends StatelessWidget {
               ),
 
               // Navigation Options - Matches Bottom Nav
-              _buildDrawerItem(context, 'Home', Icons.home_rounded, 0),
-              _buildDrawerItem(context, 'Budgets', Icons.account_balance_wallet_rounded, 1),
-              _buildDrawerItem(context, 'Invest', Icons.trending_up_rounded, 2),
-              _buildDrawerItem(context, 'Profile', Icons.person_rounded, 3),
+              _buildDrawerItem(context, l10n.home, Icons.home_rounded, 0),
+              _buildDrawerItem(context, l10n.budgets, Icons.account_balance_wallet_rounded, 1),
+              _buildDrawerItem(context, l10n.invest, Icons.trending_up_rounded, 2),
+              _buildDrawerItem(context, l10n.profile, Icons.person_rounded, 3),
 
               const Spacer(),
               const Divider(),
@@ -761,7 +776,8 @@ class HomeScreen extends StatelessWidget {
               // Logout Option
               ListTile(
                 leading: const Icon(Icons.logout_rounded, color: Colors.redAccent),
-                title: const Text('Logout', style: TextStyle(color: Colors.redAccent)),
+                title: Text(
+                    l10n.logout, style: TextStyle(color: Colors.redAccent)),
                 onTap: () async {
                   await AuthService().logout();
                 },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../services/auth_service.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -33,6 +34,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   }
 
   Future<void> _handleRegister() async {
+    final l10n = AppLocalizations.of(context);
     if (!_formKey.currentState!.validate()) return;
 
     setState(() => _isLoading = true);
@@ -57,8 +59,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
       } else {
         // Registration successful - show success message
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Account created successfully!'),
+           SnackBar(
+            content: Text(l10n.accountCreatedSuccess),
             backgroundColor: AppTheme.primary,
           ),
         );
@@ -88,6 +90,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
@@ -131,8 +134,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   const SizedBox(height: 32),
 
                   // Title
-                  const Text(
-                    'Create Account',
+                  Text(
+                    l10n.createAccount,
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 32,
@@ -142,8 +145,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Start your mindful money journey',
+                  Text(
+                    l10n.registerSubtitle,
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 14,
@@ -183,8 +186,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               errorBuilder: (context, error, stack) =>
                               const Icon(Icons.login, color: AppTheme.primary),
                             ),
-                            label: const Text(
-                              'Continue with Google',
+                            label: Text(
+                            l10n.continueGoogle,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
@@ -206,8 +209,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _nameController,
                           textCapitalization: TextCapitalization.words,
                           decoration: InputDecoration(
-                            labelText: 'Full Name',
-                            hintText: 'John Doe',
+                            labelText: l10n.fullName,
+                            hintText: l10n.fullNameHint,
                             prefixIcon: const Icon(Icons.person_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -217,10 +220,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your name';
+                              return l10n.enterNameError;
                             }
                             if (value.length < 2) {
-                              return 'Name must be at least 2 characters';
+                              return l10n.nameTooShortError;
                             }
                             return null;
                           },
@@ -232,8 +235,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'Email Address',
-                            hintText: 'you@example.com',
+                            labelText: l10n.emailAddress,
+                            hintText: l10n.emailHint,
                             prefixIcon: const Icon(Icons.email_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -243,10 +246,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return l10n.enterEmailError;
                             }
                             if (!value.contains('@')) {
-                              return 'Please enter a valid email';
+                              return l10n.validEmailError;
                             }
                             return null;
                           },
@@ -258,8 +261,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Password',
-                            hintText: 'At least 6 characters',
+                            labelText: l10n.password,
+                            hintText: l10n.passwordHint,
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -281,10 +284,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter a password';
+                              return l10n.enterPasswordError;
                             }
                             if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return l10n.passwordLengthError;
                             }
                             return null;
                           },
@@ -296,8 +299,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           controller: _confirmPasswordController,
                           obscureText: _obscureConfirmPassword,
                           decoration: InputDecoration(
-                            labelText: 'Confirm Password',
-                            hintText: 'Re-enter your password',
+                            labelText: l10n.confirmPasswordHint,
+                            hintText: l10n.confirmPasswordHint,
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -320,10 +323,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please confirm your password';
+                              return l10n.confirmPasswordError;
                             }
                             if (value != _passwordController.text) {
-                              return 'Passwords do not match';
+                              return l10n.passwordMismatchError;
                             }
                             return null;
                           },
@@ -353,8 +356,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     Color(0xFFEBFFE0)),
                               ),
                             )
-                                : const Text(
-                              'Create Account',
+                                : Text(
+                              l10n.createAccount,
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -372,21 +375,18 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        'Already have an account? ',
+                      Text(
+                        l10n.alreadyHaveAccount + ' ',
                         style: TextStyle(
                           color: AppTheme.onSurfaceVariant,
                         ),
                       ),
-                      TextButton(
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text(
-                          'Sign In',
-                          style: TextStyle(
-                            color: AppTheme.primary,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                style: TextButton.styleFrom(
+                  foregroundColor: AppTheme.primary,
+                ),
+                child: Text(l10n.signIn),
                       ),
                     ],
                   ),
