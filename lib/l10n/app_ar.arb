@@ -1,0 +1,598 @@
+{
+  "@@locale": "ar",
+  "appName": "المنسق الواعي",
+  "goodMorning": "صباح الخير",
+  "goodAfternoon": "مساء النور",
+  "goodEvening": "مساء الخير",
+  "welcomeBack": "مرحباً بعودتك",
+  "monthlyBudget": "الميزانية الشهرية",
+  "monthlyBudgetGoal": "هدف المدخرات الشهري",
+  "totalBudget": "إجمالي الميزانية",
+  "totalSpent": "إجمالي المصروفات",
+  "totalSaved": "إجمالي المدخرات",
+  "remaining": "المتبقي",
+  "available": "المتاح",
+  "daysLeft": "يوم متبقي",
+  "completed": "مكتمل",
+  "thisMonth": "هذا الشهر",
+  "spent": "أُنفق",
+  "saved": "وُفِّر",
+  "spendingBreakdown": "تفاصيل الإنفاق",
+  "allOnTrack": "جميع الفئات في المسار الصحيح",
+  "overBudget": "تجاوزت الميزانية",
+  "nearLimit": "قريبة من الحد",
+  "noSpendingYet": "لا يوجد إنفاق مسجل بعد",
+  "noSpendingDesc": "سيظهر مخطط إنفاقك هنا بمجرد تسجيل أول مصروف.",
+  "budgets": "الميزانيات",
+  "addBudget": "إضافة ميزانية",
+  "editBudget": "تعديل الميزانية",
+  "deleteBudget": "حذف الميزانية",
+  "noBudgets": "لا توجد ميزانيات بعد",
+  "noBudgetsDesc": "اضغط على زر + لإنشاء أول فئة ميزانية.",
+  "categoryName": "اسم الفئة",
+  "categorySubtitle": "وصف مختصر (اختياري)",
+  "allocatedAmount": "المبلغ المخصص",
+  "categories": "الفئات",
+  "saveAsTemplate": "حفظ كقالب",
+  "useTemplate": "استخدام قالب",
+  "useSavedTemplate": "استخدام قالب محفوظ",
+  "transactions": "المعاملات",
+  "noTransactions": "لا توجد معاملات بعد",
+  "noTransactionsDesc": "ستظهر معاملاتك هنا بمجرد البدء في الإنفاق أو الإيداع.",
+  "noResults": "لا توجد نتائج",
+  "noResultsDesc": "حاول تعديل البحث أو الفلاتر.",
+  "clearFilters": "مسح جميع الفلاتر",
+  "searchHint": "ابحث بالملاحظة أو الفئة…",
+  "all": "الكل",
+  "expenses": "المصروفات",
+  "income": "الدخل",
+  "allCategories": "جميع الفئات",
+  "newest": "الأحدث",
+  "largest": "الأكبر",
+  "auto": "تلقائي",
+  "withdraw": "سحب",
+  "deposit": "إيداع",
+  "subtractMoney": "خصم مبلغ (إنفاق)",
+  "addMoney": "إضافة مبلغ (دخل)",
+  "amount": "المبلغ",
+  "note": "ملاحظة",
+  "noteHint": "مثال: اشتراك نتفليكس",
+  "makeRecurring": "جعله متكرراً",
+  "everyMonth": "كل شهر",
+  "everyWeek": "كل أسبوع",
+  "recurring": "المتكررة",
+  "noRecurring": "لا توجد معاملات متكررة",
+  "noRecurringDesc": "عند إضافة أو خصم مبلغ، اختر \"جعلها متكررة\" لتتم تلقائياً.",
+  "nextDue": "القادم",
+  "expenseLabel": "مصروف",
+  "incomeLabel": "دخل",
+  "profile": "الملف الشخصي",
+  "account": "الحساب",
+  "fullName": "الاسم الكامل",
+  "email": "البريد الإلكتروني",
+  "membership": "الاشتراك",
+  "currentPlan": "الخطة الحالية",
+  "free": "مجاني",
+  "upgrade": "ترقية",
+  "settings": "الإعدادات",
+  "notifications": "الإشعارات",
+  "privacySecurity": "الخصوصية والأمان",
+  "language": "اللغة",
+  "logout": "تسجيل الخروج",
+  "logoutConfirmTitle": "تسجيل الخروج",
+  "logoutConfirmBody": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "appVersion": "إصدار التطبيق 1.0.0",
+  "editName": "تعديل الاسم",
+  "choosePhotoSource": "اختر مصدر الصورة",
+  "takePhoto": "التقاط صورة",
+  "chooseFromGallery": "اختر من المعرض",
+  "uploadingPhoto": "جارٍ رفع الصورة...",
+  "photoUpdated": "تم تحديث الصورة الشخصية!",
+  "photoFailed": "فشل رفع الصورة",
+  "cancel": "إلغاء",
+  "save": "حفظ",
+  "delete": "حذف",
+  "ok": "حسناً",
+  "today": "اليوم",
+  "yesterday": "أمس",
+  "home": "الرئيسية",
+  "invest": "استثمار",
+  "loading": "جارٍ التحميل...",
+  "userDataNotFound": "لم يتم العثور على بيانات المستخدم",
+  "newBudget": "ميزانية جديدة",
+  "reports": "التقارير",
+  "insights": "التحليلات",
+  "reportsComingSoon": "التقارير قريباً!",
+  "insightsComingSoon": "التحليلات قريباً!",
+  "activeBudgets": "الميزانيات النشطة",
+  "manage": "إدارة",
+  "noBudgetsYet": "لا توجد ميزانيات بعد",
+  "tapNewBudgetToStart": "اضغط على \"ميزانية جديدة\" للبدء",
+  "createFirstBudget": "إنشاء أول ميزانية",
+  "editSavingsGoal": "تعديل هدف الادخار",
+  "monthlyGoal": "الهدف الشهري",
+  "enterMonthlySavingsGoal": "أدخل هدف الادخار الشهري",
+  "emailAddress": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "enterEmail": "الرجاء إدخال البريد الإلكتروني",
+  "validEmail": "أدخل بريد إلكتروني صحيح",
+  "enterPassword": "الرجاء إدخال كلمة المرور",
+  "passwordMin": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "forgotPassword": "نسيت كلمة المرور؟",
+  "continueGoogle": "المتابعة باستخدام Google",
+  "dontHaveAccount": "ليس لديك حساب؟",
+  "signUp": "إنشاء حساب",
+  "welcomeLogin": "مرحباً بعودتك! سجل الدخول للمتابعة",
+  "welcomeUser": "مرحباً بعودتك، {name}!",
+  "@welcomeUser": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "daysLeftText": "متبقي {days} يوم",
+  "@daysLeftText": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "savedGoalText": "تم توفير {saved} • الهدف {goal}",
+  "@savedGoalText": {
+    "placeholders": {
+      "saved": { "type": "String" },
+      "goal": { "type": "String" }
+    }
+  },
+  "amountLeftText": "متبقي {amount}",
+  "@amountLeftText": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "createAccount": "إنشاء حساب",
+  "registerSubtitle": "ابدأ رحلتك المالية الواعية",
+  "signIn": "تسجيل الدخول",
+  "alreadyHaveAccount": "لديك حساب بالفعل؟",
+  "fullNameHint": "محمد أحمد",
+  "emailHint": "you@example.com",
+  "passwordHint": "6 أحرف على الأقل",
+  "confirmPasswordHint": "أعد إدخال كلمة المرور",
+  "enterNameError": "من فضلك أدخل الاسم",
+  "nameTooShortError": "يجب أن يكون الاسم حرفين على الأقل",
+  "enterEmailError": "من فضلك أدخل البريد الإلكتروني",
+  "validEmailError": "أدخل بريد إلكتروني صحيح",
+  "enterPasswordError": "من فضلك أدخل كلمة المرور",
+  "passwordLengthError": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+  "confirmPasswordError": "من فضلك أكد كلمة المرور",
+  "passwordMismatchError": "كلمتا المرور غير متطابقتين",
+  "accountCreatedSuccess": "تم إنشاء الحساب بنجاح!",
+  "aiInvest": "الاستثمار الذكي",
+  "dashboard": "لوحة التحكم",
+  "markets": "الأسواق",
+  "aiAdvisor": "المساعد الذكي",
+  "positions": "المراكز",
+  "connectAlpacaAccount": "ربط حساب Alpaca",
+  "alpacaDescription": "تداول الذهب والفضة والبيتكوين والإيثريوم والأسهم من حساب واحد.\n\nابدأ بالتداول التجريبي مجانًا (100 ألف دولار وهمي).",
+  "connectAlpacaFirst": "قم بربط Alpaca أولاً",
+  "noOpenPositions": "لا توجد مراكز مفتوحة",
+  "connectToSeePositions": "اربط Alpaca لرؤية مراكزك",
+  "chatHint": "اسأل أي شيء — تحليل المحفظة، شراء الذهب، توقعات السوق...",
+  "loadingAgent": "جاري تحميل الذكاء الاصطناعي...",
+  "aiAnalyzing": "الذكاء الاصطناعي يحلل البيانات...",
+  "livePrices": "الأسعار المباشرة",
+  "updated": "تم التحديث",
+  "connectAlpaca": "ربط ألباكا",
+  "refresh": "تحديث",
+  "live": "مباشر",
+  "alpacaIntro": "تداول الذهب والفضة والبيتكوين والإيثريوم والأسهم — كل ذلك من حساب واحد.\n\nابدأ بالتداول التجريبي المجاني (100 ألف دولار افتراضي).",
+  "chatWithAi": "أو فقط تحدث مع الذكاء الاصطناعي ←",
+  "metals": "المعادن",
+  "crypto": "العملات الرقمية",
+  "usStocks": "الأسهم الأمريكية",
+  "showOpportunities": "عرض الفرص",
+  "investBestPick": "استثمر في أفضل فرصة",
+  "fullAutoScan": "فحص تلقائي كامل",
+  "portfolioReview": "مراجعة المحفظة",
+  "lockInGains": "تثبيت الأرباح",
+  "execute": "تنفيذ",
+  "noAlpacaConnected": "لا يوجد حساب ألباكا متصل",
+  "connectAlpacaPositions": "قم بربط ألباكا لرؤية مراكزك المباشرة",
+  "openPositions": "المراكز المفتوحة",
+  "dashboardOpportunities": "استخدم لوحة التحكم لاكتشاف فرص الاستثمار",
+  "closePosition": "إغلاق المركز",
+  "livePortfolio": "المحفظة المباشرة",
+  "autoRefresh30s": "تحديث تلقائي كل 30 ثانية",
+  "entryPrice": "سعر الدخول",
+  "currentPrice": "السعر الحالي",
+  "marketValue": "القيمة السوقية",
+  "sellPosition": "بيع المركز",
+  "value": "القيمة",
+  "profitLoss": "الربح والخسارة",
+  "tradeBuy": "صفقة: شراء $ {amount} من {asset}",
+  "@tradeBuy": {
+    "placeholders": {
+      "amount": {},
+      "asset": {}
+    }
+  },
+  "tradeSell": "صفقة: بيع {percent}% من {asset}",
+  "@tradeSell": {
+    "placeholders": {
+      "percent": {},
+      "asset": {}
+    }
+  },
+  "positionClosed": "✅ تم إغلاق {name} — تم إرسال الطلب",
+  "@positionClosed": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "autoTradeDisabled": "تم إيقاف التداول التلقائي بواسطة المستخدم",
+  "autoTradeEnabled": "تم تفعيل التداول التلقائي. سيتم تشغيل التحليل كل ساعة في الخلفية",
+  "autoSold": "تم البيع التلقائي لـ {symbol} بسعر السوق",
+  "@autoSold": {
+    "placeholders": {
+      "symbol": {}
+    }
+  },
+  "autoSellFailed": "فشل البيع التلقائي: {error}",
+  "@autoSellFailed": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "aiFoundOpportunities": "وجد الذكاء الاصطناعي {count} فرصة شراء وتحتاج إلى موافقتك",
+  "@aiFoundOpportunities": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "view": "عرض",
+  "notOnAlpacaYet": "{asset} غير متوفر على Alpaca حالياً",
+  "@notOnAlpacaYet": {
+    "placeholders": {
+      "asset": {}
+    }
+  },
+  "boughtAsset": "تم شراء $ {amount} من {asset}",
+  "@boughtAsset": {
+    "placeholders": {
+      "amount": {},
+      "asset": {}
+    }
+  },
+  "confirmBuy": "تأكيد الشراء",
+  "confirmSell": "تأكيد البيع",
+  "buyAssetAmount": "شراء $ {amount} من {asset}",
+  "@buyAssetAmount": {
+    "placeholders": {
+      "amount": {},
+      "asset": {}
+    }
+  },
+  "sellAssetPercent": "بيع {percent}% من {asset}",
+  "@sellAssetPercent": {
+    "placeholders": {
+      "percent": {},
+      "asset": {}
+    }
+  },
+  "alpacaSymbol": "رمز Alpaca",
+  "realOrderWarning": "سيتم تنفيذ أمر حقيقي على Alpaca",
+  "paperTradeWarning": "تداول تجريبي — لا يتم استخدام أموال حقيقية",
+  "executeBuy": "تنفيذ الشراء",
+  "executeSell": "تنفيذ البيع",
+  "boughtOrderSubmitted": "تم إرسال أمر الشراء إلى Alpaca",
+  "soldOrderSubmitted": "تم إرسال أمر البيع إلى Alpaca",
+  "units": "وحدات",
+  "unrealizedPnL": "الأرباح والخسائر غير المحققة",
+  "cashBuyingPower": "الرصيد النقدي: $ {cash} • القوة الشرائية: {power}",
+  "@cashBuyingPower": {
+    "placeholders": {
+      "cash": {},
+      "power": {}
+    }
+  },
+  "pnl": "الأرباح والخسائر",
+  "closePositionButton": "إغلاق الصفقة",
+  "closedPositionOrderSubmitted": "تم إغلاق {asset} وإرسال الطلب",
+  "@closedPositionOrderSubmitted": {
+    "placeholders": {
+      "asset": {}
+    }
+  },
+  "alpacaSettingsTitle": "ربط حساب ألباكا",
+  "alpacaHowToTitle": "🔗 كيفية الحصول على مفاتيح API",
+  "alpacaStep1": "قم بإنشاء حساب مجاني في alpaca.markets",
+  "alpacaStep2": "اذهب إلى التداول التجريبي ← مفاتيح API",
+  "alpacaStep3": "أنشئ مفتاحًا جديدًا ثم انسخ القيمتين بالأسفل",
+  "alpacaStep4": "ابدأ بالوضع التجريبي (أموال افتراضية) للتجربة بأمان",
+  "alpacaPaperInfo": "💰 يمنحك ألباكا 100,000 دولار افتراضي في الوضع التجريبي.",
+  "alpacaTradingMode": "وضع التداول",
+  "alpacaPaperMode": "📄 تجريبي (آمن)",
+  "alpacaLiveMode": "💵 حقيقي (أموال حقيقية)",
+  "alpacaLiveWarning": "⚠️ الوضع الحقيقي يستخدم أموالًا حقيقية. تأكد من فهم المخاطر.",
+  "alpacaApiKey": "معرف مفتاح API",
+  "alpacaApiKeyHint": "PKXXXXXXXXXXXXXXXXXXXXXXXX",
+  "alpacaSecretKey": "المفتاح السري لـ API",
+  "alpacaSecretHint": "••••••••••••••••••••••••••••••••••••••••",
+  "alpacaConnectButton": "ربط واختبار",
+  "alpacaTesting": "جارٍ اختبار الاتصال...",
+  "alpacaMissingFields": "يرجى إدخال مفتاح API والمفتاح السري",
+  "alpacaConnectionFailed": "فشل الاتصال. تحقق من المفاتيح.",
+  "alpacaConnectedSnackbar": "✅ تم ربط ألباكا بنجاح! جاهز للتداول.",
+  "alpacaConnected": "✅ تم الاتصال!",
+  "alpacaCash": "الرصيد النقدي",
+  "alpacaBuyingPower": "القوة الشرائية",
+  "alpacaPortfolioValue": "قيمة المحفظة",
+  "alpacaStatus": "الحالة",
+  "notLoggedIn": "لم تسجّل الدخول.",
+  "setMonthlyBudget": "تعيين ميزانية {monthName}",
+  "@setMonthlyBudget": {
+    "placeholders": {
+      "monthName": { "type": "String" }
+    }
+  },
+  "editMonthlyBudget": "تعديل الميزانية الشهرية",
+  "monthlyBudgetDescription": "هذا هو الحد الإجمالي للإنفاق لهذا الشهر.",
+  "totalMonthlyBudget": "إجمالي الميزانية الشهرية",
+  "totalMonthlyBudgetLabel": "إجمالي الميزانية الشهرية",
+  "fullyAllocated": "مُخصَّص بالكامل",
+  "fullyAllocatedDescription": "لقد خصصت كامل مبلغ {amount}. قم بتعديل أو حذف فئة لتحرير مبلغ.",
+  "@fullyAllocatedDescription": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "addCategoryBudget": "إضافة فئة ميزانية",
+  "availableToAssign": "{amount} متاح للتخصيص",
+  "@availableToAssign": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "groceriesHint": "مثال: البقالة",
+  "maxAmount": "الحد الأقصى {amount}",
+  "@maxAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "newCategory": "فئة جديدة",
+  "category": "فئة",
+  "amountExceedsRemaining": "المبلغ يتجاوز المتبقي {amount}",
+  "@amountExceedsRemaining": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "addMoneyDeposit": "إضافة مبلغ (إيداع)",
+  "subtractMoneySpend": "خصم مبلغ (إنفاق)",
+  "noteOptional": "ملاحظة (اختياري)",
+  "salaryHint": "مثال: الراتب",
+  "netflixHint": "مثال: نتفليكس",
+  "editBudgetAmount": "تعديل مبلغ الميزانية",
+  "deleteBudgetQuestion": "هل تريد حذف \"{title}\"؟ لا يمكن التراجع عن هذا.",
+  "@deleteBudgetQuestion": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "allocatedToCategories": "المخصص للفئات",
+  "unallocated": "غير مخصص",
+  "fullyAllocatedCheck": "✓ مخصص بالكامل",
+  "noCategoriesYet": "لا توجد فئات بعد",
+  "divideBudgetHint": "اضغط + لتقسيم ميزانيتك إلى فئات.",
+  "spentAmount": "المُنفق: {amount}",
+  "@spentAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "leftAmount": "المتبقي: {amount}",
+  "@leftAmount": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
+  "useAsTemplate": "استخدام قالب",
+  "pickTemplate": "اختر قالباً محفوظاً لتطبيقه.",
+  "noTemplatesYet": "لا توجد قوالب بعد",
+  "templateDescription": "حفظ هذه الـ {count} فئات ومبالغها كقالب قابل لإعادة الاستخدام.",
+  "@templateDescription": {
+    "placeholders": {
+      "count": { "type": "String" }
+    }
+  },
+  "templateName": "اسم القالب",
+  "monthlyBudgetTemplate": "قالب الميزانية الشهرية",
+  "saveTemplate": "حفظ القالب",
+  "templateSaved": "✅ تم حفظ \"{name}\" كقالب!",
+  "@templateSaved": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "transactionHistory": "سجل المعاملات",
+  "addCategoryFirst": "أضف فئة واحدة على الأقل قبل حفظ القالب.",
+  "defaultTemplateName": "قالب {monthName}",
+  "@defaultTemplateName": {
+    "placeholders": {
+      "monthName": { "type": "String" }
+    }
+  },
+  "templateSummary": "{count} فئات · الإجمالي {total}",
+  "@templateSummary": {
+    "placeholders": {
+      "count": { "type": "String" },
+      "total": { "type": "String" }
+    }
+  },
+  "noTemplatesHint": "احفظ إعداد ميزانيتك الحالية كقالب لإعادة استخدامه الشهر القادم.",
+  "templateApplied": "✅ تم تطبيق \"{name}\"! يمكنك تعديل المبالغ حسب الحاجة.",
+  "@templateApplied": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "failedToLoadCategories": "فشل تحميل الفئات",
+  "noBudgetForMonth": "لا توجد ميزانية لـ {monthName}",
+  "@noBudgetForMonth": {
+    "placeholders": {
+      "monthName": {}
+    }
+  },
+  "budgetSetupDescription": "حدد المبلغ الإجمالي ثم وزّعه على الفئات.",
+  "addCategoryBeforeTemplate": "أضف فئة واحدة على الأقل قبل حفظ القالب.",
+  "use": "استخدام",
+  "edit": "تعديل",
+  "setupMonthTemplate": "قم بإعداد ميزانية الشهر ثم اضغط على \"حفظ كقالب\".",
+  "add": "إضافة",
+
+"resetPassword": "إعادة تعيين كلمة المرور",
+"resetPasswordDescription": "أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل إليك رسالة تحتوي على تعليمات لإعادة تعيين كلمة المرور.",
+"resetPasswordEmailSentDescription": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور. إذا لم يظهر خلال بضع دقائق، تحقق من مجلد الرسائل غير المرغوب فيها.",
+"emailAddress": "البريد الإلكتروني",
+"emailHint": "you@example.com",
+"pleaseEnterEmail": "يرجى إدخال بريدك الإلكتروني",
+"pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صالح",
+"sendResetLink": "إرسال رابط إعادة التعيين",
+"backToLogin": "العودة لتسجيل الدخول",
+"passwordResetEmailSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!",
+
+
+  "choosePhotoSource": "اختر مصدر الصورة",
+  "takePhoto": "التقاط صورة",
+  "chooseFromGallery": "اختر من المعرض",
+  "uploadingPhoto": "جارٍ رفع الصورة...",
+  "profileUpdated": "تم تحديث صورة الملف الشخصي!",
+  "uploadFailed": "فشل رفع الصورة",
+
+  "account": "الحساب",
+  "membership": "العضوية",
+  "settings": "الإعدادات",
+
+  "fullName": "الاسم الكامل",
+  "email": "البريد الإلكتروني",
+
+  "currentPlan": "الخطة الحالية",
+  "free": "مجاني",
+  "upgrade": "ترقية",
+
+  "notifications": "الإشعارات",
+  "language": "اللغة",
+
+  "privacySecurity": "الخصوصية والأمان",
+
+  "logout": "تسجيل الخروج",
+  "logoutConfirmTitle": "تسجيل الخروج",
+  "logoutConfirmMessage": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  "cancel": "إلغاء",
+
+  "editName": "تعديل الاسم",
+  "fullNameHint": "أدخل اسمك",
+  "save": "حفظ",
+
+  "appVersion": "إصدار التطبيق 1.0.0",
+
+
+  "recurring": "المعاملات المتكررة",
+
+  "noRecurringTitle": "لا توجد معاملات متكررة",
+  "noRecurringSubtitle": "عند إضافة أو صرف المال، فعّل خيار \"تكرار\" لجعلها تتكرر تلقائياً.",
+
+  "deleteRecurringTitle": "حذف المعاملة المتكررة؟",
+  "deleteRecurringMessage": "لن يتم تطبيق \"{note}\" تلقائياً بعد الآن.",
+
+  "cancel": "إلغاء",
+  "delete": "حذف",
+
+  "next": "التالي",
+
+  "monthJan": "يناير",
+  "monthFeb": "فبراير",
+  "monthMar": "مارس",
+  "monthApr": "أبريل",
+  "monthMay": "مايو",
+  "monthJun": "يونيو",
+  "monthJul": "يوليو",
+  "monthAug": "أغسطس",
+  "monthSep": "سبتمبر",
+  "monthOct": "أكتوبر",
+  "monthNov": "نوفمبر",
+  "monthDec": "ديسمبر",
+
+  "nextDue": "التالي: {date}",
+
+
+  "transactions": "المعاملات",
+
+  "searchHint": "ابحث بالوصف أو التصنيف…",
+
+  "newest": "الأحدث",
+  "largest": "الأكبر",
+
+  "all": "الكل",
+  "expenses": "المصروفات",
+  "income": "الدخل",
+
+  "allCategories": "كل التصنيفات",
+
+  "transactionsCount": "{count} معاملة",
+
+  "today": "اليوم",
+  "yesterday": "أمس",
+
+  "noResults": "لا توجد نتائج",
+  "noTransactions": "لا توجد معاملات",
+
+  "noResultsHint": "حاول تعديل البحث أو الفلاتر.",
+  "noTransactionsHint": "ستظهر معاملاتك هنا\nعند البدء بالصرف أو الإيداع.",
+
+  "clearFilters": "مسح كل الفلاتر",
+
+  "auto": "تلقائي",
+  "@@locale": "ar",
+  "transactions": "المعاملات",
+  "searchHint": "ابحث بالملاحظة أو الفئة…",
+  "newest": "الأحدث",
+  "largest": "الأعلى قيمة",
+  "all": "الكل",
+  "expenses": "المصروفات",
+  "income": "الدخل",
+  "allCategories": "كل الفئات",
+  "transactionsCount": "{count} معاملات",
+  "@transactionsCount": {
+    "placeholders": { "count": { "type": "String" } }
+  },
+  "today": "اليوم",
+  "yesterday": "أمس",
+  "noResults": "لا توجد نتائج",
+  "noResultsHint": "حاول تعديل البحث أو الفلاتر.",
+  "noTransactions": "لا توجد معاملات بعد",
+  "noTransactionsHint": "ستظهر هنا عمليات الإيداع والإنفاق.",
+  "clearFilters": "مسح الفلاتر",
+  "autoPrefix": "[تلقائي] ",
+  "autoLabel": "تلقائي",
+  "am": "ص",
+  "pm": "م",
+
+
+  "privacyAndSecurity": "الخصوصية والأمان",
+  "securitySettings": "إعدادات الأمان",
+  "googleAccountManaged": "حسابك تتم إدارته عبر Google.",
+  "keepAccountSecure": "حافظ على أمان حسابك عبر تحديث كلمة المرور بانتظام.",
+  "signedInWithGoogle": "تم تسجيل الدخول عبر Google",
+  "googlePasswordInfo": "بما أنك تستخدم تسجيل الدخول عبر Google، يمكنك إدارة كلمة المرور من إعدادات حساب Google.",
+  "currentPassword": "كلمة المرور الحالية",
+  "newPassword": "كلمة المرور الجديدة",
+  "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+  "updatePassword": "تحديث كلمة المرور",
+  "fieldRequired": "هذا الحقل مطلوب",
+  "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+  "passwordTooShort": "يجب أن تكون 6 أحرف على الأقل",
+  "passwordUpdatedSuccess": "تم تحديث كلمة المرور بنجاح!"
+
+
+
+}

@@ -3,6 +3,7 @@ import '../theme.dart';
 import '../models/recurring_transaction_model.dart';
 import '../services/recurring_service.dart';
 import '../services/auth_service.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 // ============================================================
 // RecurringScreen
@@ -15,6 +16,7 @@ class RecurringScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     final auth = AuthService();
     final service = RecurringService();
     final userId = auth.currentUser?.uid ?? '';
@@ -27,9 +29,9 @@ class RecurringScreen extends StatelessWidget {
         surfaceTintColor: Colors.transparent,
         toolbarHeight: 70,
         titleSpacing: 24,
-        title: const Text(
-          'Recurring',
-          style: TextStyle(
+        title: Text(
+          l10n.recurring,
+          style: const TextStyle(
             fontFamily: 'Manrope',
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -55,20 +57,20 @@ class RecurringScreen extends StatelessWidget {
                   children: [
                     Container(
                       padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: AppTheme.primaryContainer,
                         shape: BoxShape.circle,
                       ),
-                      child: Icon(
+                      child: const Icon(
                         Icons.repeat_rounded,
                         size: 40,
                         color: AppTheme.onPrimaryContainer,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    const Text(
-                      'No recurring transactions',
-                      style: TextStyle(
+                    Text(
+                      l10n.noRecurring,
+                      style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 17,
                         fontWeight: FontWeight.w700,
@@ -76,7 +78,7 @@ class RecurringScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'When you add or spend money, check\n"Make recurring" to set it on repeat.',
+                      l10n.noRecurringDesc,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Manrope',
@@ -114,19 +116,16 @@ class RecurringScreen extends StatelessWidget {
                   final confirmed = await showDialog<bool>(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Delete recurring transaction?'),
-                      content: Text(
-                        '"${item.note}" will no longer be applied automatically.',
-                      ),
+                      title: Text(l10n.deleteBudget), // Replaced with existing key or placeholder
+                      content: Text(item.note),
                       actions: [
                         TextButton(
                           onPressed: () => Navigator.pop(context, false),
-                          child: const Text('Cancel'),
+                          child: Text(l10n.cancel),
                         ),
                         TextButton(
                           onPressed: () => Navigator.pop(context, true),
-                          child: const Text('Delete',
-                              style: TextStyle(color: Colors.red)),
+                          child: Text(l10n.delete, style: const TextStyle(color: Colors.red)),
                         ),
                       ],
                     ),
@@ -157,6 +156,7 @@ class _RecurringCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _RecurringCard({
+    super.key,
     required this.item,
     required this.onToggle,
     required this.onDelete,
@@ -164,6 +164,8 @@ class _RecurringCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     final isWithdraw = item.type == 'withdraw';
     final color = isWithdraw ? const Color(0xFFE24B4A) : AppTheme.primary;
     final bgColor = isWithdraw
@@ -172,25 +174,20 @@ class _RecurringCard extends StatelessWidget {
     final amountLabel =
     isWithdraw ? '- \$${item.amount.toStringAsFixed(2)}' : '+ \$${item.amount.toStringAsFixed(2)}';
 
-    // Format next due date as "Jun 12"
-    const months = [
+    // Fallback names for months if your generated l10n does not have specific month names
+    final months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
-    final due =
-        '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day}';
+    final due = '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day}';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
-        color: item.isActive
-            ? Colors.white
-            : Colors.grey[50],
+        color: item.isActive ? Colors.white : Colors.grey[50],
         borderRadius: BorderRadius.circular(16),
         border: Border.all(
-          color: item.isActive
-              ? Colors.transparent
-              : Colors.grey.withOpacity(0.2),
+          color: item.isActive ? Colors.transparent : Colors.grey.withOpacity(0.2),
         ),
         boxShadow: item.isActive
             ? [
@@ -232,9 +229,7 @@ class _RecurringCard extends StatelessWidget {
                     fontFamily: 'Manrope',
                     fontSize: 14,
                     fontWeight: FontWeight.w600,
-                    color: item.isActive
-                        ? AppTheme.onSurface
-                        : Colors.grey,
+                    color: item.isActive ? AppTheme.onSurface : Colors.grey,
                   ),
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -243,9 +238,8 @@ class _RecurringCard extends StatelessWidget {
                   children: [
                     // Category badge
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 7, vertical: 2),
-                      decoration: BoxDecoration(
+                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      decoration:  BoxDecoration(
                         color: AppTheme.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(6),
                       ),
@@ -260,8 +254,7 @@ class _RecurringCard extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 6),
-                    Icon(Icons.repeat_rounded,
-                        size: 12, color: Colors.grey[400]),
+                    Icon(Icons.repeat_rounded, size: 12, color: Colors.grey[400]),
                     const SizedBox(width: 3),
                     Text(
                       item.frequencyLabel,
@@ -277,7 +270,7 @@ class _RecurringCard extends StatelessWidget {
                 if (item.isActive) ...[
                   const SizedBox(height: 4),
                   Text(
-                    'Next: $due',
+                    l10n.nextDue(due),
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 11,
@@ -314,8 +307,7 @@ class _RecurringCard extends StatelessWidget {
                 onTap: onDelete,
                 child: Padding(
                   padding: const EdgeInsets.all(4),
-                  child: Icon(Icons.delete_outline_rounded,
-                      size: 18, color: Colors.grey[400]),
+                  child: Icon(Icons.delete_outline_rounded, size: 18, color: Colors.grey[400]),
                 ),
               ),
             ],

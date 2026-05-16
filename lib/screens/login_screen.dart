@@ -3,6 +3,7 @@ import '../theme.dart';
 import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,7 +43,6 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = false);
 
       if (error != null) {
-        // Show error message
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(error),
@@ -77,6 +77,9 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Using the generated AppLocalizations
+    final l10n = AppLocalizations.of(context);
+    
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       body: SafeArea(
@@ -112,8 +115,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   const SizedBox(height: 32),
 
                   // Title
-                  const Text(
-                    'Mindful Curator',
+                  Text(
+                    l10n.appName,
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 32,
@@ -123,8 +126,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   const SizedBox(height: 8),
-                  const Text(
-                    'Welcome back! Sign in to continue',
+                  Text(
+                    l10n.welcomeLogin,
                     style: TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 14,
@@ -157,7 +160,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _emailController,
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
-                            labelText: 'Email Address',
+                            labelText: l10n.emailAddress,
                             hintText: 'you@example.com',
                             prefixIcon: const Icon(Icons.email_outlined),
                             border: OutlineInputBorder(
@@ -168,10 +171,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your email';
+                              return l10n.enterEmail;
                             }
                             if (!value.contains('@')) {
-                              return 'Please enter a valid email';
+                              return l10n.validEmail;
                             }
                             return null;
                           },
@@ -183,7 +186,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: _passwordController,
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
-                            labelText: 'Password',
+                            labelText: l10n.password,
                             hintText: 'Enter your password',
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
@@ -206,10 +209,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please enter your password';
+                              return l10n.enterPassword;
                             }
                             if (value.length < 6) {
-                              return 'Password must be at least 6 characters';
+                              return l10n.passwordMin;
                             }
                             return null;
                           },
@@ -229,8 +232,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               );
                             },
-                            child: const Text(
-                              'Forgot Password?',
+                            child: Text(
+                              l10n.forgotPassword,
                               style: TextStyle(
                                 color: AppTheme.primary,
                                 fontWeight: FontWeight.w600,
@@ -255,22 +258,22 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             child: _isLoading
                                 ? const SizedBox(
-                                    width: 24,
-                                    height: 24,
-                                    child: CircularProgressIndicator(
-                                      strokeWidth: 2,
-                                      valueColor: AlwaysStoppedAnimation<Color>(
-                                          Color(0xFFEBFFE0)),
-                                    ),
-                                  )
-                                : const Text(
-                                    'Sign In',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 0.5,
-                                    ),
-                                  ),
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                valueColor:
+                                AlwaysStoppedAnimation<Color>(Color(0xFFEBFFE0)),
+                              ),
+                            )
+                                : Text(
+                              l10n.signIn,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -290,8 +293,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         errorBuilder: (context, error, stack) =>
                             const Icon(Icons.login, color: AppTheme.primary),
                       ),
-                      label: const Text(
-                        'Continue with Google',
+                      label: Text(
+                      l10n.continueGoogle,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.w600,
@@ -314,8 +317,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      const Text(
-                        "Don't have an account? ",
+                      Text(
+                        l10n.dontHaveAccount,
                         style: TextStyle(
                           color: AppTheme.onSurfaceVariant,
                         ),
@@ -329,8 +332,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         },
-                        child: const Text(
-                          'Sign Up',
+                        child: Text(
+                          l10n.signUp,
                           style: TextStyle(
                             color: AppTheme.primary,
                             fontWeight: FontWeight.bold,

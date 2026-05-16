@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme.dart';
 import '../Services/alpaca_service.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 /// Settings screen where user connects their Alpaca account
 class AlpacaSettingsScreen extends StatefulWidget {
@@ -21,8 +22,9 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
   String? _testError;
 
   Future<void> _testAndSave() async {
+    final l10n = AppLocalizations.of(context)!;
     if (_keyCtrl.text.isEmpty || _secretCtrl.text.isEmpty) {
-      setState(() => _testError = 'Please enter both API Key and Secret');
+      setState(() => _testError = l10n.alpacaMissingFields);
       return;
     }
 
@@ -38,13 +40,13 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
     setState(() {
       _testing    = false;
       _testResult = account;
-      _testError  = account == null ? 'Connection failed. Check your keys.' : null;
+      _testError  = account == null ? l10n.alpacaConnectionFailed : null;
     });
 
     if (account != null && mounted) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         backgroundColor: AppTheme.primary,
-        content: const Text('✅ Alpaca connected! Ready to trade.',
+    content: Text(l10n.alpacaConnectedSnackbar,
             style: TextStyle(color: Colors.white)),
       ));
     }
@@ -52,12 +54,13 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
         backgroundColor: AppTheme.neutral,
         elevation: 0,
-        title: const Text('Connect Alpaca Account',
+        title: Text(l10n.alpacaSettingsTitle,
             style: TextStyle(fontFamily: 'Manrope', fontWeight: FontWeight.bold,
                 color: AppTheme.primary)),
         leading: IconButton(
@@ -77,16 +80,16 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
               border: Border.all(color: AppTheme.primaryContainer),
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('🔗 How to get your API keys',
+              Text(l10n.alpacaHowToTitle,
                   style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.primary, fontSize: 16)),
               const SizedBox(height: 12),
-              _step('1', 'Sign up FREE at alpaca.markets'),
-              _step('2', 'Go to Paper Trading → API Keys'),
-              _step('3', 'Generate a new key & copy both values below'),
-              _step('4', 'Start in Paper mode (fake money) to test safely'),
+              _step('1', l10n.alpacaStep1),
+              _step('2', l10n.alpacaStep2),
+              _step('3', l10n.alpacaStep3),
+              _step('4', l10n.alpacaStep4),
               const SizedBox(height: 8),
-              const Text(
-                '💰 Alpaca gives you \$100,000 virtual cash in Paper mode.',
+              Text(
+                l10n.alpacaPaperInfo,
                 style: TextStyle(fontSize: 13, color: AppTheme.primary, fontWeight: FontWeight.w600),
               ),
             ]),
@@ -94,13 +97,13 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
           const SizedBox(height: 28),
 
           // Mode toggle
-          const Text('Trading Mode', style: TextStyle(fontWeight: FontWeight.bold,
+          Text(l10n.alpacaTradingMode, style: TextStyle(fontWeight: FontWeight.bold,
               color: AppTheme.onSurface, fontSize: 15)),
           const SizedBox(height: 8),
           Row(children: [
-            _modeChip('📄 Paper (Safe)', true),
+            _modeChip(l10n.alpacaPaperMode, true),
             const SizedBox(width: 10),
-            _modeChip('💵 Live (Real Money)', false),
+            _modeChip(l10n.alpacaLiveMode, false),
           ]),
           if (!_paperMode)
             Padding(
@@ -111,8 +114,8 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
                   color: AppTheme.errorContainer.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10),
                 ),
-                child: const Text(
-                  '⚠️ Live mode uses REAL money. Make sure you understand the risks.',
+                child: Text(
+                  l10n.alpacaLiveWarning,
                   style: TextStyle(color: AppTheme.onErrorContainer, fontSize: 13),
                 ),
               ),
@@ -120,13 +123,13 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
           const SizedBox(height: 24),
 
           // API Key
-          const Text('API Key ID', style: TextStyle(fontWeight: FontWeight.bold,
+          Text(l10n.alpacaApiKey, style: TextStyle(fontWeight: FontWeight.bold,
               color: AppTheme.onSurface, fontSize: 15)),
           const SizedBox(height: 8),
           TextField(
             controller: _keyCtrl,
             decoration: InputDecoration(
-              hintText: 'PKXXXXXXXXXXXXXXXXXXXXXXXX',
+              hintText: l10n.alpacaApiKeyHint,
               hintStyle: const TextStyle(color: AppTheme.outlineVariant),
               filled: true, fillColor: AppTheme.surfaceContainerLowest,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
@@ -138,14 +141,14 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
           const SizedBox(height: 16),
 
           // Secret
-          const Text('API Secret Key', style: TextStyle(fontWeight: FontWeight.bold,
+          Text(l10n.alpacaSecretKey, style: TextStyle(fontWeight: FontWeight.bold,
               color: AppTheme.onSurface, fontSize: 15)),
           const SizedBox(height: 8),
           TextField(
             controller: _secretCtrl,
             obscureText: _obscure,
             decoration: InputDecoration(
-              hintText: '••••••••••••••••••••••••••••••••••••••••',
+              hintText: l10n.alpacaSecretHint,
               hintStyle: const TextStyle(color: AppTheme.outlineVariant),
               filled: true, fillColor: AppTheme.surfaceContainerLowest,
               border: OutlineInputBorder(borderRadius: BorderRadius.circular(14),
@@ -174,13 +177,13 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
                 elevation: 0,
               ),
               child: _testing
-                  ? const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                      SizedBox(width: 20, height: 20,
+                  ?  Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                    const  SizedBox(width: 20, height: 20,
                           child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2)),
-                      SizedBox(width: 12),
-                      Text('Testing connection...'),
+                     const SizedBox(width: 12),
+                Text(l10n.alpacaTesting),
                     ])
-                  : const Text('Connect & Test', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                  : Text(l10n.alpacaConnectButton, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             ),
           ),
 
@@ -202,13 +205,13 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
               decoration: BoxDecoration(color: AppTheme.primaryContainer.withOpacity(0.4),
                   borderRadius: BorderRadius.circular(12)),
               child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                const Text('✅ Connected!', style: TextStyle(fontWeight: FontWeight.bold,
+                Text(l10n.alpacaConnected, style: TextStyle(fontWeight: FontWeight.bold,
                     color: AppTheme.primary, fontSize: 16)),
                 const SizedBox(height: 8),
-                _infoRow('Cash', '\$${_testResult!.cash.toStringAsFixed(2)}'),
-                _infoRow('Buying Power', '\$${_testResult!.buyingPower.toStringAsFixed(2)}'),
-                _infoRow('Portfolio Value', '\$${_testResult!.portfolioValue.toStringAsFixed(2)}'),
-                _infoRow('Status', _testResult!.status.toUpperCase()),
+                _infoRow(l10n.alpacaCash, '\$${_testResult!.cash.toStringAsFixed(2)}'),
+                _infoRow(l10n.alpacaBuyingPower, '\$${_testResult!.buyingPower.toStringAsFixed(2)}'),
+                _infoRow(l10n.alpacaPortfolioValue, '\$${_testResult!.portfolioValue.toStringAsFixed(2)}'),
+                _infoRow(l10n.alpacaStatus, _testResult!.status.toUpperCase()),
               ]),
             ),
           ],

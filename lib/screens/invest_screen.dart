@@ -16,6 +16,7 @@ import '../widgets/invest_widgets.dart';
 import '../widgets/invest_dashboard.dart';
 import '../Services/gemini_service.dart' show ChatMessage, AgentAction, OpportunityCard, GeminiService;
 import 'alpaca_settings_screen.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class InvestScreen extends StatefulWidget {
   const InvestScreen({super.key});
@@ -120,18 +121,24 @@ class _InvestScreenState extends State<InvestScreen>
       _enableAutoTrade();
     } else {
       AutonomousAgentService().disable();
-      _logAgent('⏸ Auto-trade disabled by user.', type: 'status');
+      _logAgent(
+        '⏸ ${AppLocalizations.of(context).autoTradeDisabled}',
+        type: 'status',
+      );
     }
   }
 
   void _enableAutoTrade() {
     if (!_alpacaSvc.isConfigured) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connect Alpaca first to enable auto-trade')));
+          SnackBar(content: Text(AppLocalizations.of(context).connectAlpacaFirst)));
       setState(() => _autoTradeEnabled = false);
       return;
     }
-    _logAgent('🤖 Auto-trade enabled. Hourly analysis will run in background.', type: 'status');
+    _logAgent(
+      '🤖 ${AppLocalizations.of(context).autoTradeEnabled}',
+      type: 'status',
+    );
 
     AutonomousAgentService().enable(
       cycleInterval: const Duration(hours: 1),
@@ -145,8 +152,8 @@ class _InvestScreenState extends State<InvestScreen>
         if (mounted) {
           _logAgent(
             result.success
-                ? '✅ AUTO-SOLD $symbol at market price'
-                : '❌ Auto-sell failed: ${result.error}',
+                ? '✅ ${AppLocalizations.of(context).autoSold(symbol)}'
+                : '❌ ${AppLocalizations.of(context).autoSellFailed(result.error ?? "")}',
             type: result.success ? 'trade' : 'error',
           );
           await _silentAlpacaRefresh();
@@ -171,9 +178,12 @@ class _InvestScreenState extends State<InvestScreen>
         _tabs.animateTo(0);
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           backgroundColor: const Color(0xFF0D47A1),
-          content: Text('🤖 AI found ${opps.length} buy opportunit${opps.length == 1 ? "y" : "ies"} — your approval needed'),
+          content: Text(
+            '🤖 ${AppLocalizations.of(context).aiFoundOpportunities(opps.length)}',
+          ),
           duration: const Duration(seconds: 5),
-          action: SnackBarAction(label: 'View', textColor: Colors.white,
+          action: SnackBarAction(
+              label: AppLocalizations.of(context).view, textColor: Colors.white,
               onPressed: () => _tabs.animateTo(0)),
         ));
       },
@@ -250,13 +260,20 @@ class _InvestScreenState extends State<InvestScreen>
   Future<void> _executeDashboardTrade(OpportunityCard opp) async {
     if (!_alpacaSvc.isConfigured) {
       ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Connect Alpaca first')));
+          SnackBar(
+            content: Text(AppLocalizations.of(context).connectAlpacaFirst),
+          ));
       return;
     }
     final symbol = AlpacaSymbols.getSymbolForAsset(opp.assetId);
     if (symbol == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${opp.assetName} not on Alpaca yet')));
+          SnackBar(
+            content: Text(
+              AppLocalizations.of(context)
+                  .notOnAlpacaYet(opp.assetName),
+            ),
+          ));
       return;
     }
     final result = await _alpacaSvc.buyMarket(
@@ -516,7 +533,7 @@ class _InvestScreenState extends State<InvestScreen>
           child: const Icon(Icons.show_chart_rounded, size: 18, color: AppTheme.primary),
         ),
         const SizedBox(width: 10),
-        const Text('AI Invest',
+        Text(AppLocalizations.of(context).aiInvest,
             style: TextStyle(fontFamily: 'Manrope', fontSize: 22,
                 fontWeight: FontWeight.w800, color: AppTheme.primary)),
         const SizedBox(width: 8),
@@ -527,13 +544,13 @@ class _InvestScreenState extends State<InvestScreen>
               color: const Color(0xFF2E7D32).withOpacity(0.12),
               borderRadius: BorderRadius.circular(8),
             ),
-            child: const Text('LIVE', style: TextStyle(color: Color(0xFF2E7D32),
+            child: Text(AppLocalizations.of(context).live, style: TextStyle(color: Color(0xFF2E7D32),
                 fontSize: 10, fontWeight: FontWeight.bold, letterSpacing: 0.5)),
           ),
       ]),
       actions: [
         IconButton(
-          tooltip: 'Connect Alpaca',
+          tooltip: AppLocalizations.of(context).connectAlpaca,
           icon: Icon(
             _alpacaSvc.isConfigured
                 ? Icons.link_rounded
@@ -547,7 +564,7 @@ class _InvestScreenState extends State<InvestScreen>
           },
         ),
         IconButton(
-          tooltip: 'Refresh',
+          tooltip: AppLocalizations.of(context).refresh,
           icon: const Icon(Icons.refresh_rounded, color: AppTheme.primary),
           onPressed: _loadAll,
         ),
@@ -578,11 +595,11 @@ class _InvestScreenState extends State<InvestScreen>
         labelColor: Colors.white,
         unselectedLabelColor: AppTheme.onSurfaceVariant,
         labelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-        tabs: const [
-          Tab(icon: Icon(Icons.dashboard_rounded, size: 16), text: 'Dashboard'),
-          Tab(icon: Icon(Icons.bar_chart_rounded,  size: 16), text: 'Markets'),
-          Tab(icon: Icon(Icons.smart_toy_rounded,  size: 16), text: 'AI Advisor'),
-          Tab(icon: Icon(Icons.pie_chart_rounded,  size: 16), text: 'Positions'),
+        tabs:[
+          Tab(icon: Icon(Icons.dashboard_rounded, size: 16), text: AppLocalizations.of(context).dashboard),
+          Tab(icon: Icon(Icons.bar_chart_rounded,  size: 16), text: AppLocalizations.of(context).markets),
+          Tab(icon: Icon(Icons.smart_toy_rounded,  size: 16), text: AppLocalizations.of(context).aiAdvisor),
+          Tab(icon: Icon(Icons.pie_chart_rounded,  size: 16), text: AppLocalizations.of(context).positions),
         ],
       ),
     );
@@ -604,13 +621,13 @@ class _InvestScreenState extends State<InvestScreen>
             child: const Center(child: Text('🔗', style: TextStyle(fontSize: 42))),
           ),
           const SizedBox(height: 24),
-          const Text('Connect Your Alpaca Account',
+          Text(AppLocalizations.of(context).connectAlpacaAccount,
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold,
                   color: AppTheme.onSurface)),
           const SizedBox(height: 12),
-          const Text(
-            'Trade Gold ETF, Silver ETF, Bitcoin, Ethereum and stocks — all from one account.\n\nStart with free Paper Trading (\$100k virtual cash).',
+          Text(
+            AppLocalizations.of(context).alpacaIntro,
             textAlign: TextAlign.center,
             style: TextStyle(color: AppTheme.onSurfaceVariant, height: 1.6, fontSize: 14),
           ),
@@ -622,7 +639,7 @@ class _InvestScreenState extends State<InvestScreen>
               _loadAlpaca();
             },
             icon: const Icon(Icons.link_rounded),
-            label: const Text('Connect Alpaca', style: TextStyle(fontWeight: FontWeight.bold)),
+             label: Text(AppLocalizations.of(context).connectAlpaca, style: TextStyle(fontWeight: FontWeight.bold)),
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primary, foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
@@ -633,7 +650,7 @@ class _InvestScreenState extends State<InvestScreen>
           const SizedBox(height: 12),
           TextButton(
             onPressed: () => _tabs.animateTo(2),
-            child: const Text('Or just chat with AI →',
+            child: Text(AppLocalizations.of(context).chatWithAi,
                 style: TextStyle(color: AppTheme.primary, fontWeight: FontWeight.w600)),
           ),
         ]),
@@ -651,32 +668,55 @@ class _InvestScreenState extends State<InvestScreen>
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
       children: [
         // Live indicator + last updated
-        Row(children: [
-          Container(width: 8, height: 8,
+        Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
               decoration: const BoxDecoration(
-                  color: Color(0xFF4CAF50), shape: BoxShape.circle)),
-          const SizedBox(width: 6),
-          const Text('Live Prices', style: TextStyle(
-              fontWeight: FontWeight.bold, fontSize: 13, color: AppTheme.onSurface)),
-          const Spacer(),
-          if (_lastPriceUpdate != null)
-            Text('Updated ${_lastPriceUpdate!.hour.toString().padLeft(2,'0')}:${_lastPriceUpdate!.minute.toString().padLeft(2,'0')}',
-                style: const TextStyle(fontSize: 11, color: AppTheme.onSurfaceVariant)),
-        ]),
+                color: Color(0xFF4CAF50),
+                shape: BoxShape.circle,
+              ),
+            ),
+            const SizedBox(width: 6),
+
+            Text(
+              AppLocalizations.of(context).livePrices,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 13,
+                color: AppTheme.onSurface,
+              ),
+            ),
+
+            const Spacer(),
+
+            if (_lastPriceUpdate != null)
+              Text(
+                '${AppLocalizations.of(context).updated} '
+                    '${_lastPriceUpdate!.hour.toString().padLeft(2, '0')}:'
+                    '${_lastPriceUpdate!.minute.toString().padLeft(2, '0')}',
+                style: const TextStyle(
+                  fontSize: 11,
+                  color: AppTheme.onSurfaceVariant,
+                ),
+              ),
+          ],
+        ),
         const SizedBox(height: 12),
-        _sectionLabel('Metals'),
+        _sectionLabel(AppLocalizations.of(context).metals),
         const SizedBox(height: 8),
         ..._assets.where((a) => a.category == 'metal').map((a) =>
             Padding(padding: const EdgeInsets.only(bottom: 10),
                 child: AssetPriceCard(asset: a))),
         const SizedBox(height: 20),
-        _sectionLabel('Crypto'),
+        _sectionLabel(AppLocalizations.of(context).crypto),
         const SizedBox(height: 8),
         ..._assets.where((a) => a.category == 'crypto').map((a) =>
             Padding(padding: const EdgeInsets.only(bottom: 10),
                 child: AssetPriceCard(asset: a))),
         const SizedBox(height: 20),
-        _sectionLabel('US Stocks'),
+        _sectionLabel(AppLocalizations.of(context).usStocks),
         const SizedBox(height: 8),
         ..._assets.where((a) => a.category == 'stock').map((a) =>
             Padding(padding: const EdgeInsets.only(bottom: 10),
@@ -738,19 +778,19 @@ class _InvestScreenState extends State<InvestScreen>
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            _chip('Show opportunities', () =>
+            _chip(AppLocalizations.of(context).showOpportunities, () =>
                 _sendChat('Show me the best investment opportunities right now. Give me 3-5 specific picks with the opportunities JSON block.')),
             const SizedBox(width: 8),
-            _chip('Invest in best pick', () =>
+            _chip(AppLocalizations.of(context).investBestPick, () =>
                 _sendChat('Analyze the market and invest 200 dollars in the single best opportunity you see right now. Execute the trade immediately.')),
             const SizedBox(width: 8),
-            _chip('Full auto-scan', () =>
+            _chip(AppLocalizations.of(context).fullAutoScan, () =>
                 _sendChat('Run a full market scan. Check all news, find high confidence opportunities, and execute the best trade now.')),
             const SizedBox(width: 8),
-            _chip('Portfolio review', () =>
+            _chip(AppLocalizations.of(context).portfolioReview, () =>
                 _sendChat('Review my portfolio. What is making money and what should I sell? Give me a clear action plan.')),
             const SizedBox(width: 8),
-            _chip('Lock in gains', () =>
+            _chip(AppLocalizations.of(context).lockInGains, () =>
                 _sendChat('Which of my positions are most profitable right now? Sell 50 percent of my best performing position to lock in gains.')),
           ],
         ),
@@ -758,26 +798,32 @@ class _InvestScreenState extends State<InvestScreen>
       const SizedBox(height: 8),
       Expanded(
         child: msgs.isEmpty
-            ? const Center(child: Text('Loading AI agent...',
-                style: TextStyle(color: AppTheme.onSurfaceVariant)))
+            ? Text(
+          AppLocalizations.of(context).loadingAgent,
+          style: const TextStyle(color: AppTheme.onSurfaceVariant),
+        )
             : ListView.builder(
-                controller: _scrollController,
-                padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-                itemCount: msgs.length + (_agentThinking ? 1 : 0),
-                itemBuilder: (_, i) {
-                  if (_agentThinking && i == msgs.length) return _thinkingBubble();
-                  final msg = msgs[i];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      ChatBubble(role: msg.role, text: msg.text),
-                      if (msg.opportunities != null)
-                        ...?msg.opportunities?.map((o) => _opportunityCard(o)),
-                      if (msg.action != null && msg.action!.type != 'none')
-                        _tradeActionBar(msg.action!),
-                    ]),
-                  );
-                }),
+          controller: _scrollController,
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
+          itemCount: msgs.length + (_agentThinking ? 1 : 0),
+          itemBuilder: (_, i) {
+            if (_agentThinking && i == msgs.length) return _thinkingBubble();
+            final msg = msgs[i];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 12),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  ChatBubble(role: msg.role, text: msg.text),
+                  if (msg.opportunities != null)
+                    ...?msg.opportunities?.map((o) => _opportunityCard(o)),
+                  if (msg.action != null && msg.action!.type != 'none')
+                    _tradeActionBar(msg.action!),
+                ],
+              ),
+            );
+          },
+        ),
       ),
       Container(
         padding: EdgeInsets.fromLTRB(
@@ -798,7 +844,7 @@ class _InvestScreenState extends State<InvestScreen>
               onSubmitted: _sendChat,
               maxLines: null,
               decoration: InputDecoration(
-                hintText: 'Ask anything — analyze portfolio, buy gold, market outlook...',
+                hintText: AppLocalizations.of(context).chatHint,
                 hintStyle: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 13),
                 filled: true, fillColor: AppTheme.surfaceContainerLow,
                 contentPadding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
@@ -846,15 +892,15 @@ class _InvestScreenState extends State<InvestScreen>
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold,
           color: AppTheme.onSurface));
 
-  Widget _thinkingBubble() => const Align(
+  Widget _thinkingBubble() =>  Align(
     alignment: Alignment.centerLeft,
     child: Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Row(mainAxisSize: MainAxisSize.min, children: [
-        SizedBox(width: 16, height: 16,
+        const SizedBox(width: 16, height: 16,
             child: CircularProgressIndicator(strokeWidth: 2, color: AppTheme.primary)),
-        SizedBox(width: 10),
-        Text('AI Agent is analyzing...', style: TextStyle(
+       const SizedBox(width: 10),
+        Text(AppLocalizations.of(context).aiAnalyzing, style: const TextStyle(
             color: AppTheme.onSurfaceVariant, fontStyle: FontStyle.italic, fontSize: 13)),
       ]),
     ),
@@ -904,7 +950,7 @@ class _InvestScreenState extends State<InvestScreen>
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             elevation: 0,
           ),
-          child: const Text('Invest', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          child: Text(AppLocalizations.of(context).invest, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         ),
       ]),
     );
@@ -940,7 +986,7 @@ class _InvestScreenState extends State<InvestScreen>
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             elevation: 0,
           ),
-          child: const Text('Execute', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+          child: Text(AppLocalizations.of(context).execute, style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
         ),
       ]),
     );
@@ -958,10 +1004,10 @@ class _InvestScreenState extends State<InvestScreen>
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           const Icon(Icons.pie_chart_outline_rounded, size: 64, color: AppTheme.outlineVariant),
           const SizedBox(height: 16),
-          const Text('No Alpaca account connected',
+          Text(AppLocalizations.of(context).noAlpacaConnected,
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 8),
-          const Text('Connect Alpaca to see your live positions',
+          Text(AppLocalizations.of(context).connectAlpacaPositions,
               style: TextStyle(color: AppTheme.onSurfaceVariant)),
         ]),
       ));
@@ -994,11 +1040,11 @@ class _InvestScreenState extends State<InvestScreen>
                     decoration: const BoxDecoration(
                         color: Color(0xFF4CAF50), shape: BoxShape.circle)),
                 const SizedBox(width: 6),
-                const Text('LIVE PORTFOLIO', style: TextStyle(
+              Text(AppLocalizations.of(context).livePortfolio, style: TextStyle(
                     fontSize: 10, color: Colors.white60,
                     fontWeight: FontWeight.bold, letterSpacing: 1.5)),
                 const Spacer(),
-                Text('Auto-refresh 30s', style: TextStyle(
+                Text(AppLocalizations.of(context).autoRefresh30s, style: TextStyle(
                     fontSize: 10, color: Colors.white.withOpacity(0.4))),
               ]),
               const SizedBox(height: 12),
@@ -1031,19 +1077,19 @@ class _InvestScreenState extends State<InvestScreen>
               decoration: BoxDecoration(
                   color: AppTheme.surfaceContainerLowest,
                   borderRadius: BorderRadius.circular(16)),
-              child: const Column(children: [
+              child:  Column(children: [
                 Icon(Icons.inbox_rounded, size: 48, color: AppTheme.outlineVariant),
-                SizedBox(height: 12),
-                Text('No open positions', style: TextStyle(
+              const  SizedBox(height: 12),
+                Text(AppLocalizations.of(context).noOpenPositions, style: TextStyle(
                     fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
-                SizedBox(height: 4),
-                Text('Use the Dashboard to find and invest in opportunities',
+               const SizedBox(height: 4),
+                Text(AppLocalizations.of(context).dashboardOpportunities,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 13)),
               ]),
             )
           else ...[
-            const Text('Open Positions', style: TextStyle(
+            Text(AppLocalizations.of(context).openPositions, style: TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: AppTheme.onSurface)),
             const SizedBox(height: 10),
             ..._positions.map((pos) => _positionCard(pos)),
@@ -1099,11 +1145,11 @@ class _InvestScreenState extends State<InvestScreen>
               color: AppTheme.surfaceContainerLow,
               borderRadius: BorderRadius.circular(10)),
           child: Row(children: [
-            _statCol('Entry price', '\$${pos.avgEntryPrice.toStringAsFixed(2)}'),
+          _statCol(AppLocalizations.of(context).entryPrice, '\$${pos.avgEntryPrice.toStringAsFixed(2)}'),
             _divider(),
-            _statCol('Current price', '\$${pos.currentPrice.toStringAsFixed(2)}'),
+    _statCol(AppLocalizations.of(context).currentPrice, '\$${pos.currentPrice.toStringAsFixed(2)}'),
             _divider(),
-            _statCol('Market value', '\$${pos.marketValue.toStringAsFixed(2)}'),
+    _statCol(AppLocalizations.of(context).marketValue, '\$${pos.marketValue.toStringAsFixed(2)}'),
           ]),
         ),
         const SizedBox(height: 10),
@@ -1112,7 +1158,7 @@ class _InvestScreenState extends State<InvestScreen>
           child: OutlinedButton.icon(
             onPressed: () => _sellPosition(pos),
             icon: const Icon(Icons.sell_rounded, size: 14),
-            label: const Text('Sell Position'),
+            label: Text(AppLocalizations.of(context).sellPosition),
             style: OutlinedButton.styleFrom(
               foregroundColor: pnlColor,
               side: BorderSide(color: pnlColor.withOpacity(0.5)),
@@ -1148,7 +1194,7 @@ class _InvestScreenState extends State<InvestScreen>
         title: Row(children: [
           const Icon(Icons.sell_rounded, color: Color(0xFFD32F2F)),
           const SizedBox(width: 8),
-          const Text('Close Position', style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(AppLocalizations.of(context).closePosition, style: TextStyle(fontWeight: FontWeight.bold)),
         ]),
         content: Column(mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -1173,12 +1219,12 @@ class _InvestScreenState extends State<InvestScreen>
             ]),
           ),
           const SizedBox(height: 10),
-          const Text('This will close your entire position at market price.',
+              Text(AppLocalizations.of(context).alpacaDescription,
               style: TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
         ]),
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+              child: Text(AppLocalizations.of(context).cancel)),
           ElevatedButton(
             onPressed: () => Navigator.pop(context, true),
             style: ElevatedButton.styleFrom(
