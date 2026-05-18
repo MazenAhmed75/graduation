@@ -19,7 +19,6 @@
   "saved": "Saved",
   "spendingBreakdown": "Spending Breakdown",
   "allOnTrack": "All categories on track",
-  "overBudget": "over budget",
   "nearLimit": "near limit",
   "noSpendingYet": "No spending recorded yet",
   "noSpendingDesc": "Your spending chart will appear here once you log your first expense.",
@@ -36,22 +35,6 @@
   "saveAsTemplate": "Save as template",
   "useTemplate": "Use a Template",
   "useSavedTemplate": "Use a saved template",
-  "transactions": "Transactions",
-  "noTransactions": "No transactions yet",
-  "noTransactionsDesc": "Your transactions will appear here once you start spending or depositing.",
-  "noResults": "No results found",
-  "noResultsDesc": "Try adjusting your search or filters.",
-  "clearFilters": "Clear all filters",
-  "searchHint": "Search by note or category…",
-  "all": "All",
-  "expenses": "Expenses",
-  "income": "Income",
-  "allCategories": "All categories",
-  "newest": "Newest",
-  "largest": "Largest",
-  "auto": "Auto",
-  "withdraw": "Withdraw",
-  "deposit": "Deposit",
   "subtractMoney": "Subtract Money (Spend)",
   "addMoney": "Add Money (Income)",
   "amount": "Amount",
@@ -60,43 +43,18 @@
   "makeRecurring": "Make Recurring",
   "everyMonth": "Every Month",
   "everyWeek": "Every Week",
-  "recurring": "Recurring",
-  "noRecurring": "No recurring transactions",
-  "noRecurringDesc": "When you add or spend money, check \"Make recurring\" to set it on repeat.",
-  "nextDue": "Next",
   "expenseLabel": "Expense",
   "incomeLabel": "Income",
   "profile": "Profile",
-  "account": "Account",
   "fullName": "Full Name",
   "email": "Email",
-  "membership": "Membership",
-  "currentPlan": "Current Plan",
   "free": "Free",
   "upgrade": "Upgrade",
-  "settings": "Settings",
   "notifications": "Notifications",
-  "privacySecurity": "Privacy & Security",
   "language": "Language",
-  "logout": "Logout",
-  "logoutConfirmTitle": "Log Out",
   "logoutConfirmBody": "Are you sure you want to log out?",
-  "appVersion": "App Version 1.0.0",
-  "editName": "Edit Name",
-
-  "choosePhotoSource": "Choose Photo Source",
-
-  "takePhoto": "Take Photo",
-  "chooseFromGallery": "Choose from Gallery",
-  "uploadingPhoto": "Uploading photo...",
-  "photoUpdated": "Profile picture updated!",
   "photoFailed": "Failed to upload photo",
-  "cancel": "Cancel",
-  "save": "Save",
-  "delete": "Delete",
   "ok": "OK",
-  "today": "Today",
-  "yesterday": "Yesterday",
   "home": "Home",
   "invest": "Invest",
   "loading": "Loading...",
@@ -154,7 +112,7 @@
   "createAccount": "Create Account",
   "registerSubtitle": "Start your mindful money journey",
   "alreadyHaveAccount": "Already have an account?",
-  "fullNameHint": "John Doe",
+  "fullNameHint": "Enter your name",
   "emailHint": "you@example.com",
   "passwordHint": "At least 6 characters",
   "confirmPasswordHint": "Re-enter your password",
@@ -451,148 +409,264 @@
   "setupMonthTemplate": "Set up a month and tap \"Save as Template\".",
   "add": "Add",
   "resetPassword": "Reset Password",
-   "resetPasswordDescription": "Enter the email associated with your account and we'll send an email with instructions to reset your password.",
+  "resetPasswordDescription": "Enter the email associated with your account and we'll send an email with instructions to reset your password.",
   "resetPasswordEmailSentDescription": "Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.",
-  "emailAddress": "Email Address",
-  "emailHint": "you@example.com",
   "pleaseEnterEmail": "Please enter your email",
   "pleaseEnterValidEmail": "Please enter a valid email",
   "sendResetLink": "Send Reset Link",
   "backToLogin": "Back to Login",
   "passwordResetEmailSent": "Password reset link sent to your email!",
-
-
   "choosePhotoSource": "Choose Photo Source",
   "takePhoto": "Take Photo",
   "chooseFromGallery": "Choose from Gallery",
   "uploadingPhoto": "Uploading photo...",
   "profileUpdated": "Profile picture updated!",
   "uploadFailed": "Failed to upload photo",
-
   "account": "Account",
   "membership": "Membership",
   "settings": "Settings",
-
   "fullName": "FULL NAME",
   "email": "EMAIL",
-
   "currentPlan": "CURRENT PLAN",
   "free": "Free",
   "upgrade": "Upgrade",
-
   "notifications": "Notifications",
   "language": "Language",
-
   "privacySecurity": "Privacy & Security",
-
   "logout": "Logout",
   "logoutConfirmTitle": "Log Out",
   "logoutConfirmMessage": "Are you sure you want to log out?",
   "cancel": "Cancel",
-
   "editName": "Edit Name",
   "fullNameHint": "Enter your name",
   "save": "Save",
-
   "appVersion": "App Version 1.0.0",
-
   "recurring": "Recurring",
-
   "noRecurringTitle": "No recurring transactions",
   "noRecurringSubtitle": "When you add or spend money, check \"Make recurring\" to set it on repeat.",
-
   "deleteRecurringTitle": "Delete recurring transaction?",
   "deleteRecurringMessage": "\"{note}\" will no longer be applied automatically.",
-
-  "cancel": "Cancel",
   "delete": "Delete",
-
   "next": "Next",
-
-    "monthJan": "Jan",
-    "monthFeb": "Feb",
-    "monthMar": "Mar",
-    "monthApr": "Apr",
-    "monthMay": "May",
-    "monthJun": "Jun",
-    "monthJul": "Jul",
-    "monthAug": "Aug",
-    "monthSep": "Sep",
-    "monthOct": "Oct",
-    "monthNov": "Nov",
-    "monthDec": "Dec",
-
+  "monthJan": "Jan",
+  "monthFeb": "Feb",
+  "monthMar": "Mar",
+  "monthApr": "Apr",
+  "monthMay": "May",
+  "monthJun": "Jun",
+  "monthJul": "Jul",
+  "monthAug": "Aug",
+  "monthSep": "Sep",
+  "monthOct": "Oct",
+  "monthNov": "Nov",
+  "monthDec": "Dec",
   "nextDue": "Next: {date}",
-
   "transactions": "Transactions",
-
   "searchHint": "Search by note or category…",
-
   "newest": "Newest",
   "largest": "Largest",
-
   "all": "All",
   "expenses": "Expenses",
   "income": "Income",
-
   "allCategories": "All categories",
-
-  "transactionsCount": "{count} transaction(s)",
-
   "today": "Today",
   "yesterday": "Yesterday",
-
   "noResults": "No results found",
   "noTransactions": "No transactions yet",
-
   "noResultsHint": "Try adjusting your search or filters.",
-  "noTransactionsHint": "Your transactions will appear here\nonce you start spending or depositing.",
-
+  "noTransactionsHint": "Your deposits and spending will appear here.",
   "clearFilters": "Clear all filters",
-
   "auto": "Auto",
-  "transactions": "Transactions",
-  "searchHint": "Search by note or category…",
-  "newest": "Newest",
-  "largest": "Largest",
-  "all": "All",
-  "expenses": "Expenses",
-  "income": "Income",
-  "allCategories": "All Categories",
   "transactionsCount": "{count} transactions",
   "@transactionsCount": {
-    "placeholders": { "count": { "type": "String" } }
+    "placeholders": {
+      "count": { "type": "String" }
+    }
   },
-  "today": "Today",
-  "yesterday": "Yesterday",
-  "noResults": "No results found",
-  "noResultsHint": "Try adjusting your search or filters.",
-  "noTransactions": "No transactions yet",
-  "noTransactionsHint": "Your deposits and spending will appear here.",
-  "clearFilters": "Clear Filters",
   "autoPrefix": "[Auto] ",
   "autoLabel": "Auto",
   "am": "AM",
   "pm": "PM",
+  "privacyAndSecurity": "Privacy & Security",
+  "securitySettings": "Security Settings",
+  "googleAccountManaged": "Your account is managed via Google.",
+  "keepAccountSecure": "Keep your account secure by updating your password regularly.",
+  "signedInWithGoogle": "Signed in with Google",
+  "googlePasswordInfo": "Because you use Google Sign-In, you can manage your password directly in your Google Account settings.",
+  "currentPassword": "Current Password",
+  "newPassword": "New Password",
+  "confirmNewPassword": "Confirm New Password",
+  "updatePassword": "Update Password",
+  "fieldRequired": "Field required",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "passwordTooShort": "Must be at least 6 characters",
+  "passwordUpdatedSuccess": "Password updated successfully!",
+  "spendingInsights": "Spending Insights",
+  "daysLeft": "{days} days left this month",
+  "@daysLeft": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "onTrack": "{count} on track",
+  "@onTrack": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "overBudget": "{count} over budget",
+  "@overBudget": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addBudgetCategoriesInsights": "Add budget categories to see insights.",
+  "overBudgetInsight": "Over budget by {amount}. Consider cutting back.",
+  "@overBudgetInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "nearlyAtLimitInsight": "Only {amount} left — nearly at your limit!",
+  "@nearlyAtLimitInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "usedPercentInsight": "You've used {percent}% with {days} days to go.",
+  "@usedPercentInsight": {
+    "placeholders": {
+      "percent": {},
+      "days": {}
+    }
+  },
+  "halfwayBudgetInsight": "Halfway through budget. {amount} remaining — stay consistent.",
+  "@halfwayBudgetInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "savedThisMonthInsight": "Great discipline! You saved {amount} this month.",
+  "@savedThisMonthInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "noSpendingInsight": "No spending yet. {amount} is ready to use.",
+  "@noSpendingInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "onTrackInsight": "On track — {amount} left for the rest of the month.",
+  "@onTrackInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "budgetFullyUsedInsight": "You've used the entire budget with {days} days remaining.",
+  "@budgetFullyUsedInsight": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "spendingReport": "Spending Report",
+  "breakdown": "Breakdown",
+  "byCategory": "By Category",
+  "allocated": "Allocated",
+  "spent": "Spent",
+  "remaining": "Remaining",
+  "used": "Used",
+  "noBudgetData": "No budget data to display.",
 
-    "privacyAndSecurity": "Privacy & Security",
-    "securitySettings": "Security Settings",
-    "googleAccountManaged": "Your account is managed via Google.",
-    "keepAccountSecure": "Keep your account secure by updating your password regularly.",
-    "signedInWithGoogle": "Signed in with Google",
-    "googlePasswordInfo": "Because you use Google Sign-In, you can manage your password directly in your Google Account settings.",
-    "currentPassword": "Current Password",
-    "newPassword": "New Password",
-    "confirmNewPassword": "Confirm New Password",
-    "updatePassword": "Update Password",
-    "fieldRequired": "Field required",
-    "passwordsDoNotMatch": "Passwords do not match",
-    "passwordTooShort": "Must be at least 6 characters",
-    "passwordUpdatedSuccess": "Password updated successfully!"
+
+
+  "aiInsightLabel": "AI Insight",
+  "@aiInsightLabel": {
+    "description": "Label on the Gemini AI insight card in Budgets screen"
+  },
+
+  "aiInsightRefreshTooltip": "Refresh",
+  "@aiInsightRefreshTooltip": {},
+
+  "aiInsightJustNow": "Just now",
+  "@aiInsightJustNow": {},
+
+  "aiInsightMinutesAgo": "{n} min ago",
+  "@aiInsightMinutesAgo": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "aiInsightHoursAgo": "{n}h ago",
+  "@aiInsightHoursAgo": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "aiInsightErrorMsg": "Could not load AI insight.",
+  "@aiInsightErrorMsg": {},
+
+  "aiInsightRetryBtn": "Retry",
+  "@aiInsightRetryBtn": {},
+
+  "budgetsScreenTitle": "Budgets",
+  "@budgetsScreenTitle": {},
 
 
 
+  "reportsTitle": "Reports",
+  "@reportsTitle": { "description": "Reports screen app bar title" },
 
+  "aiInsightLabel": "AI Financial Insight",
+  "@aiInsightLabel": { "description": "Label above the Gemini insight card" },
 
+  "aiInsightRefreshTooltip": "Refresh",
+  "@aiInsightRefreshTooltip": {},
+
+  "aiInsightErrorMsg": "Could not load AI insight.",
+  "@aiInsightErrorMsg": {},
+
+  "aiInsightRetryBtn": "Retry",
+  "@aiInsightRetryBtn": {},
+
+  "localInsightsSectionTitle": "Quick Insights",
+  "@localInsightsSectionTitle": {},
+
+  "insightHighestSpending": "{category} is your biggest expense at {percent} of its budget.",
+  "@insightHighestSpending": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "percent":  { "type": "String" }
+    }
+  },
+
+  "insightOverBudget": "You've exceeded your budget in: {categories}.",
+  "@insightOverBudget": {
+    "placeholders": { "categories": { "type": "String" } }
+  },
+
+  "insightWarningTotal": "You've used {percent} of your total monthly budget — slow down!",
+  "@insightWarningTotal": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+
+  "insightGreatProgress": "Great discipline! Only {percent} of your budget spent so far.",
+  "@insightGreatProgress": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+
+  "insightUnderUtilized": "Low spend in {categories} — consider reallocating the surplus.",
+  "@insightUnderUtilized": {
+    "placeholders": { "categories": { "type": "String" } }
+  },
+
+  "insightNearLimit": "{category} is almost at its limit ({percent}).",
+  "@insightNearLimit": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "percent":  { "type": "String" }
+    }
+  }
 
 }
+
+

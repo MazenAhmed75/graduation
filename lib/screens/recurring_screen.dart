@@ -69,7 +69,7 @@ class RecurringScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      l10n.noRecurring,
+                      l10n.noRecurringTitle,
                       style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 17,
@@ -78,7 +78,7 @@ class RecurringScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.noRecurringDesc,
+                      l10n.noRecurringSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Manrope',

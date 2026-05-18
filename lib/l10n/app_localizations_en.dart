@@ -45,7 +45,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get available => 'Available';
 
   @override
-  String get daysLeft => 'Days Left';
+  String daysLeft(int days) {
+    return '$days days left this month';
+  }
 
   @override
   String get completed => 'Completed';
@@ -64,9 +66,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allOnTrack => 'All categories on track';
-
-  @override
-  String get overBudget => 'over budget';
 
   @override
   String get nearLimit => 'near limit';
@@ -119,55 +118,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useSavedTemplate => 'Use a saved template';
 
   @override
-  String get transactions => 'Transactions';
-
-  @override
-  String get noTransactions => 'No transactions yet';
-
-  @override
-  String get noTransactionsDesc =>
-      'Your transactions will appear here once you start spending or depositing.';
-
-  @override
-  String get noResults => 'No results found';
-
-  @override
-  String get noResultsDesc => 'Try adjusting your search or filters.';
-
-  @override
-  String get clearFilters => 'Clear Filters';
-
-  @override
-  String get searchHint => 'Search by note or category…';
-
-  @override
-  String get all => 'All';
-
-  @override
-  String get expenses => 'Expenses';
-
-  @override
-  String get income => 'Income';
-
-  @override
-  String get allCategories => 'All Categories';
-
-  @override
-  String get newest => 'Newest';
-
-  @override
-  String get largest => 'Largest';
-
-  @override
-  String get auto => 'Auto';
-
-  @override
-  String get withdraw => 'Withdraw';
-
-  @override
-  String get deposit => 'Deposit';
-
-  @override
   String get subtractMoney => 'Subtract Money (Spend)';
 
   @override
@@ -192,21 +142,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get everyWeek => 'Every Week';
 
   @override
-  String get recurring => 'Recurring';
-
-  @override
-  String get noRecurring => 'No recurring transactions';
-
-  @override
-  String get noRecurringDesc =>
-      'When you add or spend money, check \"Make recurring\" to set it on repeat.';
-
-  @override
-  String nextDue(Object date) {
-    return 'Next: $date';
-  }
-
-  @override
   String get expenseLabel => 'Expense';
 
   @override
@@ -216,19 +151,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get account => 'Account';
-
-  @override
   String get fullName => 'FULL NAME';
 
   @override
   String get email => 'EMAIL';
-
-  @override
-  String get membership => 'Membership';
-
-  @override
-  String get currentPlan => 'CURRENT PLAN';
 
   @override
   String get free => 'Free';
@@ -237,67 +163,19 @@ class AppLocalizationsEn extends AppLocalizations {
   String get upgrade => 'Upgrade';
 
   @override
-  String get settings => 'Settings';
-
-  @override
   String get notifications => 'Notifications';
-
-  @override
-  String get privacySecurity => 'Privacy & Security';
 
   @override
   String get language => 'Language';
 
   @override
-  String get logout => 'Logout';
-
-  @override
-  String get logoutConfirmTitle => 'Log Out';
-
-  @override
   String get logoutConfirmBody => 'Are you sure you want to log out?';
-
-  @override
-  String get appVersion => 'App Version 1.0.0';
-
-  @override
-  String get editName => 'Edit Name';
-
-  @override
-  String get choosePhotoSource => 'Choose Photo Source';
-
-  @override
-  String get takePhoto => 'Take Photo';
-
-  @override
-  String get chooseFromGallery => 'Choose from Gallery';
-
-  @override
-  String get uploadingPhoto => 'Uploading photo...';
-
-  @override
-  String get photoUpdated => 'Profile picture updated!';
 
   @override
   String get photoFailed => 'Failed to upload photo';
 
   @override
-  String get cancel => 'Cancel';
-
-  @override
-  String get save => 'Save';
-
-  @override
-  String get delete => 'Delete';
-
-  @override
   String get ok => 'OK';
-
-  @override
-  String get today => 'Today';
-
-  @override
-  String get yesterday => 'Yesterday';
 
   @override
   String get home => 'Home';
@@ -988,13 +866,61 @@ class AppLocalizationsEn extends AppLocalizations {
       'Password reset link sent to your email!';
 
   @override
+  String get choosePhotoSource => 'Choose Photo Source';
+
+  @override
+  String get takePhoto => 'Take Photo';
+
+  @override
+  String get chooseFromGallery => 'Choose from Gallery';
+
+  @override
+  String get uploadingPhoto => 'Uploading photo...';
+
+  @override
   String get profileUpdated => 'Profile picture updated!';
 
   @override
   String get uploadFailed => 'Failed to upload photo';
 
   @override
+  String get account => 'Account';
+
+  @override
+  String get membership => 'Membership';
+
+  @override
+  String get settings => 'Settings';
+
+  @override
+  String get currentPlan => 'CURRENT PLAN';
+
+  @override
+  String get privacySecurity => 'Privacy & Security';
+
+  @override
+  String get logout => 'Logout';
+
+  @override
+  String get logoutConfirmTitle => 'Log Out';
+
+  @override
   String get logoutConfirmMessage => 'Are you sure you want to log out?';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get editName => 'Edit Name';
+
+  @override
+  String get save => 'Save';
+
+  @override
+  String get appVersion => 'App Version 1.0.0';
+
+  @override
+  String get recurring => 'Recurring';
 
   @override
   String get noRecurringTitle => 'No recurring transactions';
@@ -1010,6 +936,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String deleteRecurringMessage(Object note) {
     return '\"$note\" will no longer be applied automatically.';
   }
+
+  @override
+  String get delete => 'Delete';
 
   @override
   String get next => 'Next';
@@ -1051,9 +980,45 @@ class AppLocalizationsEn extends AppLocalizations {
   String get monthDec => 'Dec';
 
   @override
-  String transactionsCount(String count) {
-    return '$count transactions';
+  String nextDue(Object date) {
+    return 'Next: $date';
   }
+
+  @override
+  String get transactions => 'Transactions';
+
+  @override
+  String get searchHint => 'Search by note or category…';
+
+  @override
+  String get newest => 'Newest';
+
+  @override
+  String get largest => 'Largest';
+
+  @override
+  String get all => 'All';
+
+  @override
+  String get expenses => 'Expenses';
+
+  @override
+  String get income => 'Income';
+
+  @override
+  String get allCategories => 'All categories';
+
+  @override
+  String get today => 'Today';
+
+  @override
+  String get yesterday => 'Yesterday';
+
+  @override
+  String get noResults => 'No results found';
+
+  @override
+  String get noTransactions => 'No transactions yet';
 
   @override
   String get noResultsHint => 'Try adjusting your search or filters.';
@@ -1061,6 +1026,17 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get noTransactionsHint =>
       'Your deposits and spending will appear here.';
+
+  @override
+  String get clearFilters => 'Clear all filters';
+
+  @override
+  String get auto => 'Auto';
+
+  @override
+  String transactionsCount(String count) {
+    return '$count transactions';
+  }
 
   @override
   String get autoPrefix => '[Auto] ';
@@ -1117,4 +1093,143 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordUpdatedSuccess => 'Password updated successfully!';
+
+  @override
+  String get spendingInsights => 'Spending Insights';
+
+  @override
+  String onTrack(int count) {
+    return '$count on track';
+  }
+
+  @override
+  String overBudget(int count) {
+    return '$count over budget';
+  }
+
+  @override
+  String get addBudgetCategoriesInsights =>
+      'Add budget categories to see insights.';
+
+  @override
+  String overBudgetInsight(Object amount) {
+    return 'Over budget by $amount. Consider cutting back.';
+  }
+
+  @override
+  String nearlyAtLimitInsight(Object amount) {
+    return 'Only $amount left — nearly at your limit!';
+  }
+
+  @override
+  String usedPercentInsight(Object percent, Object days) {
+    return 'You\'ve used $percent% with $days days to go.';
+  }
+
+  @override
+  String halfwayBudgetInsight(Object amount) {
+    return 'Halfway through budget. $amount remaining — stay consistent.';
+  }
+
+  @override
+  String savedThisMonthInsight(Object amount) {
+    return 'Great discipline! You saved $amount this month.';
+  }
+
+  @override
+  String noSpendingInsight(Object amount) {
+    return 'No spending yet. $amount is ready to use.';
+  }
+
+  @override
+  String onTrackInsight(Object amount) {
+    return 'On track — $amount left for the rest of the month.';
+  }
+
+  @override
+  String budgetFullyUsedInsight(Object days) {
+    return 'You\'ve used the entire budget with $days days remaining.';
+  }
+
+  @override
+  String get spendingReport => 'Spending Report';
+
+  @override
+  String get breakdown => 'Breakdown';
+
+  @override
+  String get byCategory => 'By Category';
+
+  @override
+  String get allocated => 'Allocated';
+
+  @override
+  String get used => 'Used';
+
+  @override
+  String get noBudgetData => 'No budget data to display.';
+
+  @override
+  String get aiInsightLabel => 'AI Financial Insight';
+
+  @override
+  String get aiInsightRefreshTooltip => 'Refresh';
+
+  @override
+  String get aiInsightJustNow => 'Just now';
+
+  @override
+  String aiInsightMinutesAgo(int n) {
+    return '$n min ago';
+  }
+
+  @override
+  String aiInsightHoursAgo(int n) {
+    return '${n}h ago';
+  }
+
+  @override
+  String get aiInsightErrorMsg => 'Could not load AI insight.';
+
+  @override
+  String get aiInsightRetryBtn => 'Retry';
+
+  @override
+  String get budgetsScreenTitle => 'Budgets';
+
+  @override
+  String get reportsTitle => 'Reports';
+
+  @override
+  String get localInsightsSectionTitle => 'Quick Insights';
+
+  @override
+  String insightHighestSpending(String category, String percent) {
+    return '$category is your biggest expense at $percent of its budget.';
+  }
+
+  @override
+  String insightOverBudget(String categories) {
+    return 'You\'ve exceeded your budget in: $categories.';
+  }
+
+  @override
+  String insightWarningTotal(String percent) {
+    return 'You\'ve used $percent of your total monthly budget — slow down!';
+  }
+
+  @override
+  String insightGreatProgress(String percent) {
+    return 'Great discipline! Only $percent of your budget spent so far.';
+  }
+
+  @override
+  String insightUnderUtilized(String categories) {
+    return 'Low spend in $categories — consider reallocating the surplus.';
+  }
+
+  @override
+  String insightNearLimit(String category, String percent) {
+    return '$category is almost at its limit ($percent).';
+  }
 }

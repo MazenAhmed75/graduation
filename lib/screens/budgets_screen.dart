@@ -14,6 +14,11 @@ import '../screens/transactions_screen.dart';
 import '../models/budget_template_model.dart';
 import '../services/template_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import '../utils/budget_insight_helper.dart';
+
+
+
+
 
 class BudgetsScreen extends StatefulWidget {
   const BudgetsScreen({super.key});
@@ -381,7 +386,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                 if (mounted) Navigator.pop(context);
               },
-              child: Text(l10n.deposit),
+              child: Text(l10n.addMoneyDeposit),
             ),
           ],
         ),
@@ -503,7 +508,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                 if (mounted) Navigator.pop(context);
               },
-              child: Text(l10n.withdraw),
+              child: Text(l10n.subtractMoneySpend),
             ),
           ],
         ),
@@ -1186,6 +1191,9 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
               }
 
               final categories = categoriesSnapshot.data ?? [];
+              final _now = DateTime.now();
+              final _lastDay = DateTime(_now.year, _now.month + 1, 0);
+              final _daysLeft = _lastDay.day - _now.day;
 
               return Stack(
                 children: [
@@ -1315,6 +1323,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                           ),
                         ),
 
+
+
                       // ── Category budget cards ──
                       ...categories.map((budget) => BudgetCard(
                         title: budget.title,
@@ -1334,9 +1344,17 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                         iconBg: AppTheme.primaryContainer,
                         iconColor: AppTheme.onPrimaryContainer,
                         spentColor: AppTheme.primary,
-                        insight: '',
-                        insightIcon: Icons.info,
-                        insightColor: AppTheme.primary,
+                        insight: BudgetInsightHelper
+                            .getInsight(context , budget, daysLeftInMonth: _daysLeft)
+                            .text,
+
+                        insightIcon: BudgetInsightHelper
+                            .getInsight(context , budget, daysLeftInMonth: _daysLeft)
+                            .icon,
+
+                        insightColor: BudgetInsightHelper
+                            .getInsight(context , budget, daysLeftInMonth: _daysLeft)
+                            .color,
                         onDeposit: () =>
                             _showAddMoneyDialog(budget),
                         onWithdraw: () =>
@@ -1350,7 +1368,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                   // ── FAB (positioned inside Stack so it floats over list) ──
                   // ======================================================
-                  // FLOATING ACTION BUTTON (FIXED - ONLY ONE)
+                  // FLOATING ACTION BUTTON
                   // ======================================================
                   Positioned(
                     right: 16,

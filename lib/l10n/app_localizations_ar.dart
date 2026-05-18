@@ -45,7 +45,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String get available => 'المتاح';
 
   @override
-  String get daysLeft => 'يوم متبقي';
+  String daysLeft(int days) {
+    return 'باقي $days يوم هذا الشهر';
+  }
 
   @override
   String get completed => 'مكتمل';
@@ -54,7 +56,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get thisMonth => 'هذا الشهر';
 
   @override
-  String get spent => 'أُنفق';
+  String get spent => 'المصروف';
 
   @override
   String get saved => 'وُفِّر';
@@ -64,9 +66,6 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get allOnTrack => 'جميع الفئات في المسار الصحيح';
-
-  @override
-  String get overBudget => 'تجاوزت الميزانية';
 
   @override
   String get nearLimit => 'قريبة من الحد';
@@ -117,55 +116,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get useSavedTemplate => 'استخدام قالب محفوظ';
 
   @override
-  String get transactions => 'المعاملات';
-
-  @override
-  String get noTransactions => 'لا توجد معاملات بعد';
-
-  @override
-  String get noTransactionsDesc =>
-      'ستظهر معاملاتك هنا بمجرد البدء في الإنفاق أو الإيداع.';
-
-  @override
-  String get noResults => 'لا توجد نتائج';
-
-  @override
-  String get noResultsDesc => 'حاول تعديل البحث أو الفلاتر.';
-
-  @override
-  String get clearFilters => 'مسح الفلاتر';
-
-  @override
-  String get searchHint => 'ابحث بالملاحظة أو الفئة…';
-
-  @override
-  String get all => 'الكل';
-
-  @override
-  String get expenses => 'المصروفات';
-
-  @override
-  String get income => 'الدخل';
-
-  @override
-  String get allCategories => 'كل الفئات';
-
-  @override
-  String get newest => 'الأحدث';
-
-  @override
-  String get largest => 'الأعلى قيمة';
-
-  @override
-  String get auto => 'تلقائي';
-
-  @override
-  String get withdraw => 'سحب';
-
-  @override
-  String get deposit => 'إيداع';
-
-  @override
   String get subtractMoney => 'خصم مبلغ (إنفاق)';
 
   @override
@@ -190,21 +140,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get everyWeek => 'كل أسبوع';
 
   @override
-  String get recurring => 'المعاملات المتكررة';
-
-  @override
-  String get noRecurring => 'لا توجد معاملات متكررة';
-
-  @override
-  String get noRecurringDesc =>
-      'عند إضافة أو خصم مبلغ، اختر \"جعلها متكررة\" لتتم تلقائياً.';
-
-  @override
-  String nextDue(Object date) {
-    return 'التالي: $date';
-  }
-
-  @override
   String get expenseLabel => 'مصروف';
 
   @override
@@ -214,19 +149,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get profile => 'الملف الشخصي';
 
   @override
-  String get account => 'الحساب';
-
-  @override
   String get fullName => 'الاسم الكامل';
 
   @override
   String get email => 'البريد الإلكتروني';
-
-  @override
-  String get membership => 'العضوية';
-
-  @override
-  String get currentPlan => 'الخطة الحالية';
 
   @override
   String get free => 'مجاني';
@@ -235,67 +161,19 @@ class AppLocalizationsAr extends AppLocalizations {
   String get upgrade => 'ترقية';
 
   @override
-  String get settings => 'الإعدادات';
-
-  @override
   String get notifications => 'الإشعارات';
-
-  @override
-  String get privacySecurity => 'الخصوصية والأمان';
 
   @override
   String get language => 'اللغة';
 
   @override
-  String get logout => 'تسجيل الخروج';
-
-  @override
-  String get logoutConfirmTitle => 'تسجيل الخروج';
-
-  @override
   String get logoutConfirmBody => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
-
-  @override
-  String get appVersion => 'إصدار التطبيق 1.0.0';
-
-  @override
-  String get editName => 'تعديل الاسم';
-
-  @override
-  String get choosePhotoSource => 'اختر مصدر الصورة';
-
-  @override
-  String get takePhoto => 'التقاط صورة';
-
-  @override
-  String get chooseFromGallery => 'اختر من المعرض';
-
-  @override
-  String get uploadingPhoto => 'جارٍ رفع الصورة...';
-
-  @override
-  String get photoUpdated => 'تم تحديث الصورة الشخصية!';
 
   @override
   String get photoFailed => 'فشل رفع الصورة';
 
   @override
-  String get cancel => 'إلغاء';
-
-  @override
-  String get save => 'حفظ';
-
-  @override
-  String get delete => 'حذف';
-
-  @override
   String get ok => 'حسناً';
-
-  @override
-  String get today => 'اليوم';
-
-  @override
-  String get yesterday => 'أمس';
 
   @override
   String get home => 'الرئيسية';
@@ -528,7 +406,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showOpportunities => 'عرض الفرص';
 
   @override
-  String get investBestPick => 'استثمر في أفضل فرصة';
+  String get investBestPick => 'استثمر in أفضل فرصة';
 
   @override
   String get fullAutoScan => 'فحص تلقائي كامل';
@@ -983,13 +861,61 @@ class AppLocalizationsAr extends AppLocalizations {
       'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!';
 
   @override
+  String get choosePhotoSource => 'اختر مصدر الصورة';
+
+  @override
+  String get takePhoto => 'التقاط صورة';
+
+  @override
+  String get chooseFromGallery => 'اختر من المعرض';
+
+  @override
+  String get uploadingPhoto => 'جارٍ رفع الصورة...';
+
+  @override
   String get profileUpdated => 'تم تحديث صورة الملف الشخصي!';
 
   @override
   String get uploadFailed => 'فشل رفع الصورة';
 
   @override
+  String get account => 'الحساب';
+
+  @override
+  String get membership => 'العضوية';
+
+  @override
+  String get settings => 'الإعدادات';
+
+  @override
+  String get currentPlan => 'الخطة الحالية';
+
+  @override
+  String get privacySecurity => 'الخصوصية والأمان';
+
+  @override
+  String get logout => 'تسجيل الخروج';
+
+  @override
+  String get logoutConfirmTitle => 'تسجيل الخروج';
+
+  @override
   String get logoutConfirmMessage => 'هل أنت متأكد أنك تريد تسجيل الخروج؟';
+
+  @override
+  String get cancel => 'إلغاء';
+
+  @override
+  String get editName => 'تعديل الاسم';
+
+  @override
+  String get save => 'حفظ';
+
+  @override
+  String get appVersion => 'إصدار التطبيق 1.0.0';
+
+  @override
+  String get recurring => 'المعاملات المتكررة';
 
   @override
   String get noRecurringTitle => 'لا توجد معاملات متكررة';
@@ -1005,6 +931,9 @@ class AppLocalizationsAr extends AppLocalizations {
   String deleteRecurringMessage(Object note) {
     return 'لن يتم تطبيق \"$note\" تلقائياً بعد الآن.';
   }
+
+  @override
+  String get delete => 'حذف';
 
   @override
   String get next => 'التالي';
@@ -1046,15 +975,63 @@ class AppLocalizationsAr extends AppLocalizations {
   String get monthDec => 'ديسمبر';
 
   @override
-  String transactionsCount(String count) {
-    return '$count معاملات';
+  String nextDue(Object date) {
+    return 'التالي: $date';
   }
+
+  @override
+  String get transactions => 'المعاملات';
+
+  @override
+  String get searchHint => 'ابحث بالوصف أو التصنيف…';
+
+  @override
+  String get newest => 'الأحدث';
+
+  @override
+  String get largest => 'الأكبر';
+
+  @override
+  String get all => 'الكل';
+
+  @override
+  String get expenses => 'المصروفات';
+
+  @override
+  String get income => 'الدخل';
+
+  @override
+  String get allCategories => 'كل التصنيفات';
+
+  @override
+  String get today => 'اليوم';
+
+  @override
+  String get yesterday => 'أمس';
+
+  @override
+  String get noResults => 'لا توجد نتائج';
+
+  @override
+  String get noTransactions => 'لا توجد معاملات';
 
   @override
   String get noResultsHint => 'حاول تعديل البحث أو الفلاتر.';
 
   @override
-  String get noTransactionsHint => 'ستظهر هنا عمليات الإيداع والإنفاق.';
+  String get noTransactionsHint =>
+      'ستظهر معاملاتك هنا\nعند البدء بالصرف أو الإيداع.';
+
+  @override
+  String get clearFilters => 'مسح كل الفلاتر';
+
+  @override
+  String get auto => 'تلقائي';
+
+  @override
+  String transactionsCount(String count) {
+    return '$count معاملة';
+  }
 
   @override
   String get autoPrefix => '[تلقائي] ';
@@ -1111,4 +1088,143 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordUpdatedSuccess => 'تم تحديث كلمة المرور بنجاح!';
+
+  @override
+  String get spendingInsights => 'تحليلات الإنفاق';
+
+  @override
+  String onTrack(int count) {
+    return '$count على المسار الصحيح';
+  }
+
+  @override
+  String overBudget(int count) {
+    return '$count تجاوزوا الميزانية';
+  }
+
+  @override
+  String get addBudgetCategoriesInsights =>
+      'أضف فئات الميزانية لعرض التحليلات.';
+
+  @override
+  String overBudgetInsight(Object amount) {
+    return 'لقد تجاوزت الميزانية بمقدار $amount.';
+  }
+
+  @override
+  String nearlyAtLimitInsight(Object amount) {
+    return 'تبقى $amount فقط قبل الوصول للحد.';
+  }
+
+  @override
+  String usedPercentInsight(Object percent, Object days) {
+    return 'استخدمت $percent% من ميزانيتك مع بقاء $days يوم.';
+  }
+
+  @override
+  String halfwayBudgetInsight(Object amount) {
+    return 'تبقى لديك نصف الميزانية: $amount.';
+  }
+
+  @override
+  String savedThisMonthInsight(Object amount) {
+    return 'رائع! لقد وفرت $amount هذا الشهر.';
+  }
+
+  @override
+  String noSpendingInsight(Object amount) {
+    return 'لا يوجد إنفاق بعد. لديك $amount متاح.';
+  }
+
+  @override
+  String onTrackInsight(Object amount) {
+    return 'أنت على المسار الصحيح ويتبقى $amount.';
+  }
+
+  @override
+  String budgetFullyUsedInsight(Object days) {
+    return 'تم استخدام الميزانية بالكامل. قد تنفد خلال $days يوم.';
+  }
+
+  @override
+  String get spendingReport => 'تقرير المصاريف';
+
+  @override
+  String get breakdown => 'تفصيل';
+
+  @override
+  String get byCategory => 'حسب الفئة';
+
+  @override
+  String get allocated => 'المخصص';
+
+  @override
+  String get used => 'المستخدم';
+
+  @override
+  String get noBudgetData => 'لا توجد بيانات للميزانية لعرضها';
+
+  @override
+  String get aiInsightLabel => 'رؤية مالية ذكية';
+
+  @override
+  String get aiInsightRefreshTooltip => 'تحديث';
+
+  @override
+  String get aiInsightJustNow => 'الآن';
+
+  @override
+  String aiInsightMinutesAgo(int n) {
+    return 'منذ $n د';
+  }
+
+  @override
+  String aiInsightHoursAgo(int n) {
+    return 'منذ $n س';
+  }
+
+  @override
+  String get aiInsightErrorMsg => 'تعذّر تحميل الرؤية الذكية.';
+
+  @override
+  String get aiInsightRetryBtn => 'إعادة المحاولة';
+
+  @override
+  String get budgetsScreenTitle => 'الميزانية';
+
+  @override
+  String get reportsTitle => 'التقارير';
+
+  @override
+  String get localInsightsSectionTitle => 'ملاحظات فورية';
+
+  @override
+  String insightHighestSpending(String category, String percent) {
+    return '$category هو أكبر نفقاتك بنسبة $percent من ميزانيته.';
+  }
+
+  @override
+  String insightOverBudget(String categories) {
+    return 'لقد تجاوزت ميزانيتك في: $categories.';
+  }
+
+  @override
+  String insightWarningTotal(String percent) {
+    return 'لقد استخدمت $percent من إجمالي ميزانيتك الشهرية — تمهّل!';
+  }
+
+  @override
+  String insightGreatProgress(String percent) {
+    return 'انضباط رائع! لم تنفق سوى $percent من ميزانيتك حتى الآن.';
+  }
+
+  @override
+  String insightUnderUtilized(String categories) {
+    return 'إنفاق منخفض في $categories — فكّر في إعادة توزيع الفائض.';
+  }
+
+  @override
+  String insightNearLimit(String category, String percent) {
+    return '$category على وشك الوصول إلى حدّه ($percent).';
+  }
 }
