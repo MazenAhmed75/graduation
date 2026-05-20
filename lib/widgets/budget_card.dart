@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class BudgetCard extends StatelessWidget {
   final String title;
@@ -110,8 +111,8 @@ class BudgetCard extends StatelessWidget {
                       color: AppTheme.onSurface,
                     ),
                   ),
-                  const Text(
-                    'ALLOCATED',
+                  Text(
+                    AppLocalizations.of(context)!.allocated.toUpperCase(),
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -170,11 +171,23 @@ class BudgetCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildActionButton(Icons.add, 'DEPOSIT', AppTheme.primary, AppTheme.surfaceContainer, onDeposit),
+                child: _buildActionButton(
+                  Icons.add,
+                  AppLocalizations.of(context)!.deposit,
+                  AppTheme.primary,
+                  AppTheme.surfaceContainer,
+                  onDeposit,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: _buildActionButton(Icons.remove, 'WITHDRAW', AppTheme.onSurfaceVariant, AppTheme.surfaceContainer, onWithdraw),
+                child: _buildActionButton(
+                  Icons.remove,
+                  AppLocalizations.of(context)!.withdraw,
+                  AppTheme.onSurfaceVariant,
+                  AppTheme.surfaceContainer,
+                  onWithdraw,
+                ),
               ),
               const SizedBox(width: 8),
               _buildIconButton(Icons.edit, AppTheme.onSurfaceVariant, AppTheme.surfaceContainer, onEdit),

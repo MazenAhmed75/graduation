@@ -4,6 +4,7 @@ import '../models/monthly_budget_model.dart';
 import '../models/transaction_model.dart';
 import 'notification_service.dart';
 
+
 class BudgetService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
@@ -88,7 +89,8 @@ class BudgetService {
   Future<void> addBudget({
     required String userId,
     required String monthlyBudgetId,
-    required String title,
+    required String categoryKey,
+    String customTitle = '',
     required String subtitle,
     required double allocated,
     String iconName = 'category',
@@ -101,12 +103,18 @@ class BudgetService {
       id: docRef.id,
       userId: userId,
       monthlyBudgetId: monthlyBudgetId,
-      title: title,
+
+      categoryKey: categoryKey,
+      customTitle: customTitle,
+
       subtitle: subtitle,
+
       allocated: allocated,
       spent: 0.0,
+
       iconName: iconName,
       colorScheme: colorScheme,
+
       createdAt: DateTime.now(),
     );
 
@@ -140,7 +148,7 @@ class BudgetService {
     double newRatio = newSpent / budget.allocated;
     if (newRatio >= 0.8) {
       await NotificationService.showBudgetWarning(
-        budgetTitle: budget.title,
+        budgetTitle: budget.categoryKey,
         percentUsed: (newRatio * 100).round(),
       );
     }
@@ -207,7 +215,8 @@ class BudgetService {
     TransactionModel transaction = TransactionModel(
       id: docRef.id,
       budgetId: budget.id,
-      budgetTitle: budget.title,
+      categoryKey: budget.categoryKey,
+      customTitle: budget.customTitle,
       amount: amount,
       type: type,
       note: note,

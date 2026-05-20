@@ -15,7 +15,8 @@ import '../models/budget_template_model.dart';
 import '../services/template_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/budget_insight_helper.dart';
-
+import '../utils/budget_categories.dart';
+import '../utils/category_localization.dart';
 
 
 
@@ -135,21 +136,19 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     required List<BudgetModel> existing,
   }) {
     final l10n = AppLocalizations.of(context)!;
-    // How much of the monthly budget is still unassigned to categories
-    final totalAllocated =
-    existing.fold(0.0, (sum, b) => sum + b.allocated);
+
+    // Calculate how much money is left unassigned
+    final totalAllocated = existing.fold(0.0, (sum, b) => sum + b.allocated);
     final remaining = monthly.totalAmount - totalAllocated;
 
+    // GUARD 1: If everything is already allocated, show a warning
     if (remaining <= 0) {
-      // All money is already allocated — show a friendly message
       showDialog(
         context: context,
         builder: (context) => AlertDialog(
           title: Text(l10n.fullyAllocated),
           content: Text(
-            l10n.fullyAllocatedDescription(
-              monthly.totalAmount.toStringAsFixed(2),
-            ),
+            l10n.fullyAllocatedDescription(monthly.totalAmount.toStringAsFixed(2)),
           ),
           actions: [
             TextButton(
@@ -162,116 +161,163 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
       return;
     }
 
-    final titleController = TextEditingController();
+    final customTitleController = TextEditingController();
     final amountController = TextEditingController();
+
+    // Set the initial default selected item to the first category key
+    String selectedCategoryKey = budgetCategories.first.key;
 
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.addCategoryBudget),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Show how much is still available to assign
-            Container(
-              padding:
-              const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-              decoration: BoxDecoration(
-                color: AppTheme.primaryContainer,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Row(
-                children: [
-                  Icon(Icons.info_outline,
-                      size: 16, color: AppTheme.onPrimaryContainer),
-                  const SizedBox(width: 8),
-                  Text(
-    l10n.availableToAssign(
-    remaining.toStringAsFixed(2),
-    ),
-                    style: TextStyle(
-                      color: AppTheme.onPrimaryContainer,
-                      fontSize: 13,
-                      fontWeight: FontWeight.w600,
+      builder: (context) => StatefulBuilder(
+        builder: (context, setDialogState) => AlertDialog(
+          title: Text(l10n.addCategoryBudget),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Info Banner showing remaining budget
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: AppTheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      Icon(Icons.info_outline, size: 16, color: AppTheme.onPrimaryContainer),
+                      const SizedBox(width: 8),
+                      Text(
+                        l10n.availableToAssign(remaining.toStringAsFixed(2)),
+                        style: TextStyle(
+                          color: AppTheme.onPrimaryContainer,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 16),
+
+                // Category Dropdown Label
+                Text(l10n.categories, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                const SizedBox(height: 4),
+                DropdownButtonFormField<String>(
+                  value: selectedCategoryKey,
+                  isExpanded: true,
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        borderSide: BorderSide(color: Colors.grey[300]!),
+                      )
+                  ),
+                  // Loop through your list of categories from budget_categories.dart
+                  items: budgetCategories.map((category) {
+
+                    // 🔥 FIX: Check if it's 'custom' to display your localized "Custom" label.
+                    // Otherwise, pass all 3 parameters safely into your utility class!
+                    final String displayName = category.key == 'custom'
+                        ? l10n.category_custom
+                        : CategoryLocalization.getCategoryName(context, category.key, '');
+
+                    return DropdownMenuItem(
+                      value: category.key,
+                      child: Text(displayName),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      setDialogState(() {
+                        selectedCategoryKey = val; // Triggers UI re-draw for conditional text field
+                      });
+                    }
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // Conditional Text Field: Only visible if 'custom' is selected
+                if (selectedCategoryKey == 'custom') ...[
+                  TextField(
+                    controller: customTitleController,
+                    decoration: InputDecoration(
+                      labelText: l10n.categoryName,
+                      hintText: l10n.groceriesHint,
                     ),
                   ),
+                  const SizedBox(height: 12),
                 ],
-              ),
+
+                // Amount Allocation Input Field
+                TextField(
+                  controller: amountController,
+                  keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  decoration: InputDecoration(
+                    labelText: l10n.amount,
+                    hintText: l10n.maxAmount(remaining.toStringAsFixed(2)),
+                  ),
+                ),
+              ],
             ),
-            const SizedBox(height: 16),
-            TextField(
-              controller: titleController,
-              decoration:  InputDecoration(
-              labelText: l10n.categoryName,
-    hintText: l10n.groceriesHint,
-              ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: Text(l10n.cancel),
             ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: amountController,
-              keyboardType:
-              const TextInputType.numberWithOptions(decimal: true),
-              decoration: InputDecoration(
-    labelText: l10n.amount,
-    hintText: l10n.maxAmount(
-    remaining.toStringAsFixed(2),
-    ),
+            ElevatedButton(
+              onPressed: () async {
+                final amount = double.tryParse(amountController.text) ?? 0.0;
+
+                if (amount <= 0) return;
+
+                // GUARD 2: Prevent assigning more money than available
+                if (amount > remaining) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(l10n.amountExceedsRemaining(remaining.toStringAsFixed(2))),
+                      backgroundColor: Colors.redAccent,
+                    ),
+                  );
+                  return;
+                }
+
+                // Determine the custom title value
+                final isCustom = selectedCategoryKey == 'custom';
+                final finalCustomTitle = isCustom
+                    ? (customTitleController.text.trim().isEmpty ? l10n.newCategory : customTitleController.text.trim())
+                    : '';
+
+                // Find matching design configs from your budgetCategories list
+                final selectedConfig = budgetCategories.firstWhere((c) => c.key == selectedCategoryKey);
+
+                // Write the complete, standardized model to Firebase
+                await _budgetService.addBudget(
+                  userId: _authService.currentUser!.uid,
+                  monthlyBudgetId: _currentMonthId,
+                  categoryKey: selectedCategoryKey,
+                  customTitle: finalCustomTitle,
+                  subtitle: l10n.category,
+                  allocated: amount,
+                  iconName: selectedConfig.iconName,
+                  colorScheme: selectedConfig.colorScheme,
+                );
+
+                if (mounted) Navigator.pop(context);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppTheme.primary,
+                foregroundColor: const Color(0xFFEBFFE0),
               ),
+              child: Text(l10n.add),
             ),
           ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: Text(l10n.cancel),
-          ),
-          ElevatedButton(
-            onPressed: () async {
-              final amount = double.tryParse(amountController.text) ?? 0.0;
-              final title = titleController.text.trim().isEmpty
-                  ? l10n.newCategory
-                  : titleController.text.trim();
-
-              if (amount <= 0) return;
-
-              // Guard: don't let the user allocate more than what's left
-              if (amount > remaining) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-    l10n.amountExceedsRemaining(
-    remaining.toStringAsFixed(2),
-    ),
-                    ),
-                    backgroundColor: Colors.redAccent,
-                  ),
-                );
-                return;
-              }
-
-              await _budgetService.addBudget(
-                userId: _authService.currentUser!.uid,
-                monthlyBudgetId: _currentMonthId,
-                title: title,
-    subtitle: l10n.category,
-                allocated: amount,
-                iconName: 'category',
-                colorScheme: 'green',
-              );
-              if (mounted) Navigator.pop(context);
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppTheme.primary,
-              foregroundColor: const Color(0xFFEBFFE0),
-            ),
-            child: Text(l10n.add),
-          ),
-        ],
       ),
     );
   }
-
   // ─── Dialogs: Deposit / Withdraw / Edit / Delete ───────────────────────────
 
   // ============================================================
@@ -279,16 +325,24 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showAddMoneyDialog(BudgetModel budget) {
     final l10n = AppLocalizations.of(context)!;
+
+    // ✅ Capture BEFORE dialog opens — stays valid after pop
+    final screenContext = context;
+
     final controller = TextEditingController();
     final noteController = TextEditingController();
+
     bool isRecurring = false;
     String frequency = 'monthly';
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
+
+      // renamed to dialogContext to avoid confusion
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
           title: Text(l10n.addMoneyDeposit),
+
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -296,15 +350,16 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 controller: controller,
                 keyboardType:
                 const TextInputType.numberWithOptions(decimal: true),
-                decoration:  InputDecoration(
+                decoration: InputDecoration(
                   labelText: l10n.amount,
                 ),
               ),
+
               const SizedBox(height: 12),
 
               TextField(
                 controller: noteController,
-                decoration:  InputDecoration(
+                decoration: InputDecoration(
                   labelText: l10n.noteOptional,
                   hintText: l10n.salaryHint,
                 ),
@@ -314,6 +369,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
               // ── Recurring toggle ──────────────────────────
               Row(
+                textDirection: Directionality.of(context),
                 children: [
                   Checkbox(
                     value: isRecurring,
@@ -324,15 +380,17 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                       });
                     },
                   ),
+
                   Text(l10n.makeRecurring),
                 ],
               ),
 
               if (isRecurring)
                 DropdownButton<String>(
+                  alignment: AlignmentDirectional.centerStart,
                   value: frequency,
                   isExpanded: true,
-                  items:  [
+                  items: [
                     DropdownMenuItem(
                       value: 'monthly',
                       child: Text(l10n.everyMonth),
@@ -353,7 +411,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(l10n.cancel),
             ),
 
@@ -364,27 +422,52 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                 if (amount <= 0) return;
 
-                final userId = _authService.currentUser!.uid;
+                // ✅ snapshot values before pop
+                final capturedIsRecurring = isRecurring;
+                final capturedFrequency = frequency;
+                final capturedNote = noteController.text;
 
-                await _budgetService.deposit(
-                  userId: userId,
-                  budget: budget,
-                  amount: amount,
-                );
+                // ✅ close dialog immediately
+                Navigator.pop(dialogContext);
 
-                // ── Save recurring transaction ──
-                if (isRecurring) {
-                  await _recurringService.addRecurringTransaction(
+                try {
+                  final userId = _authService.currentUser!.uid;
+
+                  await _budgetService.deposit(
                     userId: userId,
                     budget: budget,
                     amount: amount,
-                    type: 'deposit',
-                    frequency: frequency,
-                    note: noteController.text,
                   );
-                }
 
-                if (mounted) Navigator.pop(context);
+                  // Save as recurring
+                  if (capturedIsRecurring) {
+                    await _recurringService.addRecurringTransaction(
+                      userId: userId,
+                      budget: budget,
+                      amount: amount,
+                      type: 'deposit',
+                      frequency: capturedFrequency,
+                      note: capturedNote,
+                    );
+                  }
+                } catch (e) {
+                  // visible in console
+                  debugPrint(
+                    '❌ Deposit/recurring save failed: $e',
+                  );
+
+                  if (mounted) {
+                    // ✅ use screenContext
+                    ScaffoldMessenger.of(screenContext).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          l10n.failedToSave(e.toString()),
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               },
               child: Text(l10n.addMoneyDeposit),
             ),
@@ -399,16 +482,24 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showSubtractMoneyDialog(BudgetModel budget) {
     final l10n = AppLocalizations.of(context)!;
+
+    // ✅ Capture BEFORE dialog opens — stays valid after pop
+    final screenContext = context;
+
     final controller = TextEditingController();
     final noteController = TextEditingController();
+
     bool isRecurring = false;
     String frequency = 'monthly';
 
     showDialog(
       context: context,
-      builder: (context) => StatefulBuilder(
-        builder: (context, setDialogState) => AlertDialog(
+
+      // renamed to dialogContext to avoid confusion
+      builder: (dialogContext) => StatefulBuilder(
+        builder: (dialogContext, setDialogState) => AlertDialog(
           title: Text(l10n.subtractMoneySpend),
+
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -416,7 +507,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 controller: controller,
                 keyboardType:
                 const TextInputType.numberWithOptions(decimal: true),
-                decoration:  InputDecoration(
+                decoration: InputDecoration(
                   labelText: l10n.amount,
                 ),
               ),
@@ -425,7 +516,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
               TextField(
                 controller: noteController,
-                decoration:  InputDecoration(
+                decoration: InputDecoration(
                   labelText: l10n.noteOptional,
                   hintText: l10n.netflixHint,
                 ),
@@ -435,6 +526,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
               // ── Recurring toggle ──────────────────────────
               Row(
+                textDirection: Directionality.of(context),
                 children: [
                   Checkbox(
                     value: isRecurring,
@@ -445,6 +537,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                       });
                     },
                   ),
+
                   Text(l10n.makeRecurring),
                 ],
               ),
@@ -453,7 +546,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 DropdownButton<String>(
                   value: frequency,
                   isExpanded: true,
-                  items:  [
+                  alignment: AlignmentDirectional.centerStart,
+                  items: [
                     DropdownMenuItem(
                       value: 'monthly',
                       child: Text(l10n.everyMonth),
@@ -474,7 +568,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
           actions: [
             TextButton(
-              onPressed: () => Navigator.pop(context),
+              onPressed: () => Navigator.pop(dialogContext),
               child: Text(l10n.cancel),
             ),
 
@@ -485,28 +579,53 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                 if (amount <= 0) return;
 
-                final userId = _authService.currentUser!.uid;
+                // ✅ snapshot values before pop
+                final capturedIsRecurring = isRecurring;
+                final capturedFrequency = frequency;
+                final capturedNote = noteController.text;
 
-                await _budgetService.withdraw(
-                  userId: userId,
-                  budget: budget,
-                  amount: amount,
-                  note: noteController.text,
-                );
+                // ✅ close dialog immediately
+                Navigator.pop(dialogContext);
 
-                // ── Save recurring transaction ──
-                if (isRecurring) {
-                  await _recurringService.addRecurringTransaction(
+                try {
+                  final userId = _authService.currentUser!.uid;
+
+                  await _budgetService.withdraw(
                     userId: userId,
                     budget: budget,
                     amount: amount,
-                    type: 'withdraw',
-                    frequency: frequency,
-                    note: noteController.text,
+                    note: capturedNote,
                   );
-                }
 
-                if (mounted) Navigator.pop(context);
+                  // ── Save recurring transaction ──
+                  if (capturedIsRecurring) {
+                    await _recurringService.addRecurringTransaction(
+                      userId: userId,
+                      budget: budget,
+                      amount: amount,
+                      type: 'withdraw',
+                      frequency: capturedFrequency,
+                      note: capturedNote,
+                    );
+                  }
+                } catch (e) {
+                  // visible in console
+                  debugPrint(
+                    '❌ Withdraw/recurring save failed: $e',
+                  );
+
+                  if (mounted) {
+                    // ✅ use screenContext
+                    ScaffoldMessenger.of(screenContext).showSnackBar(
+                      SnackBar(
+                        content: Text(
+                          l10n.failedToSave(e.toString()),
+                        ),
+                        backgroundColor: Colors.red,
+                      ),
+                    );
+                  }
+                }
               },
               child: Text(l10n.subtractMoneySpend),
             ),
@@ -568,7 +687,9 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
       builder: (context) => AlertDialog(
         title: Text(l10n.deleteBudget),
         content: Text(
-          l10n.deleteBudgetQuestion(budget.title),
+          l10n.deleteBudgetQuestion(
+            CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
+          ),
         ),
         actions: [
           TextButton(
@@ -1327,8 +1448,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                       // ── Category budget cards ──
                       ...categories.map((budget) => BudgetCard(
-                        title: budget.title,
-                        subtitle: budget.subtitle,
+                        title: CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
+                        subtitle: l10n.category,
                         amount: CurrencyFormatter.format(
                             budget.allocated),
                         spentText: l10n.spentAmount(

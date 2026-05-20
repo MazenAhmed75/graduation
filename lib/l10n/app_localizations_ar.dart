@@ -179,7 +179,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get home => 'الرئيسية';
 
   @override
-  String get invest => 'استثمار';
+  String get invest => 'الاستثمار';
 
   @override
   String get loading => 'جارٍ التحميل...';
@@ -1156,7 +1156,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get byCategory => 'حسب الفئة';
 
   @override
-  String get allocated => 'المخصص';
+  String get allocated => ' المخصص';
 
   @override
   String get used => 'المستخدم';
@@ -1226,5 +1226,40 @@ class AppLocalizationsAr extends AppLocalizations {
   @override
   String insightNearLimit(String category, String percent) {
     return '$category على وشك الوصول إلى حدّه ($percent).';
+  }
+
+  @override
+  String get cloudinaryUploadFailed => 'فشل رفع الصورة إلى كلاوديناري';
+
+  @override
+  String get failedToUpload => 'فشل في رفع الصورة';
+
+  @override
+  String get category_groceries => 'بقالة';
+
+  @override
+  String get category_travel => 'سفر';
+
+  @override
+  String get category_entertainment => 'ترفيه';
+
+  @override
+  String get category_food => 'طعام';
+
+  @override
+  String get category_shopping => 'تسوق';
+
+  @override
+  String get category_custom => 'فئة خاصه';
+
+  @override
+  String get deposit => 'إيداع';
+
+  @override
+  String get withdraw => 'سحب';
+
+  @override
+  String failedToSave(Object error) {
+    return 'فشل الحفظ: $error';
   }
 }

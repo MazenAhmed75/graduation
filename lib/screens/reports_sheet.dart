@@ -200,7 +200,7 @@ class _ReportsSheetState extends State<ReportsSheet>
           value: b.spent,
           color: _palette[i % _palette.length],
           radius: isTouched ? 70 : 58,
-          title: isTouched ? b.title : '',
+          title: isTouched ? (b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey) : '',
           titleStyle: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
@@ -285,7 +285,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    b.title,
+                    b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -392,7 +392,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                       if (i < 0 || i >= budgets.length) {
                         return const SizedBox.shrink();
                       }
-                      final label = budgets[i].title;
+                      final label = budgets[i].customTitle.isNotEmpty ? budgets[i].customTitle : budgets[i].categoryKey;
                       return Padding(
                         padding: const EdgeInsets.only(top: 6),
                         child: Text(
@@ -442,7 +442,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        b.title,
+                        b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey,
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,

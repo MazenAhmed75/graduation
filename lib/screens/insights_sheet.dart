@@ -172,7 +172,7 @@ class InsightsSheet extends StatelessWidget {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                item.budget.title,
+                                item.budget.customTitle.isNotEmpty ? item.budget.customTitle : item.budget.categoryKey,
                                 style: const TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 15,

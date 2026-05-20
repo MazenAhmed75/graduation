@@ -46,7 +46,7 @@ class TemplateService {
     // (only saves title, subtitle, allocated, icon, color — not spent)
     final templateCategories = categories
         .map((b) => TemplateCategory(
-      title: b.title,
+      title: b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey,
       subtitle: b.subtitle,
       allocated: b.allocated,
       iconName: b.iconName,
@@ -96,7 +96,8 @@ class TemplateService {
       await _budgetService.addBudget(
         userId: userId,
         monthlyBudgetId: monthId,
-        title: category.title,
+        categoryKey: 'custom',       // Tells the app this is a user-defined custom budget
+        customTitle: category.title, // Puts the template name (e.g., "Books") here
         subtitle: category.subtitle,
         allocated: category.allocated,
         iconName: category.iconName,

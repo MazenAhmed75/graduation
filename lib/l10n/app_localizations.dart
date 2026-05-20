@@ -377,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @fullName.
   ///
   /// In en, this message translates to:
-  /// **'FULL NAME'**
+  /// **'Full Name'**
   String get fullName;
 
   /// No description provided for @email.
@@ -2287,6 +2287,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'{category} is almost at its limit ({percent}).'**
   String insightNearLimit(String category, String percent);
+
+  /// Error shown when Cloudinary upload fails
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudinary upload failed'**
+  String get cloudinaryUploadFailed;
+
+  /// Generic upload failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload'**
+  String get failedToUpload;
+
+  /// No description provided for @category_groceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get category_groceries;
+
+  /// No description provided for @category_travel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get category_travel;
+
+  /// No description provided for @category_entertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get category_entertainment;
+
+  /// No description provided for @category_food.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get category_food;
+
+  /// No description provided for @category_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get category_shopping;
+
+  /// No description provided for @category_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get category_custom;
+
+  /// No description provided for @deposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get deposit;
+
+  /// No description provided for @withdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get withdraw;
+
+  /// No description provided for @failedToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save: {error}'**
+  String failedToSave(Object error);
 }
 
 class _AppLocalizationsDelegate

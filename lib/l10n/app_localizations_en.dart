@@ -151,7 +151,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get profile => 'Profile';
 
   @override
-  String get fullName => 'FULL NAME';
+  String get fullName => 'Full Name';
 
   @override
   String get email => 'EMAIL';
@@ -1231,5 +1231,40 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String insightNearLimit(String category, String percent) {
     return '$category is almost at its limit ($percent).';
+  }
+
+  @override
+  String get cloudinaryUploadFailed => 'Cloudinary upload failed';
+
+  @override
+  String get failedToUpload => 'Failed to upload';
+
+  @override
+  String get category_groceries => 'Groceries';
+
+  @override
+  String get category_travel => 'Travel';
+
+  @override
+  String get category_entertainment => 'Entertainment';
+
+  @override
+  String get category_food => 'Food';
+
+  @override
+  String get category_shopping => 'Shopping';
+
+  @override
+  String get category_custom => 'Custom';
+
+  @override
+  String get deposit => 'Deposit';
+
+  @override
+  String get withdraw => 'Withdraw';
+
+  @override
+  String failedToSave(Object error) {
+    return 'Failed to save: $error';
   }
 }

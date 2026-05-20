@@ -109,6 +109,7 @@ class ProfileScreen extends StatelessWidget {
 
       // Step 5: Upload to Firebase Storage
       final photoUrl = await storageService.uploadProfilePicture(
+        context,
         userId,
         imageBytes,
       );
@@ -327,7 +328,7 @@ class ProfileScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       _buildListTile(
-                        'FULL NAME',
+                        l10n.fullName,
                         user.name,
                         Icons.person_outline,
                         AppTheme.primaryContainer,

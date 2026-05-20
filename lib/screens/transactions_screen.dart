@@ -4,6 +4,7 @@ import '../models/transaction_model.dart';
 import '../services/budget_service.dart';
 import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import '../utils/category_localization.dart';
 
 // ============================================================
 // TransactionsScreen
@@ -42,11 +43,18 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ── Apply search + filters + sort to the full list ───────────
   List<TransactionModel> _applyFilters(List<TransactionModel> all) {
     var result = all.where((t) {
+      // Get the correct string to display/filter by
+      final displayTitle = CategoryLocalization.getCategoryName(
+        context,
+        t.categoryKey,
+        t.customTitle,
+      );
+
       // Search: matches note or category name
       final query = _searchQuery.toLowerCase();
       final matchesSearch = query.isEmpty ||
           t.note.toLowerCase().contains(query) ||
-          t.budgetTitle.toLowerCase().contains(query);
+          displayTitle.toLowerCase().contains(query);
 
       // Type filter
       final matchesType =
@@ -54,7 +62,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
       // Category filter
       final matchesCategory =
-          _categoryFilter == 'all' || t.budgetTitle == _categoryFilter;
+          _categoryFilter == 'all' || displayTitle == _categoryFilter;
 
       return matchesSearch && matchesType && matchesCategory;
     }).toList();
@@ -71,7 +79,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Extract unique category names for the filter chip list ───
   List<String> _getCategories(List<TransactionModel> all) {
-    final cats = all.map((t) => t.budgetTitle).toSet().toList();
+    final cats = all.map(
+          (t) => CategoryLocalization.getCategoryName(
+        context,
+        t.categoryKey,
+        t.customTitle,
+      ),
+    ).toSet().toList();
     cats.sort();
     return cats;
   }
@@ -588,7 +602,11 @@ class _TransactionTile extends StatelessWidget {
                       child: Text(
                         transaction.note.isNotEmpty
                             ? transaction.note.replaceFirst('[Auto] ', '')
-                            : transaction.budgetTitle,
+                            : CategoryLocalization.getCategoryName(
+                          context,
+                          transaction.categoryKey,
+                          transaction.customTitle,
+                        ),
                         style: const TextStyle(
                           fontFamily: 'Manrope',
                           fontSize: 13,
@@ -606,7 +624,7 @@ class _TransactionTile extends StatelessWidget {
                           color: AppTheme.secondaryContainer,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        // FIXED: Replaced hardcoded 'Auto' with translation
+
                         child: Text(
                           l10n.auto,
                           style: const TextStyle(
@@ -624,7 +642,11 @@ class _TransactionTile extends StatelessWidget {
                 Row(
                   children: [
                     Text(
-                      transaction.budgetTitle,
+                      CategoryLocalization.getCategoryName(
+                        context,
+                        transaction.categoryKey,
+                        transaction.customTitle,
+                      ),
                       style: TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 11,

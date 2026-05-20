@@ -665,7 +665,44 @@
       "category": { "type": "String" },
       "percent":  { "type": "String" }
     }
-  }
+  },
+
+    "cloudinaryUploadFailed": "Cloudinary upload failed",
+    "@cloudinaryUploadFailed": {
+      "description": "Error shown when Cloudinary upload fails"
+    },
+
+    "failedToUpload": "Failed to upload",
+    "@failedToUpload": {
+      "description": "Generic upload failure message"
+    },
+
+
+  "category_groceries": "Groceries",
+  "category_travel": "Travel",
+  "category_entertainment": "Entertainment",
+  "category_food": "Food",
+  "category_shopping": "Shopping",
+  "category_custom": "Custom",
+
+  "allocated": "Allocated",
+  "deposit": "Deposit",
+  "withdraw": "Withdraw",
+
+    "home": "Home",
+    "budgets": "Budgets",
+    "invest": "Invest",
+    "profile": "Profile",
+    "fullName": "Full Name",
+     "failedToSave": "Failed to save: {error}",
+      "@failedToSave": {
+        "placeholders": {
+          "error": {}
+        }
+      }
+
+
+
 
 }
 
