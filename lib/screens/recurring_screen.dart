@@ -4,6 +4,8 @@ import '../models/recurring_transaction_model.dart';
 import '../services/recurring_service.dart';
 import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import '../utils/category_localization.dart';
+import '../utils/budget_categories.dart';
 
 // ============================================================
 // RecurringScreen
@@ -69,7 +71,7 @@ class RecurringScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 20),
                     Text(
-                      l10n.noRecurring,
+                      l10n.noRecurringTitle,
                       style: const TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 17,
@@ -78,7 +80,7 @@ class RecurringScreen extends StatelessWidget {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      l10n.noRecurringDesc,
+                      l10n.noRecurringSubtitle,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         fontFamily: 'Manrope',
@@ -181,6 +183,23 @@ class _RecurringCard extends StatelessWidget {
     ];
     final due = '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day}';
 
+    //  Dynamic translation fix
+    String displayNote = item.note;
+    final cleanKey = item.note.replaceAll('(recurring)', '').replaceAll('(Recurring)', '').trim();
+    if (budgetCategories.any((c) => c.key == cleanKey)) {
+      displayNote = '${CategoryLocalization.getCategoryName(context, cleanKey, '')} (${l10n.recurring})';
+    }
+
+
+    String displayFrequency = item.frequencyLabel;
+    final freqLower = item.frequencyLabel.toLowerCase();
+
+    if (freqLower.contains('month')) {
+      displayFrequency = l10n.everyMonth;
+    } else if (freqLower.contains('week')) {
+      displayFrequency = l10n.everyWeek;
+    }
+
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -224,7 +243,7 @@ class _RecurringCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  item.note,
+                  displayNote, // 👈 Now uses the dynamic localized string!
                   style: TextStyle(
                     fontFamily: 'Manrope',
                     fontSize: 14,
@@ -243,8 +262,11 @@ class _RecurringCard extends StatelessWidget {
                         color: AppTheme.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(6),
                       ),
+                      // Dynamic translation fix
                       child: Text(
-                        item.budgetTitle,
+                        budgetCategories.any((c) => c.key == item.budgetTitle)
+                            ? CategoryLocalization.getCategoryName(context, item.budgetTitle, '')
+                            : item.budgetTitle,
                         style: const TextStyle(
                           fontFamily: 'Manrope',
                           fontSize: 11,
@@ -257,7 +279,7 @@ class _RecurringCard extends StatelessWidget {
                     Icon(Icons.repeat_rounded, size: 12, color: Colors.grey[400]),
                     const SizedBox(width: 3),
                     Text(
-                      item.frequencyLabel,
+                      displayFrequency, // dynamically pulls from ARB files
                       style: TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 11,

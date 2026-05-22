@@ -1,7 +1,8 @@
 class TransactionModel {
   final String id;
   final String budgetId;         // Which budget this belongs to
-  final String budgetTitle;      // e.g. "Groceries" (for display)
+  final String categoryKey;      // Category the user chooses from
+  final String customTitle;      // custom title the user makes
   final double amount;           // How much money moved
   final String type;             // "deposit" or "withdraw"
   final String note;             // Optional note from user
@@ -10,7 +11,8 @@ class TransactionModel {
   TransactionModel({
     required this.id,
     required this.budgetId,
-    required this.budgetTitle,
+    required this.categoryKey,
+    required this.customTitle,
     required this.amount,
     required this.type,
     this.note = '',
@@ -20,7 +22,8 @@ class TransactionModel {
   Map<String, dynamic> toMap() {
     return {
       'budgetId': budgetId,
-      'budgetTitle': budgetTitle,
+      'categoryKey': categoryKey,
+      'customTitle': customTitle,
       'amount': amount,
       'type': type,
       'note': note,
@@ -32,7 +35,8 @@ class TransactionModel {
     return TransactionModel(
       id: id,
       budgetId: map['budgetId'] ?? '',
-      budgetTitle: map['budgetTitle'] ?? '',
+      categoryKey: map['categoryKey'] ?? 'custom',
+      customTitle: map['customTitle'] ?? '',
       amount: (map['amount'] ?? 0).toDouble(),
       type: map['type'] ?? 'withdraw',
       note: map['note'] ?? '',

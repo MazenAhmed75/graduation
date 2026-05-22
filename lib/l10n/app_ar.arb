@@ -12,14 +12,12 @@
   "totalSaved": "إجمالي المدخرات",
   "remaining": "المتبقي",
   "available": "المتاح",
-  "daysLeft": "يوم متبقي",
   "completed": "مكتمل",
   "thisMonth": "هذا الشهر",
-  "spent": "أُنفق",
+  "spent": "المصروف",
   "saved": "وُفِّر",
   "spendingBreakdown": "تفاصيل الإنفاق",
   "allOnTrack": "جميع الفئات في المسار الصحيح",
-  "overBudget": "تجاوزت الميزانية",
   "nearLimit": "قريبة من الحد",
   "noSpendingYet": "لا يوجد إنفاق مسجل بعد",
   "noSpendingDesc": "سيظهر مخطط إنفاقك هنا بمجرد تسجيل أول مصروف.",
@@ -36,22 +34,6 @@
   "saveAsTemplate": "حفظ كقالب",
   "useTemplate": "استخدام قالب",
   "useSavedTemplate": "استخدام قالب محفوظ",
-  "transactions": "المعاملات",
-  "noTransactions": "لا توجد معاملات بعد",
-  "noTransactionsDesc": "ستظهر معاملاتك هنا بمجرد البدء في الإنفاق أو الإيداع.",
-  "noResults": "لا توجد نتائج",
-  "noResultsDesc": "حاول تعديل البحث أو الفلاتر.",
-  "clearFilters": "مسح جميع الفلاتر",
-  "searchHint": "ابحث بالملاحظة أو الفئة…",
-  "all": "الكل",
-  "expenses": "المصروفات",
-  "income": "الدخل",
-  "allCategories": "جميع الفئات",
-  "newest": "الأحدث",
-  "largest": "الأكبر",
-  "auto": "تلقائي",
-  "withdraw": "سحب",
-  "deposit": "إيداع",
   "subtractMoney": "خصم مبلغ (إنفاق)",
   "addMoney": "إضافة مبلغ (دخل)",
   "amount": "المبلغ",
@@ -60,41 +42,18 @@
   "makeRecurring": "جعله متكرراً",
   "everyMonth": "كل شهر",
   "everyWeek": "كل أسبوع",
-  "recurring": "المتكررة",
-  "noRecurring": "لا توجد معاملات متكررة",
-  "noRecurringDesc": "عند إضافة أو خصم مبلغ، اختر \"جعلها متكررة\" لتتم تلقائياً.",
-  "nextDue": "القادم",
   "expenseLabel": "مصروف",
   "incomeLabel": "دخل",
   "profile": "الملف الشخصي",
-  "account": "الحساب",
   "fullName": "الاسم الكامل",
   "email": "البريد الإلكتروني",
-  "membership": "الاشتراك",
-  "currentPlan": "الخطة الحالية",
   "free": "مجاني",
   "upgrade": "ترقية",
-  "settings": "الإعدادات",
   "notifications": "الإشعارات",
-  "privacySecurity": "الخصوصية والأمان",
   "language": "اللغة",
-  "logout": "تسجيل الخروج",
-  "logoutConfirmTitle": "تسجيل الخروج",
   "logoutConfirmBody": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
-  "appVersion": "إصدار التطبيق 1.0.0",
-  "editName": "تعديل الاسم",
-  "choosePhotoSource": "اختر مصدر الصورة",
-  "takePhoto": "التقاط صورة",
-  "chooseFromGallery": "اختر من المعرض",
-  "uploadingPhoto": "جارٍ رفع الصورة...",
-  "photoUpdated": "تم تحديث الصورة الشخصية!",
   "photoFailed": "فشل رفع الصورة",
-  "cancel": "إلغاء",
-  "save": "حفظ",
-  "delete": "حذف",
   "ok": "حسناً",
-  "today": "اليوم",
-  "yesterday": "أمس",
   "home": "الرئيسية",
   "invest": "استثمار",
   "loading": "جارٍ التحميل...",
@@ -119,6 +78,7 @@
   "enterPassword": "الرجاء إدخال كلمة المرور",
   "passwordMin": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
   "forgotPassword": "نسيت كلمة المرور؟",
+  "signIn": "تسجيل الدخول",
   "continueGoogle": "المتابعة باستخدام Google",
   "dontHaveAccount": "ليس لديك حساب؟",
   "signUp": "إنشاء حساب",
@@ -150,9 +110,8 @@
   },
   "createAccount": "إنشاء حساب",
   "registerSubtitle": "ابدأ رحلتك المالية الواعية",
-  "signIn": "تسجيل الدخول",
   "alreadyHaveAccount": "لديك حساب بالفعل؟",
-  "fullNameHint": "محمد أحمد",
+  "fullNameHint": "أدخل اسمك",
   "emailHint": "you@example.com",
   "passwordHint": "6 أحرف على الأقل",
   "confirmPasswordHint": "أعد إدخال كلمة المرور",
@@ -189,7 +148,7 @@
   "crypto": "العملات الرقمية",
   "usStocks": "الأسهم الأمريكية",
   "showOpportunities": "عرض الفرص",
-  "investBestPick": "استثمر في أفضل فرصة",
+  "investBestPick": "استثمر in أفضل فرصة",
   "fullAutoScan": "فحص تلقائي كامل",
   "portfolioReview": "مراجعة المحفظة",
   "lockInGains": "تثبيت الأرباح",
@@ -448,67 +407,41 @@
   "edit": "تعديل",
   "setupMonthTemplate": "قم بإعداد ميزانية الشهر ثم اضغط على \"حفظ كقالب\".",
   "add": "إضافة",
-
-"resetPassword": "إعادة تعيين كلمة المرور",
-"resetPasswordDescription": "أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل إليك رسالة تحتوي على تعليمات لإعادة تعيين كلمة المرور.",
-"resetPasswordEmailSentDescription": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور. إذا لم يظهر خلال بضع دقائق، تحقق من مجلد الرسائل غير المرغوب فيها.",
-"emailAddress": "البريد الإلكتروني",
-"emailHint": "you@example.com",
-"pleaseEnterEmail": "يرجى إدخال بريدك الإلكتروني",
-"pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صالح",
-"sendResetLink": "إرسال رابط إعادة التعيين",
-"backToLogin": "العودة لتسجيل الدخول",
-"passwordResetEmailSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!",
-
-
+  "resetPassword": "إعادة تعيين كلمة المرور",
+  "resetPasswordDescription": "أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل إليك رسالة تحتوي على تعليمات لإعادة تعيين كلمة المرور.",
+  "resetPasswordEmailSentDescription": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور. إذا لم يظهر خلال بضع دقائق، تحقق من مجلد الرسائل غير المرغوب فيها.",
+  "pleaseEnterEmail": "يرجى إدخال بريدك الإلكتروني",
+  "pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صالح",
+  "sendResetLink": "إرسال رابط إعادة التعيين",
+  "backToLogin": "العودة لتسجيل الدخول",
+  "passwordResetEmailSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!",
   "choosePhotoSource": "اختر مصدر الصورة",
   "takePhoto": "التقاط صورة",
   "chooseFromGallery": "اختر من المعرض",
   "uploadingPhoto": "جارٍ رفع الصورة...",
   "profileUpdated": "تم تحديث صورة الملف الشخصي!",
   "uploadFailed": "فشل رفع الصورة",
-
   "account": "الحساب",
   "membership": "العضوية",
   "settings": "الإعدادات",
-
   "fullName": "الاسم الكامل",
   "email": "البريد الإلكتروني",
-
   "currentPlan": "الخطة الحالية",
-  "free": "مجاني",
-  "upgrade": "ترقية",
-
-  "notifications": "الإشعارات",
-  "language": "اللغة",
-
   "privacySecurity": "الخصوصية والأمان",
-
   "logout": "تسجيل الخروج",
   "logoutConfirmTitle": "تسجيل الخروج",
   "logoutConfirmMessage": "هل أنت متأكد أنك تريد تسجيل الخروج؟",
   "cancel": "إلغاء",
-
   "editName": "تعديل الاسم",
-  "fullNameHint": "أدخل اسمك",
   "save": "حفظ",
-
   "appVersion": "إصدار التطبيق 1.0.0",
-
-
   "recurring": "المعاملات المتكررة",
-
   "noRecurringTitle": "لا توجد معاملات متكررة",
   "noRecurringSubtitle": "عند إضافة أو صرف المال، فعّل خيار \"تكرار\" لجعلها تتكرر تلقائياً.",
-
   "deleteRecurringTitle": "حذف المعاملة المتكررة؟",
   "deleteRecurringMessage": "لن يتم تطبيق \"{note}\" تلقائياً بعد الآن.",
-
-  "cancel": "إلغاء",
   "delete": "حذف",
-
   "next": "التالي",
-
   "monthJan": "يناير",
   "monthFeb": "فبراير",
   "monthMar": "مارس",
@@ -521,63 +454,33 @@
   "monthOct": "أكتوبر",
   "monthNov": "نوفمبر",
   "monthDec": "ديسمبر",
-
   "nextDue": "التالي: {date}",
-
-
   "transactions": "المعاملات",
-
   "searchHint": "ابحث بالوصف أو التصنيف…",
-
   "newest": "الأحدث",
   "largest": "الأكبر",
-
   "all": "الكل",
   "expenses": "المصروفات",
   "income": "الدخل",
-
   "allCategories": "كل التصنيفات",
-
-  "transactionsCount": "{count} معاملة",
-
   "today": "اليوم",
   "yesterday": "أمس",
-
   "noResults": "لا توجد نتائج",
   "noTransactions": "لا توجد معاملات",
-
   "noResultsHint": "حاول تعديل البحث أو الفلاتر.",
   "noTransactionsHint": "ستظهر معاملاتك هنا\nعند البدء بالصرف أو الإيداع.",
-
   "clearFilters": "مسح كل الفلاتر",
-
   "auto": "تلقائي",
-  "@@locale": "ar",
-  "transactions": "المعاملات",
-  "searchHint": "ابحث بالملاحظة أو الفئة…",
-  "newest": "الأحدث",
-  "largest": "الأعلى قيمة",
-  "all": "الكل",
-  "expenses": "المصروفات",
-  "income": "الدخل",
-  "allCategories": "كل الفئات",
-  "transactionsCount": "{count} معاملات",
+  "transactionsCount": "{count} معاملة",
   "@transactionsCount": {
-    "placeholders": { "count": { "type": "String" } }
+    "placeholders": {
+      "count": { "type": "String" }
+    }
   },
-  "today": "اليوم",
-  "yesterday": "أمس",
-  "noResults": "لا توجد نتائج",
-  "noResultsHint": "حاول تعديل البحث أو الفلاتر.",
-  "noTransactions": "لا توجد معاملات بعد",
-  "noTransactionsHint": "ستظهر هنا عمليات الإيداع والإنفاق.",
-  "clearFilters": "مسح الفلاتر",
   "autoPrefix": "[تلقائي] ",
   "autoLabel": "تلقائي",
   "am": "ص",
   "pm": "م",
-
-
   "privacyAndSecurity": "الخصوصية والأمان",
   "securitySettings": "إعدادات الأمان",
   "googleAccountManaged": "حسابك تتم إدارته عبر Google.",
@@ -591,7 +494,197 @@
   "fieldRequired": "هذا الحقل مطلوب",
   "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
   "passwordTooShort": "يجب أن تكون 6 أحرف على الأقل",
-  "passwordUpdatedSuccess": "تم تحديث كلمة المرور بنجاح!"
+  "passwordUpdatedSuccess": "تم تحديث كلمة المرور بنجاح!",
+  "spendingInsights": "تحليلات الإنفاق",
+  "daysLeft": "باقي {days} يوم هذا الشهر",
+  "@daysLeft": {
+    "placeholders": {
+      "days": { "type": "int" }
+    }
+  },
+  "onTrack": "{count} على المسار الصحيح",
+  "@onTrack": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "overBudget": "{count} تجاوزوا الميزانية",
+  "@overBudget": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addBudgetCategoriesInsights": "أضف فئات الميزانية لعرض التحليلات.",
+  "overBudgetInsight": "لقد تجاوزت الميزانية بمقدار {amount}.",
+  "@overBudgetInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "nearlyAtLimitInsight": "تبقى {amount} فقط قبل الوصول للحد.",
+  "@nearlyAtLimitInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "usedPercentInsight": "استخدمت {percent}% من ميزانيتك مع بقاء {days} يوم.",
+  "@usedPercentInsight": {
+    "placeholders": {
+      "percent": {},
+      "days": {}
+    }
+  },
+  "halfwayBudgetInsight": "تبقى لديك نصف الميزانية: {amount}.",
+  "@halfwayBudgetInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "savedThisMonthInsight": "رائع! لقد وفرت {amount} هذا الشهر.",
+  "@savedThisMonthInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "noSpendingInsight": "لا يوجد إنفاق بعد. لديك {amount} متاح.",
+  "@noSpendingInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "onTrackInsight": "أنت على المسار الصحيح ويتبقى {amount}.",
+  "@onTrackInsight": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "budgetFullyUsedInsight": "تم استخدام الميزانية بالكامل. قد تنفد خلال {days} يوم.",
+  "@budgetFullyUsedInsight": {
+    "placeholders": {
+      "days": {}
+    }
+  },
+  "spendingReport": "تقرير المصاريف",
+  "breakdown": "تفصيل",
+  "byCategory": "حسب الفئة",
+  "allocated": "المخصص",
+  "spent": "المصروف",
+  "used": "المستخدم",
+  "noBudgetData": "لا توجد بيانات للميزانية لعرضها",
+
+
+
+  "aiInsightLabel": "رؤية ذكية",
+
+  "aiInsightRefreshTooltip": "تحديث",
+
+  "aiInsightJustNow": "الآن",
+
+  "aiInsightMinutesAgo": "منذ {n} د",
+  "@aiInsightMinutesAgo": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "aiInsightHoursAgo": "منذ {n} س",
+  "@aiInsightHoursAgo": {
+    "placeholders": { "n": { "type": "int" } }
+  },
+
+  "aiInsightErrorMsg": "تعذّر تحميل الرؤية الذكية.",
+
+  "aiInsightRetryBtn": "إعادة المحاولة",
+
+  "budgetsScreenTitle": "الميزانية",
+
+
+  "reportsTitle": "التقارير",
+  "aiInsightLabel": "رؤية مالية ذكية",
+  "aiInsightRefreshTooltip": "تحديث",
+  "aiInsightErrorMsg": "تعذّر تحميل الرؤية الذكية.",
+  "aiInsightRetryBtn": "إعادة المحاولة",
+  "localInsightsSectionTitle": "ملاحظات فورية",
+
+  "insightHighestSpending": "{category} هو أكبر نفقاتك بنسبة {percent} من ميزانيته.",
+  "@insightHighestSpending": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "percent":  { "type": "String" }
+    }
+  },
+
+  "insightOverBudget": "لقد تجاوزت ميزانيتك في: {categories}.",
+  "@insightOverBudget": {
+    "placeholders": { "categories": { "type": "String" } }
+  },
+
+  "insightWarningTotal": "لقد استخدمت {percent} من إجمالي ميزانيتك الشهرية — تمهّل!",
+  "@insightWarningTotal": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+
+  "insightGreatProgress": "انضباط رائع! لم تنفق سوى {percent} من ميزانيتك حتى الآن.",
+  "@insightGreatProgress": {
+    "placeholders": { "percent": { "type": "String" } }
+  },
+
+  "insightUnderUtilized": "إنفاق منخفض في {categories} — فكّر في إعادة توزيع الفائض.",
+  "@insightUnderUtilized": {
+    "placeholders": { "categories": { "type": "String" } }
+  },
+
+  "insightNearLimit": "{category} على وشك الوصول إلى حدّه ({percent}).",
+  "@insightNearLimit": {
+    "placeholders": {
+      "category": { "type": "String" },
+      "percent":  { "type": "String" }
+    }
+  },
+
+
+  "cloudinaryUploadFailed": "فشل رفع الصورة إلى كلاوديناري",
+  "@cloudinaryUploadFailed": {
+    "description": "رسالة خطأ عند فشل رفع الصورة"
+  },
+
+  "failedToUpload": "فشل في رفع الصورة",
+  "@failedToUpload": {
+    "description": "رسالة خطأ عامة عند فشل الرفع"
+  },
+
+
+  "category_groceries": "بقالة",
+  "category_travel": "سفر",
+  "category_entertainment": "ترفيه",
+  "category_food": "طعام",
+  "category_shopping": "تسوق",
+  "category_custom": "فئة خاصه",
+
+
+  "allocated": " المخصص",
+  "deposit": "إيداع",
+  "withdraw": "سحب",
+
+    "home": "الرئيسية",
+    "budgets": "الميزانيات",
+    "invest": "الاستثمار",
+    "profile": "الملف الشخصي",
+    "fullName": "الاسم الكامل",
+      "failedToSave": "فشل الحفظ: {error}",
+      "@failedToSave": {
+        "placeholders": {
+          "error": {}
+        }
+      },
+"replaceCurrentCategories": "استبدال الفئات الحالية؟",
+"replaceCategoriesWarning": "تطبيق هذا القالب سيؤدي إلى إزالة ميزانيات فئاتك الحالية واستبدالها بفئات القالب.",
+"replace": "استبدال",
+"overBy": "⚠ تجاوز بمقدار {amount}",
+
+"everyMonth": "كل شهر",
+  "everyWeek": "كل أسبوع",
+  "recurring": "متكرر",
+  "offlineBanner": "أنت غير متصل — ستتم مزامنة التغييرات عند إعادة الاتصال"
+
 
 
 

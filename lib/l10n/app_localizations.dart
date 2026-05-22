@@ -173,8 +173,8 @@ abstract class AppLocalizations {
   /// No description provided for @daysLeft.
   ///
   /// In en, this message translates to:
-  /// **'Days Left'**
-  String get daysLeft;
+  /// **'{days} days left this month'**
+  String daysLeft(int days);
 
   /// No description provided for @completed.
   ///
@@ -211,12 +211,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All categories on track'**
   String get allOnTrack;
-
-  /// No description provided for @overBudget.
-  ///
-  /// In en, this message translates to:
-  /// **'over budget'**
-  String get overBudget;
 
   /// No description provided for @nearLimit.
   ///
@@ -314,102 +308,6 @@ abstract class AppLocalizations {
   /// **'Use a saved template'**
   String get useSavedTemplate;
 
-  /// No description provided for @transactions.
-  ///
-  /// In en, this message translates to:
-  /// **'Transactions'**
-  String get transactions;
-
-  /// No description provided for @noTransactions.
-  ///
-  /// In en, this message translates to:
-  /// **'No transactions yet'**
-  String get noTransactions;
-
-  /// No description provided for @noTransactionsDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Your transactions will appear here once you start spending or depositing.'**
-  String get noTransactionsDesc;
-
-  /// No description provided for @noResults.
-  ///
-  /// In en, this message translates to:
-  /// **'No results found'**
-  String get noResults;
-
-  /// No description provided for @noResultsDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'Try adjusting your search or filters.'**
-  String get noResultsDesc;
-
-  /// No description provided for @clearFilters.
-  ///
-  /// In en, this message translates to:
-  /// **'Clear Filters'**
-  String get clearFilters;
-
-  /// No description provided for @searchHint.
-  ///
-  /// In en, this message translates to:
-  /// **'Search by note or category…'**
-  String get searchHint;
-
-  /// No description provided for @all.
-  ///
-  /// In en, this message translates to:
-  /// **'All'**
-  String get all;
-
-  /// No description provided for @expenses.
-  ///
-  /// In en, this message translates to:
-  /// **'Expenses'**
-  String get expenses;
-
-  /// No description provided for @income.
-  ///
-  /// In en, this message translates to:
-  /// **'Income'**
-  String get income;
-
-  /// No description provided for @allCategories.
-  ///
-  /// In en, this message translates to:
-  /// **'All Categories'**
-  String get allCategories;
-
-  /// No description provided for @newest.
-  ///
-  /// In en, this message translates to:
-  /// **'Newest'**
-  String get newest;
-
-  /// No description provided for @largest.
-  ///
-  /// In en, this message translates to:
-  /// **'Largest'**
-  String get largest;
-
-  /// No description provided for @auto.
-  ///
-  /// In en, this message translates to:
-  /// **'Auto'**
-  String get auto;
-
-  /// No description provided for @withdraw.
-  ///
-  /// In en, this message translates to:
-  /// **'Withdraw'**
-  String get withdraw;
-
-  /// No description provided for @deposit.
-  ///
-  /// In en, this message translates to:
-  /// **'Deposit'**
-  String get deposit;
-
   /// No description provided for @subtractMoney.
   ///
   /// In en, this message translates to:
@@ -458,30 +356,6 @@ abstract class AppLocalizations {
   /// **'Every Week'**
   String get everyWeek;
 
-  /// No description provided for @recurring.
-  ///
-  /// In en, this message translates to:
-  /// **'Recurring'**
-  String get recurring;
-
-  /// No description provided for @noRecurring.
-  ///
-  /// In en, this message translates to:
-  /// **'No recurring transactions'**
-  String get noRecurring;
-
-  /// No description provided for @noRecurringDesc.
-  ///
-  /// In en, this message translates to:
-  /// **'When you add or spend money, check \"Make recurring\" to set it on repeat.'**
-  String get noRecurringDesc;
-
-  /// No description provided for @nextDue.
-  ///
-  /// In en, this message translates to:
-  /// **'Next: {date}'**
-  String nextDue(Object date);
-
   /// No description provided for @expenseLabel.
   ///
   /// In en, this message translates to:
@@ -500,16 +374,10 @@ abstract class AppLocalizations {
   /// **'Profile'**
   String get profile;
 
-  /// No description provided for @account.
-  ///
-  /// In en, this message translates to:
-  /// **'Account'**
-  String get account;
-
   /// No description provided for @fullName.
   ///
   /// In en, this message translates to:
-  /// **'FULL NAME'**
+  /// **'Full Name'**
   String get fullName;
 
   /// No description provided for @email.
@@ -517,18 +385,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'EMAIL'**
   String get email;
-
-  /// No description provided for @membership.
-  ///
-  /// In en, this message translates to:
-  /// **'Membership'**
-  String get membership;
-
-  /// No description provided for @currentPlan.
-  ///
-  /// In en, this message translates to:
-  /// **'CURRENT PLAN'**
-  String get currentPlan;
 
   /// No description provided for @free.
   ///
@@ -542,23 +398,11 @@ abstract class AppLocalizations {
   /// **'Upgrade'**
   String get upgrade;
 
-  /// No description provided for @settings.
-  ///
-  /// In en, this message translates to:
-  /// **'Settings'**
-  String get settings;
-
   /// No description provided for @notifications.
   ///
   /// In en, this message translates to:
   /// **'Notifications'**
   String get notifications;
-
-  /// No description provided for @privacySecurity.
-  ///
-  /// In en, this message translates to:
-  /// **'Privacy & Security'**
-  String get privacySecurity;
 
   /// No description provided for @language.
   ///
@@ -566,65 +410,11 @@ abstract class AppLocalizations {
   /// **'Language'**
   String get language;
 
-  /// No description provided for @logout.
-  ///
-  /// In en, this message translates to:
-  /// **'Logout'**
-  String get logout;
-
-  /// No description provided for @logoutConfirmTitle.
-  ///
-  /// In en, this message translates to:
-  /// **'Log Out'**
-  String get logoutConfirmTitle;
-
   /// No description provided for @logoutConfirmBody.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to log out?'**
   String get logoutConfirmBody;
-
-  /// No description provided for @appVersion.
-  ///
-  /// In en, this message translates to:
-  /// **'App Version 1.0.0'**
-  String get appVersion;
-
-  /// No description provided for @editName.
-  ///
-  /// In en, this message translates to:
-  /// **'Edit Name'**
-  String get editName;
-
-  /// No description provided for @choosePhotoSource.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose Photo Source'**
-  String get choosePhotoSource;
-
-  /// No description provided for @takePhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'Take Photo'**
-  String get takePhoto;
-
-  /// No description provided for @chooseFromGallery.
-  ///
-  /// In en, this message translates to:
-  /// **'Choose from Gallery'**
-  String get chooseFromGallery;
-
-  /// No description provided for @uploadingPhoto.
-  ///
-  /// In en, this message translates to:
-  /// **'Uploading photo...'**
-  String get uploadingPhoto;
-
-  /// No description provided for @photoUpdated.
-  ///
-  /// In en, this message translates to:
-  /// **'Profile picture updated!'**
-  String get photoUpdated;
 
   /// No description provided for @photoFailed.
   ///
@@ -632,41 +422,11 @@ abstract class AppLocalizations {
   /// **'Failed to upload photo'**
   String get photoFailed;
 
-  /// No description provided for @cancel.
-  ///
-  /// In en, this message translates to:
-  /// **'Cancel'**
-  String get cancel;
-
-  /// No description provided for @save.
-  ///
-  /// In en, this message translates to:
-  /// **'Save'**
-  String get save;
-
-  /// No description provided for @delete.
-  ///
-  /// In en, this message translates to:
-  /// **'Delete'**
-  String get delete;
-
   /// No description provided for @ok.
   ///
   /// In en, this message translates to:
   /// **'OK'**
   String get ok;
-
-  /// No description provided for @today.
-  ///
-  /// In en, this message translates to:
-  /// **'Today'**
-  String get today;
-
-  /// No description provided for @yesterday.
-  ///
-  /// In en, this message translates to:
-  /// **'Yesterday'**
-  String get yesterday;
 
   /// No description provided for @home.
   ///
@@ -1886,6 +1646,30 @@ abstract class AppLocalizations {
   /// **'Password reset link sent to your email!'**
   String get passwordResetEmailSent;
 
+  /// No description provided for @choosePhotoSource.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose Photo Source'**
+  String get choosePhotoSource;
+
+  /// No description provided for @takePhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Take Photo'**
+  String get takePhoto;
+
+  /// No description provided for @chooseFromGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose from Gallery'**
+  String get chooseFromGallery;
+
+  /// No description provided for @uploadingPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Uploading photo...'**
+  String get uploadingPhoto;
+
   /// No description provided for @profileUpdated.
   ///
   /// In en, this message translates to:
@@ -1898,11 +1682,83 @@ abstract class AppLocalizations {
   /// **'Failed to upload photo'**
   String get uploadFailed;
 
+  /// No description provided for @account.
+  ///
+  /// In en, this message translates to:
+  /// **'Account'**
+  String get account;
+
+  /// No description provided for @membership.
+  ///
+  /// In en, this message translates to:
+  /// **'Membership'**
+  String get membership;
+
+  /// No description provided for @settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get settings;
+
+  /// No description provided for @currentPlan.
+  ///
+  /// In en, this message translates to:
+  /// **'CURRENT PLAN'**
+  String get currentPlan;
+
+  /// No description provided for @privacySecurity.
+  ///
+  /// In en, this message translates to:
+  /// **'Privacy & Security'**
+  String get privacySecurity;
+
+  /// No description provided for @logout.
+  ///
+  /// In en, this message translates to:
+  /// **'Logout'**
+  String get logout;
+
+  /// No description provided for @logoutConfirmTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Log Out'**
+  String get logoutConfirmTitle;
+
   /// No description provided for @logoutConfirmMessage.
   ///
   /// In en, this message translates to:
   /// **'Are you sure you want to log out?'**
   String get logoutConfirmMessage;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @editName.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Name'**
+  String get editName;
+
+  /// No description provided for @save.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get save;
+
+  /// No description provided for @appVersion.
+  ///
+  /// In en, this message translates to:
+  /// **'App Version 1.0.0'**
+  String get appVersion;
+
+  /// No description provided for @recurring.
+  ///
+  /// In en, this message translates to:
+  /// **'Recurring'**
+  String get recurring;
 
   /// No description provided for @noRecurringTitle.
   ///
@@ -1927,6 +1783,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'\"{note}\" will no longer be applied automatically.'**
   String deleteRecurringMessage(Object note);
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
 
   /// No description provided for @next.
   ///
@@ -2006,11 +1868,83 @@ abstract class AppLocalizations {
   /// **'Dec'**
   String get monthDec;
 
-  /// No description provided for @transactionsCount.
+  /// No description provided for @nextDue.
   ///
   /// In en, this message translates to:
-  /// **'{count} transactions'**
-  String transactionsCount(String count);
+  /// **'Next: {date}'**
+  String nextDue(Object date);
+
+  /// No description provided for @transactions.
+  ///
+  /// In en, this message translates to:
+  /// **'Transactions'**
+  String get transactions;
+
+  /// No description provided for @searchHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Search by note or category…'**
+  String get searchHint;
+
+  /// No description provided for @newest.
+  ///
+  /// In en, this message translates to:
+  /// **'Newest'**
+  String get newest;
+
+  /// No description provided for @largest.
+  ///
+  /// In en, this message translates to:
+  /// **'Largest'**
+  String get largest;
+
+  /// No description provided for @all.
+  ///
+  /// In en, this message translates to:
+  /// **'All'**
+  String get all;
+
+  /// No description provided for @expenses.
+  ///
+  /// In en, this message translates to:
+  /// **'Expenses'**
+  String get expenses;
+
+  /// No description provided for @income.
+  ///
+  /// In en, this message translates to:
+  /// **'Income'**
+  String get income;
+
+  /// No description provided for @allCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'All categories'**
+  String get allCategories;
+
+  /// No description provided for @today.
+  ///
+  /// In en, this message translates to:
+  /// **'Today'**
+  String get today;
+
+  /// No description provided for @yesterday.
+  ///
+  /// In en, this message translates to:
+  /// **'Yesterday'**
+  String get yesterday;
+
+  /// No description provided for @noResults.
+  ///
+  /// In en, this message translates to:
+  /// **'No results found'**
+  String get noResults;
+
+  /// No description provided for @noTransactions.
+  ///
+  /// In en, this message translates to:
+  /// **'No transactions yet'**
+  String get noTransactions;
 
   /// No description provided for @noResultsHint.
   ///
@@ -2023,6 +1957,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Your deposits and spending will appear here.'**
   String get noTransactionsHint;
+
+  /// No description provided for @clearFilters.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all filters'**
+  String get clearFilters;
+
+  /// No description provided for @auto.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get auto;
+
+  /// No description provided for @transactionsCount.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} transactions'**
+  String transactionsCount(String count);
 
   /// No description provided for @autoPrefix.
   ///
@@ -2131,6 +2083,306 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Password updated successfully!'**
   String get passwordUpdatedSuccess;
+
+  /// No description provided for @spendingInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending Insights'**
+  String get spendingInsights;
+
+  /// No description provided for @onTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} on track'**
+  String onTrack(int count);
+
+  /// No description provided for @overBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} over budget'**
+  String overBudget(int count);
+
+  /// No description provided for @addBudgetCategoriesInsights.
+  ///
+  /// In en, this message translates to:
+  /// **'Add budget categories to see insights.'**
+  String get addBudgetCategoriesInsights;
+
+  /// No description provided for @overBudgetInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Over budget by {amount}. Consider cutting back.'**
+  String overBudgetInsight(Object amount);
+
+  /// No description provided for @nearlyAtLimitInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Only {amount} left — nearly at your limit!'**
+  String nearlyAtLimitInsight(Object amount);
+
+  /// No description provided for @usedPercentInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used {percent}% with {days} days to go.'**
+  String usedPercentInsight(Object percent, Object days);
+
+  /// No description provided for @halfwayBudgetInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Halfway through budget. {amount} remaining — stay consistent.'**
+  String halfwayBudgetInsight(Object amount);
+
+  /// No description provided for @savedThisMonthInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'Great discipline! You saved {amount} this month.'**
+  String savedThisMonthInsight(Object amount);
+
+  /// No description provided for @noSpendingInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'No spending yet. {amount} is ready to use.'**
+  String noSpendingInsight(Object amount);
+
+  /// No description provided for @onTrackInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'On track — {amount} left for the rest of the month.'**
+  String onTrackInsight(Object amount);
+
+  /// No description provided for @budgetFullyUsedInsight.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used the entire budget with {days} days remaining.'**
+  String budgetFullyUsedInsight(Object days);
+
+  /// No description provided for @spendingReport.
+  ///
+  /// In en, this message translates to:
+  /// **'Spending Report'**
+  String get spendingReport;
+
+  /// No description provided for @breakdown.
+  ///
+  /// In en, this message translates to:
+  /// **'Breakdown'**
+  String get breakdown;
+
+  /// No description provided for @byCategory.
+  ///
+  /// In en, this message translates to:
+  /// **'By Category'**
+  String get byCategory;
+
+  /// No description provided for @allocated.
+  ///
+  /// In en, this message translates to:
+  /// **'Allocated'**
+  String get allocated;
+
+  /// No description provided for @used.
+  ///
+  /// In en, this message translates to:
+  /// **'Used'**
+  String get used;
+
+  /// No description provided for @noBudgetData.
+  ///
+  /// In en, this message translates to:
+  /// **'No budget data to display.'**
+  String get noBudgetData;
+
+  /// Label above the Gemini insight card
+  ///
+  /// In en, this message translates to:
+  /// **'AI Financial Insight'**
+  String get aiInsightLabel;
+
+  /// No description provided for @aiInsightRefreshTooltip.
+  ///
+  /// In en, this message translates to:
+  /// **'Refresh'**
+  String get aiInsightRefreshTooltip;
+
+  /// No description provided for @aiInsightJustNow.
+  ///
+  /// In en, this message translates to:
+  /// **'Just now'**
+  String get aiInsightJustNow;
+
+  /// No description provided for @aiInsightMinutesAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{n} min ago'**
+  String aiInsightMinutesAgo(int n);
+
+  /// No description provided for @aiInsightHoursAgo.
+  ///
+  /// In en, this message translates to:
+  /// **'{n}h ago'**
+  String aiInsightHoursAgo(int n);
+
+  /// No description provided for @aiInsightErrorMsg.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not load AI insight.'**
+  String get aiInsightErrorMsg;
+
+  /// No description provided for @aiInsightRetryBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Retry'**
+  String get aiInsightRetryBtn;
+
+  /// No description provided for @budgetsScreenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Budgets'**
+  String get budgetsScreenTitle;
+
+  /// Reports screen app bar title
+  ///
+  /// In en, this message translates to:
+  /// **'Reports'**
+  String get reportsTitle;
+
+  /// No description provided for @localInsightsSectionTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Quick Insights'**
+  String get localInsightsSectionTitle;
+
+  /// No description provided for @insightHighestSpending.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} is your biggest expense at {percent} of its budget.'**
+  String insightHighestSpending(String category, String percent);
+
+  /// No description provided for @insightOverBudget.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve exceeded your budget in: {categories}.'**
+  String insightOverBudget(String categories);
+
+  /// No description provided for @insightWarningTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used {percent} of your total monthly budget — slow down!'**
+  String insightWarningTotal(String percent);
+
+  /// No description provided for @insightGreatProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'Great discipline! Only {percent} of your budget spent so far.'**
+  String insightGreatProgress(String percent);
+
+  /// No description provided for @insightUnderUtilized.
+  ///
+  /// In en, this message translates to:
+  /// **'Low spend in {categories} — consider reallocating the surplus.'**
+  String insightUnderUtilized(String categories);
+
+  /// No description provided for @insightNearLimit.
+  ///
+  /// In en, this message translates to:
+  /// **'{category} is almost at its limit ({percent}).'**
+  String insightNearLimit(String category, String percent);
+
+  /// Error shown when Cloudinary upload fails
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudinary upload failed'**
+  String get cloudinaryUploadFailed;
+
+  /// Generic upload failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload'**
+  String get failedToUpload;
+
+  /// No description provided for @category_groceries.
+  ///
+  /// In en, this message translates to:
+  /// **'Groceries'**
+  String get category_groceries;
+
+  /// No description provided for @category_travel.
+  ///
+  /// In en, this message translates to:
+  /// **'Travel'**
+  String get category_travel;
+
+  /// No description provided for @category_entertainment.
+  ///
+  /// In en, this message translates to:
+  /// **'Entertainment'**
+  String get category_entertainment;
+
+  /// No description provided for @category_food.
+  ///
+  /// In en, this message translates to:
+  /// **'Food'**
+  String get category_food;
+
+  /// No description provided for @category_shopping.
+  ///
+  /// In en, this message translates to:
+  /// **'Shopping'**
+  String get category_shopping;
+
+  /// No description provided for @category_custom.
+  ///
+  /// In en, this message translates to:
+  /// **'Custom'**
+  String get category_custom;
+
+  /// No description provided for @deposit.
+  ///
+  /// In en, this message translates to:
+  /// **'Deposit'**
+  String get deposit;
+
+  /// No description provided for @withdraw.
+  ///
+  /// In en, this message translates to:
+  /// **'Withdraw'**
+  String get withdraw;
+
+  /// No description provided for @failedToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save: {error}'**
+  String failedToSave(Object error);
+
+  /// No description provided for @replaceCurrentCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace Current Categories?'**
+  String get replaceCurrentCategories;
+
+  /// No description provided for @replaceCategoriesWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Applying this template will remove your current category budgets and replace them with the template categories.'**
+  String get replaceCategoriesWarning;
+
+  /// No description provided for @replace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get replace;
+
+  /// No description provided for @overBy.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠ Over by {amount}'**
+  String overBy(String amount);
+
+  /// Banner shown at the top of the screen when the device has no internet connection
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline — changes will sync when reconnected'**
+  String get offlineBanner;
 }
 
 class _AppLocalizationsDelegate

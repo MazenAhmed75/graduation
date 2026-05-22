@@ -7,7 +7,10 @@ import '../services/budget_service.dart';
 import '../services/auth_service.dart';
 import '../utils/currency_formatter.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
-
+import '../screens/insights_sheet.dart';
+import '../screens/reports_sheet.dart';
+import '../utils/category_localization.dart';
+import '../utils/budget_categories.dart';
 class HomeScreen extends StatelessWidget {
   // ============================================================
   // onNavigateToBudgets is a callback from MainScreen.
@@ -374,13 +377,7 @@ class HomeScreen extends StatelessWidget {
                                     Icons.analytics,
                                     AppTheme.secondaryContainer,
                                     AppTheme.onSecondaryContainer,
-                                        () {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        SnackBar(
-                                          content: Text(l10n.reportsComingSoon),
-                                        ),
-                                      );
-                                    },
+                                        () => showReportsSheet(context, budgets),
                                   ),
                                 ),
                               ],
@@ -394,13 +391,7 @@ class HomeScreen extends StatelessWidget {
                               Icons.tips_and_updates,
                               AppTheme.tertiaryContainer,
                               AppTheme.onTertiaryContainer,
-                                  () {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
-                                    content: Text(l10n.insightsComingSoon),
-                                  ),
-                                );
-                              },
+                                  () => showInsightsSheet(context, budgets, daysLeft),
                               isFullHeight: true,
                             ),
                           ),
@@ -500,7 +491,10 @@ class HomeScreen extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: _buildMiniBudgetCard(
-                                budget.title,
+                                // Dynamic translation fix
+                                (budget.categoryKey == 'custom' && budgetCategories.any((c) => c.key == budget.customTitle))
+                                    ? CategoryLocalization.getCategoryName(context, budget.customTitle, '')
+                                    : CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
                                 l10n.amountLeftText(
                                   budget.remaining.toStringAsFixed(0),
                                 ),

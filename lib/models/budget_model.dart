@@ -2,7 +2,8 @@ class BudgetModel {
   final String id;                     // Firebase document ID
   final String userId;                // Which user owns this budget
   final String monthlyBudgetId;      // links this category to a monthly budget
-  String title;                     // e.g. "Groceries"
+  String categoryKey;                // THE categories the user choose from
+  String customTitle;               //  ONLY used if categoryKey == 'custom'
   String subtitle;                 // e.g. "Weekly shopping"
   double allocated;               // Total budget amount (e.g. 450.0)
   double spent;                  // How much has been spent (e.g. 324.0)
@@ -14,7 +15,8 @@ class BudgetModel {
     required this.id,
     required this.userId,
     required this.monthlyBudgetId,
-    required this.title,
+    required this.categoryKey,
+    required this.customTitle,
     required this.subtitle,
     required this.allocated,
     required this.spent,
@@ -43,7 +45,8 @@ class BudgetModel {
     return {
       'userId': userId,
       'monthlyBudgetId': monthlyBudgetId,
-      'title': title,
+      'categoryKey': categoryKey,
+      'customTitle': customTitle,
       'subtitle': subtitle,
       'allocated': allocated,
       'spent': spent,
@@ -62,7 +65,8 @@ class BudgetModel {
       id: id,
       userId: map['userId'] ?? '',
       monthlyBudgetId: map['monthlyBudgetId'] as String? ?? '',
-      title: map['title'] ?? 'Unnamed Budget',
+      categoryKey: map['categoryKey'] ?? 'custom',
+      customTitle: map['customTitle'] ?? '',
       subtitle: map['subtitle'] ?? '',
       allocated: (map['allocated'] ?? 0).toDouble(),
       spent: (map['spent'] ?? 0).toDouble(),
