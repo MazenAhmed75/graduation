@@ -10,6 +10,7 @@ import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../screens/insights_sheet.dart';
 import '../screens/reports_sheet.dart';
 import '../utils/category_localization.dart';
+import '../utils/budget_categories.dart';
 class HomeScreen extends StatelessWidget {
   // ============================================================
   // onNavigateToBudgets is a callback from MainScreen.
@@ -490,11 +491,10 @@ class HomeScreen extends StatelessWidget {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: _buildMiniBudgetCard(
-                                CategoryLocalization.getCategoryName(
-                                  context,
-                                  budget.categoryKey,
-                                  budget.customTitle,
-                                ),
+                                // Dynamic translation fix
+                                (budget.categoryKey == 'custom' && budgetCategories.any((c) => c.key == budget.customTitle))
+                                    ? CategoryLocalization.getCategoryName(context, budget.customTitle, '')
+                                    : CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
                                 l10n.amountLeftText(
                                   budget.remaining.toStringAsFixed(0),
                                 ),

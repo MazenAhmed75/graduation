@@ -674,8 +674,16 @@
         "placeholders": {
           "error": {}
         }
-      }
+      },
+"replaceCurrentCategories": "استبدال الفئات الحالية؟",
+"replaceCategoriesWarning": "تطبيق هذا القالب سيؤدي إلى إزالة ميزانيات فئاتك الحالية واستبدالها بفئات القالب.",
+"replace": "استبدال",
+"overBy": "⚠ تجاوز بمقدار {amount}",
 
+"everyMonth": "كل شهر",
+  "everyWeek": "كل أسبوع",
+  "recurring": "متكرر",
+  "offlineBanner": "أنت غير متصل — ستتم مزامنة التغييرات عند إعادة الاتصال"
 
 
 

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/budget_template_model.dart';
 import '../models/budget_model.dart';
 import '../services/budget_service.dart';
+import '../utils/budget_categories.dart';
 
 // ============================================================
 // TemplateService
@@ -86,18 +87,52 @@ class TemplateService {
   // It calls the existing BudgetService.addBudget() for each
   // category — so all existing validation still applies.
   // ============================================================
+  // ============================================================
+  // APPLY: Create all categories from a template into a month
+  //
+  // UPDATED: Now requires [existingCategories] to be passed in.
+  // We delete existing categories first to prevent duplicate
+  // categories and ensure the allocation doesn't overflow.
+  // ============================================================
   Future<void> applyTemplate({
     required String userId,
     required String monthId,
     required BudgetTemplateModel template,
+    required List<BudgetModel> existingCategories,
   }) async {
-    // Create each category from the template in order
+
+    // 1. CLEAR EXISTING CATEGORIES
+    // Why: We delete all existing categories to ensure a clean slate.
+    // This prevents duplicated items (e.g., having two "Groceries" budgets)
+    // and prevents the combined total from exceeding the monthly limit.
+    for (final budget in existingCategories) {
+      await _budgetService.deleteBudget(
+        userId: userId,
+        budgetId: budget.id,
+      );
+    }
+
+    // 2. CREATE TEMPLATE CATEGORIES
+    // Why: Now that the month is clean, we can safely loop through
+    // the template categories and recreate them without clashes.
     for (final category in template.categories) {
+
+
+      //  Check if the saved title matches a built-in system key (e.g., 'groceries')
+      final isSystemCategory = budgetCategories.any((c) => c.key == category.title);
+
+      // If it's a built-in system key, restore its proper core key and leave customTitle empty.
+      // If it's a user-written name, treat it as a true 'custom' category.
+      final finalCategoryKey = isSystemCategory ? category.title : 'custom';
+      final finalCustomTitle = isSystemCategory ? '' : category.title;
+
+
+
       await _budgetService.addBudget(
         userId: userId,
         monthlyBudgetId: monthId,
-        categoryKey: 'custom',       // Tells the app this is a user-defined custom budget
-        customTitle: category.title, // Puts the template name (e.g., "Books") here
+        categoryKey: finalCategoryKey,     // Tells the app this is a user-defined custom budget  // 👈 Fixes localization mapping!
+        customTitle: finalCustomTitle, // Puts the template name (e.g., "Books") here   // 👈 Keeps text blank for default categories
         subtitle: category.subtitle,
         allocated: category.allocated,
         iconName: category.iconName,

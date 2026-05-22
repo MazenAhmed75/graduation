@@ -17,6 +17,8 @@ import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/budget_insight_helper.dart';
 import '../utils/budget_categories.dart';
 import '../utils/category_localization.dart';
+import 'package:connectivity_plus/connectivity_plus.dart'; // offline support
+import 'dart:async'; // offline support
 
 
 
@@ -38,6 +40,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   final RecurringService _recurringService = RecurringService();
   final TemplateService _templateService = TemplateService();
 
+  // ── Offline state ──────────────────────────────────────────
+  bool _isOffline = false;
+  late final StreamSubscription<List<ConnectivityResult>> _connectivitySub;
+
   @override
   void initState() {
     super.initState();
@@ -45,6 +51,17 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     if (userId != null) {
       _recurringService.processDueTransactions(userId);
     }
+    // ── Listen for connectivity changes ────────────────────────
+    _connectivitySub = Connectivity().onConnectivityChanged.listen((results) {
+      final isOffline = results.every((r) => r == ConnectivityResult.none);
+      if (mounted) setState(() => _isOffline = isOffline);
+    });
+  }
+
+  @override
+  void dispose() {
+    _connectivitySub.cancel();
+    super.dispose();
   }
 
   // ─── Helpers: current month as "YYYY-MM" and display name ─────────────────
@@ -615,7 +632,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                   );
 
                   if (mounted) {
-                    // ✅ use screenContext
+                    //  use screenContext
                     ScaffoldMessenger.of(screenContext).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -763,21 +780,42 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           ElevatedButton(
             onPressed: () async {
               final name = nameController.text.trim();
+
               if (name.isEmpty) return;
-              await _templateService.saveTemplate(
-                userId: _authService.currentUser!.uid,
-                name: name,
-                totalAmount: monthly.totalAmount,
-                categories: categories,
-              );
-              if (mounted) {
-                Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(l10n.templateSaved(name)),
-                    backgroundColor: AppTheme.primary,
-                  ),
+
+              try {
+                await _templateService.saveTemplate(
+                  userId: _authService.currentUser!.uid,
+                  name: name,
+                  totalAmount: monthly.totalAmount,
+                  categories: categories,
                 );
+
+                if (mounted) {
+                  Navigator.pop(context);
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        l10n.templateSaved(name),
+                      ),
+                      backgroundColor: AppTheme.primary,
+                    ),
+                  );
+                }
+              } catch (e) {
+                debugPrint('❌ Failed to save template: $e');
+
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        l10n.failedToSave(e.toString()),
+                      ),
+                      backgroundColor: Colors.red,
+                    ),
+                  );
+                }
               }
             },
             style: ElevatedButton.styleFrom(
@@ -794,13 +832,16 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   // DIALOG: USE a template
   // ============================================================
-  void _useTemplateDialog() {
+  void _useTemplateDialog({required List<BudgetModel> existingCategories}) {
     final l10n = AppLocalizations.of(context)!;
     final userId = _authService.currentUser!.uid;
 
+    // Capture screen context BEFORE opening dialogs to avoid async context issues
+    final screenContext = context;
+
     showDialog(
-      context: context,
-      builder: (context) => Dialog(
+      context: screenContext,
+      builder: (dialogContext) => Dialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -808,9 +849,9 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               Text(
+              Text(
                 l10n.useTemplate,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
               ),
               const SizedBox(height: 4),
               Text(
@@ -857,8 +898,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: templates.length,
-                      separatorBuilder: (_, __) =>
-                      const Divider(height: 1),
+                      separatorBuilder: (_, __) => const Divider(height: 1),
                       itemBuilder: (context, index) {
                         final t = templates[index];
                         return ListTile(
@@ -889,7 +929,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              // Delete button
+                              // ── Delete Template Button ──
                               IconButton(
                                 icon: Icon(Icons.delete_outline,
                                     color: Colors.grey[400], size: 20),
@@ -900,29 +940,79 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                                   );
                                 },
                               ),
-                              // Apply button
+
+                              // ── Apply Template Button ──
                               ElevatedButton(
                                 onPressed: () async {
-                                  Navigator.pop(context);
-                                  // First set the monthly budget total
-                                  await _budgetService.setMonthlyBudget(
-                                    userId: userId,
-                                    monthId: _currentMonthId,
-                                    totalAmount: t.totalAmount,
-                                  );
-                                  // Then create all categories
-                                  await _templateService.applyTemplate(
-                                    userId: userId,
-                                    monthId: _currentMonthId,
-                                    template: t,
-                                  );
-                                  if (mounted) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(l10n.templateApplied(t.name)),
-                                        backgroundColor: AppTheme.primary,
+                                  // 1. Pop the template picker immediately so dialogs don't stack
+                                  Navigator.pop(dialogContext);
+
+                                  // 2. Ask for confirmation if they already have categories setup
+                                  if (existingCategories.isNotEmpty) {
+                                    final shouldReplace = await showDialog<bool>(
+                                      context: screenContext,
+                                      builder: (confirmContext) => AlertDialog(
+                                        title: Text(l10n.replaceCurrentCategories),
+                                        content: Text(l10n.replaceCategoriesWarning),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(confirmContext, false),
+                                            child: Text(l10n.cancel),
+                                          ),
+                                          TextButton(
+                                            onPressed: () => Navigator.pop(confirmContext, true),
+                                            child: Text(
+                                              l10n.replace,
+                                              style: const TextStyle(color: Colors.red),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     );
+
+                                    // If user dismisses dialog or clicks cancel, abort.
+                                    if (shouldReplace != true) return;
+                                  }
+
+                                  // 3. Apply the template
+                                  if (!screenContext.mounted) return;
+
+                                  try {
+                                    // Why: We update the overarching Monthly Budget total to match the template.
+                                    // If we don't do this, a $2,000 template applied to a $500 monthly budget
+                                    // will cause an immediate allocation overflow error in the UI.
+                                    await _budgetService.setMonthlyBudget(
+                                      userId: userId,
+                                      monthId: _currentMonthId,
+                                      totalAmount: t.totalAmount,
+                                    );
+
+                                    // Apply categories (deletes old, creates new cleanly)
+                                    await _templateService.applyTemplate(
+                                      userId: userId,
+                                      monthId: _currentMonthId,
+                                      template: t,
+                                      existingCategories: existingCategories,
+                                    );
+
+                                    if (screenContext.mounted) {
+                                      ScaffoldMessenger.of(screenContext).showSnackBar(
+                                        SnackBar(
+                                          content: Text(l10n.templateApplied(t.name)),
+                                          backgroundColor: AppTheme.primary,
+                                        ),
+                                      );
+                                    }
+                                  } catch (e) {
+                                    debugPrint('❌ Failed to apply template: $e');
+                                    if (screenContext.mounted) {
+                                      ScaffoldMessenger.of(screenContext).showSnackBar(
+                                        SnackBar(
+                                          content: Text(l10n.failedToSave(e.toString())),
+                                          backgroundColor: Colors.red,
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 style: ElevatedButton.styleFrom(
@@ -946,7 +1036,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
-                  onPressed: () => Navigator.pop(context),
+                  onPressed: () => Navigator.pop(dialogContext),
                   child: Text(l10n.cancel),
                 ),
               ),
@@ -1155,7 +1245,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             // USE a Template Button
             const SizedBox(height: 12),
             TextButton.icon(
-              onPressed: _useTemplateDialog,
+              onPressed: () => _useTemplateDialog(existingCategories: []),
               icon: const Icon(Icons.bookmark_rounded),
               label:  Text(l10n.useSavedTemplate),
               style: TextButton.styleFrom(
@@ -1260,7 +1350,30 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
       // ======================================================
       // STREAM BUILDER (FIREBASE REAL-TIME)
       // ======================================================
-      body: StreamBuilder<MonthlyBudgetModel?>(
+      body: Column(
+          children: [
+          // ── Offline banner: only visible when device has no connection ──
+          if (_isOffline)
+      Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      color: Colors.orange.shade50,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.wifi_off_rounded, size: 15, color: Colors.orange.shade800),
+          const SizedBox(width: 8),
+          Text(
+            AppLocalizations.of(context)!.offlineBanner,
+            style: TextStyle(fontSize: 12, color: Colors.orange.shade800),
+          ),
+        ],
+      ),
+    ),
+
+    // ── Main content ────────────────────────────────────────────────
+    Expanded(
+    child: StreamBuilder<MonthlyBudgetModel?>(
         stream:
         _budgetService.getMonthlyBudgetStream(userId, _currentMonthId),
         builder: (context, monthlySnapshot) {
@@ -1363,7 +1476,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                             // ── Use Template Button ──
                             GestureDetector(
-                              onTap: _useTemplateDialog,
+                              onTap: () => _useTemplateDialog(existingCategories: categories),
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -1447,43 +1560,90 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
 
                       // ── Category budget cards ──
-                      ...categories.map((budget) => BudgetCard(
-                        title: CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
-                        subtitle: l10n.category,
-                        amount: CurrencyFormatter.format(
-                            budget.allocated),
-                        spentText: l10n.spentAmount(
-                          budget.spent.toStringAsFixed(2),
-                        ),
+                      ...categories.map((budget) {
+                        // ── Compute state flags once, used throughout the card ──────────────
+                        // True when the user has spent more than they allocated for this category
+                        final isOverBudget = budget.spent > budget.allocated;
+                        // True when at least some money has been spent (deposit = refund, so
+                        // there must be spending to refund)
+                        final hasSpending = budget.spent > 0;
 
-                        leftText: l10n.leftAmount(
-                          budget.remaining.toStringAsFixed(2),
-                        ),
-                        fillRatio: budget.spentRatio,
-                        iconData: Icons.category,
-                        progressColor: AppTheme.primary,
-                        iconBg: AppTheme.primaryContainer,
-                        iconColor: AppTheme.onPrimaryContainer,
-                        spentColor: AppTheme.primary,
-                        insight: BudgetInsightHelper
-                            .getInsight(context , budget, daysLeftInMonth: _daysLeft)
-                            .text,
+                        //  Dynamic Translation Lookup & Fallback ──
+                        // First, attempt standard lookup
+                        String resolvedTitle = CategoryLocalization.getCategoryName(
+                            context, budget.categoryKey, budget.customTitle);
 
-                        insightIcon: BudgetInsightHelper
-                            .getInsight(context , budget, daysLeftInMonth: _daysLeft)
-                            .icon,
+                        // Fallback safety net: If it was created via a template and hardcoded to 'custom',
+                        // but matches an internal system key, translate it anyway!
+                        if (budget.categoryKey == 'custom') {
+                          final isSystemKey = budgetCategories.any((c) => c.key == budget.customTitle);
+                          if (isSystemKey) {
+                            resolvedTitle = CategoryLocalization.getCategoryName(context, budget.customTitle, '');
+                          }
+                        }
 
-                        insightColor: BudgetInsightHelper
-                            .getInsight(context , budget, daysLeftInMonth: _daysLeft)
-                            .color,
-                        onDeposit: () =>
-                            _showAddMoneyDialog(budget),
-                        onWithdraw: () =>
-                            _showSubtractMoneyDialog(budget),
-                        onEdit: () =>
-                            _showEditBudgetDialog(budget),
-                        onDelete: () => _deleteBudget(budget),
-                      )),
+                        return BudgetCard(
+                          // ── Identity ────────────────────────────────────────────────────────
+                          // Resolves the display name: uses customTitle for user-created
+                          // categories, or the localized name for standard category keys
+                          title: resolvedTitle, // 👈 Uses our newly resolved localized title
+                          subtitle: l10n.category,
+
+                          // ── Amounts ─────────────────────────────────────────────────────────
+                          // The total budget ceiling the user set for this category
+                          amount: CurrencyFormatter.format(budget.allocated),
+                          // How much has been spent so far this month
+                          spentText: l10n.spentAmount(budget.spent.toStringAsFixed(2)),
+
+                          // ── Left / Over label ────────────────────────────────────────────────
+                          // Normal:     "X left"       → how much remains before hitting the limit
+                          // Over budget: "⚠ Over by X" → how far past the limit the user has gone
+                          leftText: isOverBudget
+                              ? l10n.overBy((budget.spent - budget.allocated).toStringAsFixed(2))
+                              : l10n.leftAmount(budget.remaining.toStringAsFixed(2)),
+                          // Red when over budget, default grey otherwise (null = use card default)
+                          leftTextColor: isOverBudget ? Colors.redAccent : null,
+
+                          // ── Progress bar ─────────────────────────────────────────────────────
+                          // Clamped to 1.0 so the bar never visually overflows past 100%
+                          // (the "Over by" label communicates the overage instead)
+                          fillRatio: budget.spentRatio.clamp(0.0, 1.0),
+                          // Bar and spent text turn red together when over budget
+                          progressColor: isOverBudget ? Colors.redAccent : AppTheme.primary,
+                          spentColor: isOverBudget ? Colors.redAccent : AppTheme.primary,
+
+                          // ── Icon (static for now, could be per-category later) ───────────────
+                          iconData: Icons.category,
+                          iconBg: AppTheme.primaryContainer,
+                          iconColor: AppTheme.onPrimaryContainer,
+
+                          // ── AI Insight chip at the bottom of the card ────────────────────────
+                          // BudgetInsightHelper analyzes pace of spending vs days left in month
+                          // and returns a short tip, an icon, and a color
+                          insight: BudgetInsightHelper
+                              .getInsight(context, budget, daysLeftInMonth: _daysLeft).text,
+                          insightIcon: BudgetInsightHelper
+                              .getInsight(context, budget, daysLeftInMonth: _daysLeft).icon,
+                          // Insight color also turns red when over budget so the whole card
+                          // signals danger consistently
+                          insightColor: isOverBudget
+                              ? Colors.redAccent
+                              : BudgetInsightHelper
+                              .getInsight(context, budget, daysLeftInMonth: _daysLeft).color,
+
+                          // ── Action buttons ───────────────────────────────────────────────────
+                          // Deposit = record a refund. Disabled (greyed out) when spent is 0
+                          // because there is nothing to refund yet
+                          onDeposit: hasSpending ? () => _showAddMoneyDialog(budget) : null,
+                          // Withdraw = record spending. Always allowed — going over budget is
+                          // a real-life event that must be recordable
+                          onWithdraw: () => _showSubtractMoneyDialog(budget),
+                          // Edit changes the allocated ceiling without touching spent
+                          onEdit: () => _showEditBudgetDialog(budget),
+                          // Delete removes the category and all its data
+                          onDelete: () => _deleteBudget(budget),
+                        );
+                      }),
                     ],
                   ),
 
@@ -1510,7 +1670,11 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             },
           );
         },
-      ),
+      // closes StreamBuilder<MonthlyBudgetModel?>
+    ),
+    ), // closes Expanded
+          ],   // closes Column children
+      ),     // closes Column
     );
   }
 }

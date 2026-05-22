@@ -2353,6 +2353,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save: {error}'**
   String failedToSave(Object error);
+
+  /// No description provided for @replaceCurrentCategories.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace Current Categories?'**
+  String get replaceCurrentCategories;
+
+  /// No description provided for @replaceCategoriesWarning.
+  ///
+  /// In en, this message translates to:
+  /// **'Applying this template will remove your current category budgets and replace them with the template categories.'**
+  String get replaceCategoriesWarning;
+
+  /// No description provided for @replace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get replace;
+
+  /// No description provided for @overBy.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠ Over by {amount}'**
+  String overBy(String amount);
+
+  /// Banner shown at the top of the screen when the device has no internet connection
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re offline — changes will sync when reconnected'**
+  String get offlineBanner;
 }
 
 class _AppLocalizationsDelegate

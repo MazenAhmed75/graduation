@@ -5,6 +5,7 @@ import '../services/budget_service.dart';
 import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
+import '../utils/budget_categories.dart';
 
 // ============================================================
 // TransactionsScreen
@@ -34,6 +35,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   String _categoryFilter = 'all';  // 'all' | any budgetTitle
   String _sortBy = 'newest';       // 'newest' | 'largest'
 
+  //  Constant reload fix
+  late Stream<List<TransactionModel>> _transactionsStream;
+
+// initialize the stream connection exactly once
+  @override
+  void initState() {
+    super.initState();
+    final userId = _authService.currentUser?.uid ?? '';
+    _transactionsStream = _budgetService.getAllTransactionsStream(userId);
+  }
+
   @override
   void dispose() {
     _searchController.dispose();
@@ -43,12 +55,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ── Apply search + filters + sort to the full list ───────────
   List<TransactionModel> _applyFilters(List<TransactionModel> all) {
     var result = all.where((t) {
-      // Get the correct string to display/filter by
-      final displayTitle = CategoryLocalization.getCategoryName(
-        context,
-        t.categoryKey,
-        t.customTitle,
-      );
+      // Get the correct string to display/filter by /// Dynamic translation fix
+      final displayTitle = (t.categoryKey == 'custom' && budgetCategories.any((c) => c.key == t.customTitle))
+          ? CategoryLocalization.getCategoryName(context, t.customTitle, '')
+          : CategoryLocalization.getCategoryName(context, t.categoryKey, t.customTitle);
 
       // Search: matches note or category name
       final query = _searchQuery.toLowerCase();
@@ -79,12 +89,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Extract unique category names for the filter chip list ───
   List<String> _getCategories(List<TransactionModel> all) {
+    //Dynamic translation fix
     final cats = all.map(
-          (t) => CategoryLocalization.getCategoryName(
-        context,
-        t.categoryKey,
-        t.customTitle,
-      ),
+          (t) => (t.categoryKey == 'custom' && budgetCategories.any((c) => c.key == t.customTitle))
+          ? CategoryLocalization.getCategoryName(context, t.customTitle, '')
+          : CategoryLocalization.getCategoryName(context, t.categoryKey, t.customTitle),
     ).toSet().toList();
     cats.sort();
     return cats;
@@ -113,7 +122,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         ),
       ),
       body: StreamBuilder<List<TransactionModel>>(
-        stream: _budgetService.getAllTransactionsStream(userId),
+        stream: _transactionsStream,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -532,7 +541,7 @@ class _TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // FIXED: Added missing localizations lookup
+    // Added missing localizations lookup
     final l10n = AppLocalizations.of(context)!;
 
     final isWithdraw = transaction.type == 'withdraw';
@@ -600,13 +609,12 @@ class _TransactionTile extends StatelessWidget {
                   children: [
                     Flexible(
                       child: Text(
+                        // Dynamic translation fix
                         transaction.note.isNotEmpty
                             ? transaction.note.replaceFirst('[Auto] ', '')
-                            : CategoryLocalization.getCategoryName(
-                          context,
-                          transaction.categoryKey,
-                          transaction.customTitle,
-                        ),
+                            : ((transaction.categoryKey == 'custom' && budgetCategories.any((c) => c.key == transaction.customTitle))
+                            ? CategoryLocalization.getCategoryName(context, transaction.customTitle, '')
+                            : CategoryLocalization.getCategoryName(context, transaction.categoryKey, transaction.customTitle)),
                         style: const TextStyle(
                           fontFamily: 'Manrope',
                           fontSize: 13,
@@ -641,12 +649,11 @@ class _TransactionTile extends StatelessWidget {
                 const SizedBox(height: 3),
                 Row(
                   children: [
+                    // Dynamic translation fix
                     Text(
-                      CategoryLocalization.getCategoryName(
-                        context,
-                        transaction.categoryKey,
-                        transaction.customTitle,
-                      ),
+                      (transaction.categoryKey == 'custom' && budgetCategories.any((c) => c.key == transaction.customTitle))
+                          ? CategoryLocalization.getCategoryName(context, transaction.customTitle, '')
+                          : CategoryLocalization.getCategoryName(context, transaction.categoryKey, transaction.customTitle),
                       style: TextStyle(
                         fontFamily: 'Manrope',
                         fontSize: 11,

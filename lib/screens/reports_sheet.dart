@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import '../models/budget_model.dart';
 import '../theme.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import '../utils/category_localization.dart';
 
 /// Open with: showReportsSheet(context, budgets)
 void showReportsSheet(BuildContext context, List<BudgetModel> budgets) {
@@ -200,7 +201,13 @@ class _ReportsSheetState extends State<ReportsSheet>
           value: b.spent,
           color: _palette[i % _palette.length],
           radius: isTouched ? 70 : 58,
-          title: isTouched ? (b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey) : '',
+          title: isTouched
+              ? CategoryLocalization.getCategoryName(
+            context,
+            b.categoryKey,
+            b.customTitle,
+          )
+              : '',
           titleStyle: const TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.bold,
@@ -285,7 +292,11 @@ class _ReportsSheetState extends State<ReportsSheet>
                 const SizedBox(width: 10),
                 Expanded(
                   child: Text(
-                    b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey,
+                    CategoryLocalization.getCategoryName(
+                      context,
+                      b.categoryKey,
+                      b.customTitle,
+                    ),
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
@@ -392,7 +403,11 @@ class _ReportsSheetState extends State<ReportsSheet>
                       if (i < 0 || i >= budgets.length) {
                         return const SizedBox.shrink();
                       }
-                      final label = budgets[i].customTitle.isNotEmpty ? budgets[i].customTitle : budgets[i].categoryKey;
+                      final label = CategoryLocalization.getCategoryName(
+                        context,
+                        budgets[i].categoryKey,
+                        budgets[i].customTitle,
+                      );
                       return Padding(
                         padding: const EdgeInsets.only(top: 6),
                         child: Text(
@@ -442,7 +457,11 @@ class _ReportsSheetState extends State<ReportsSheet>
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        b.customTitle.isNotEmpty ? b.customTitle : b.categoryKey,
+                        CategoryLocalization.getCategoryName(
+                          context,
+                          b.categoryKey,
+                          b.customTitle,
+                        ),
                         style: const TextStyle(
                           fontWeight: FontWeight.w600,
                           fontSize: 13,

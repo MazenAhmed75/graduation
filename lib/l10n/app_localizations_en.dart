@@ -1267,4 +1267,23 @@ class AppLocalizationsEn extends AppLocalizations {
   String failedToSave(Object error) {
     return 'Failed to save: $error';
   }
+
+  @override
+  String get replaceCurrentCategories => 'Replace Current Categories?';
+
+  @override
+  String get replaceCategoriesWarning =>
+      'Applying this template will remove your current category budgets and replace them with the template categories.';
+
+  @override
+  String get replace => 'Replace';
+
+  @override
+  String overBy(String amount) {
+    return '⚠ Over by $amount';
+  }
+
+  @override
+  String get offlineBanner =>
+      'You\'re offline — changes will sync when reconnected';
 }

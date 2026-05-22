@@ -915,7 +915,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get appVersion => 'إصدار التطبيق 1.0.0';
 
   @override
-  String get recurring => 'المعاملات المتكررة';
+  String get recurring => 'متكرر';
 
   @override
   String get noRecurringTitle => 'لا توجد معاملات متكررة';
@@ -1262,4 +1262,23 @@ class AppLocalizationsAr extends AppLocalizations {
   String failedToSave(Object error) {
     return 'فشل الحفظ: $error';
   }
+
+  @override
+  String get replaceCurrentCategories => 'استبدال الفئات الحالية؟';
+
+  @override
+  String get replaceCategoriesWarning =>
+      'تطبيق هذا القالب سيؤدي إلى إزالة ميزانيات فئاتك الحالية واستبدالها بفئات القالب.';
+
+  @override
+  String get replace => 'استبدال';
+
+  @override
+  String overBy(String amount) {
+    return '⚠ تجاوز بمقدار $amount';
+  }
+
+  @override
+  String get offlineBanner =>
+      'أنت غير متصل — ستتم مزامنة التغييرات عند إعادة الاتصال';
 }

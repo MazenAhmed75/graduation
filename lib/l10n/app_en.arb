@@ -699,7 +699,26 @@
         "placeholders": {
           "error": {}
         }
-      }
+      },
+
+"replaceCurrentCategories": "Replace Current Categories?",
+"replaceCategoriesWarning": "Applying this template will remove your current category budgets and replace them with the template categories.",
+"replace": "Replace",
+"overBy": "⚠ Over by {amount}",
+"@overBy": {
+  "placeholders": {
+    "amount": {
+      "type": "String"
+    }
+  }
+},
+"everyMonth": "Every Month",
+  "everyWeek": "Every Week",
+  "recurring": "Recurring",
+  "offlineBanner": "You're offline — changes will sync when reconnected",
+  "@offlineBanner": {
+    "description": "Banner shown at the top of the screen when the device has no internet connection"
+  }
 
 
 
