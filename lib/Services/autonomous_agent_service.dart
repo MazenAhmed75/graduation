@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import '../utils/constants.dart';
-import '../models/market_asset_model.dart';
 import 'market_service.dart';
 import 'news_service.dart';
 import 'alpaca_service.dart';

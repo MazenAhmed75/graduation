@@ -3,6 +3,7 @@ import '../theme.dart';
 import '../models/transaction_model.dart';
 import '../services/budget_service.dart';
 import '../services/auth_service.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 // ============================================================
 // TransactionsScreen
@@ -77,6 +78,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     final userId = _authService.currentUser?.uid ?? '';
 
     return Scaffold(
@@ -87,9 +90,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         surfaceTintColor: Colors.transparent,
         toolbarHeight: 70,
         titleSpacing: 24,
-        title: const Text(
-          'Transactions',
-          style: TextStyle(
+        title: Text(l10n.transactions,
+          style: const TextStyle(
             fontFamily: 'Manrope',
             fontSize: 22,
             fontWeight: FontWeight.w700,
@@ -127,21 +129,18 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     top: 8,
                     left: 16,
                     right: 16,
-                    bottom:
-                    MediaQuery.of(context).padding.bottom + 32,
+                    bottom: MediaQuery.of(context).padding.bottom + 32,
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {
                     // ── Date separator ─────────────────────
                     final t = filtered[index];
                     final showDate = index == 0 ||
-                        !_isSameDay(filtered[index - 1].createdAt,
-                            t.createdAt);
+                        !_isSameDay(filtered[index - 1].createdAt, t.createdAt);
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (showDate)
-                          _buildDateLabel(t.createdAt),
+                        if (showDate) _buildDateLabel(t.createdAt),
                         _TransactionTile(transaction: t),
                       ],
                     );
@@ -157,6 +156,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Search bar ───────────────────────────────────────────────
   Widget _buildSearchBar() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       child: Row(
@@ -182,18 +182,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   fontSize: 14,
                 ),
                 decoration: InputDecoration(
-                  hintText: 'Search by note or category…',
+                  hintText: l10n.searchHint,
                   hintStyle: TextStyle(
                     fontFamily: 'Manrope',
                     fontSize: 14,
                     color: Colors.grey[400],
                   ),
-                  prefixIcon:
-                  Icon(Icons.search_rounded, color: Colors.grey[400]),
+                  prefixIcon: Icon(Icons.search_rounded, color: Colors.grey[400]),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
-                    icon: Icon(Icons.close_rounded,
-                        color: Colors.grey[400], size: 18),
+                    icon: Icon(Icons.close_rounded, color: Colors.grey[400], size: 18),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchQuery = '');
@@ -201,8 +199,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   )
                       : null,
                   border: InputBorder.none,
-                  contentPadding:
-                  const EdgeInsets.symmetric(vertical: 14),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 14),
                 ),
               ),
             ),
@@ -210,8 +207,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           const SizedBox(width: 10),
           // ── Sort button ───────────────────────────────────────
           GestureDetector(
-            onTap: () => setState(() =>
-            _sortBy = _sortBy == 'newest' ? 'largest' : 'newest'),
+            onTap: () => setState(() => _sortBy = _sortBy == 'newest' ? 'largest' : 'newest'),
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -237,8 +233,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   ),
                   const SizedBox(width: 4),
                   Text(
-                    _sortBy == 'newest' ? 'Newest' : 'Largest',
-                    style: TextStyle(
+                    _sortBy == 'newest' ? l10n.newest : l10n.largest,
+                    style: const TextStyle(
                       fontFamily: 'Manrope',
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
@@ -256,25 +252,26 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Type filter chips: All / Expenses / Income ───────────────
   Widget _buildTypeFilters() {
+    final l10n = AppLocalizations.of(context)!;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
       child: Row(
         children: [
           _TypeChip(
-            label: 'All',
+            label: l10n.all,
             selected: _typeFilter == 'all',
             onTap: () => setState(() => _typeFilter = 'all'),
           ),
           const SizedBox(width: 8),
           _TypeChip(
-            label: 'Expenses',
+            label: l10n.expenses,
             selected: _typeFilter == 'withdraw',
             color: const Color(0xFFE24B4A),
             onTap: () => setState(() => _typeFilter = 'withdraw'),
           ),
           const SizedBox(width: 8),
           _TypeChip(
-            label: 'Income',
+            label: l10n.income,
             selected: _typeFilter == 'deposit',
             color: AppTheme.primary,
             onTap: () => setState(() => _typeFilter = 'deposit'),
@@ -286,6 +283,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Category filter chips ─────────────────────────────────────
   Widget _buildCategoryFilters(List<String> categories) {
+    final l10n = AppLocalizations.of(context)!;
     return SizedBox(
       height: 44,
       child: ListView(
@@ -293,7 +291,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         padding: const EdgeInsets.fromLTRB(16, 8, 16, 0),
         children: [
           _TypeChip(
-            label: 'All categories',
+            label: l10n.allCategories,
             selected: _categoryFilter == 'all',
             onTap: () => setState(() => _categoryFilter = 'all'),
           ),
@@ -302,8 +300,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             child: _TypeChip(
               label: cat,
               selected: _categoryFilter == cat,
-              onTap: () =>
-                  setState(() => _categoryFilter = cat),
+              onTap: () => setState(() => _categoryFilter = cat),
             ),
           )),
         ],
@@ -313,17 +310,16 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Summary row: total results + net amount ──────────────────
   Widget _buildSummaryRow(List<TransactionModel> filtered) {
-    final totalIn =
-    filtered.where((t) => t.type == 'deposit').fold(0.0, (s, t) => s + t.amount);
-    final totalOut =
-    filtered.where((t) => t.type == 'withdraw').fold(0.0, (s, t) => s + t.amount);
+    final l10n = AppLocalizations.of(context)!;
+    final totalIn = filtered.where((t) => t.type == 'deposit').fold(0.0, (s, t) => s + t.amount);
+    final totalOut = filtered.where((t) => t.type == 'withdraw').fold(0.0, (s, t) => s + t.amount);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: Row(
         children: [
           Text(
-            '${filtered.length} transaction${filtered.length == 1 ? '' : 's'}',
+            l10n.transactionsCount(filtered.length.toString()),
             style: TextStyle(
               fontFamily: 'Manrope',
               fontSize: 12,
@@ -343,8 +339,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
               ),
             ),
           if (totalIn > 0 && totalOut > 0)
-            Text('  ',
-                style: TextStyle(color: Colors.grey[300])),
+            Text('  ', style: TextStyle(color: Colors.grey[300])),
           if (totalOut > 0)
             Text(
               '-\$${totalOut.toStringAsFixed(2)}',
@@ -362,20 +357,17 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Date separator label ─────────────────────────────────────
   Widget _buildDateLabel(DateTime date) {
+    final l10n = AppLocalizations.of(context)!;
     final now = DateTime.now();
     final yesterday = DateTime.now().subtract(const Duration(days: 1));
     String label;
 
     if (_isSameDay(date, now)) {
-      label = 'Today';
+      label = l10n.today;
     } else if (_isSameDay(date, yesterday)) {
-      label = 'Yesterday';
+      label = l10n.yesterday;
     } else {
-      const months = [
-        'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-      ];
-      label = '${months[date.month - 1]} ${date.day}, ${date.year}';
+      label = MaterialLocalizations.of(context).formatMediumDate(date);
     }
 
     return Padding(
@@ -395,9 +387,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   // ── Empty state ──────────────────────────────────────────────
   Widget _buildEmptyState() {
-    final hasFilters = _searchQuery.isNotEmpty ||
-        _typeFilter != 'all' ||
-        _categoryFilter != 'all';
+    final l10n = AppLocalizations.of(context)!;
+    final hasFilters = _searchQuery.isNotEmpty || _typeFilter != 'all' || _categoryFilter != 'all';
 
     return Center(
       child: Padding(
@@ -407,21 +398,19 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           children: [
             Container(
               padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppTheme.primaryContainer,
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                hasFilters
-                    ? Icons.search_off_rounded
-                    : Icons.receipt_long_rounded,
+                hasFilters ? Icons.search_off_rounded : Icons.receipt_long_rounded,
                 size: 40,
                 color: AppTheme.onPrimaryContainer,
               ),
             ),
             const SizedBox(height: 20),
             Text(
-              hasFilters ? 'No results found' : 'No transactions yet',
+              hasFilters ? l10n.noResults : l10n.noTransactions,
               style: const TextStyle(
                 fontFamily: 'Manrope',
                 fontSize: 17,
@@ -430,9 +419,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
             const SizedBox(height: 8),
             Text(
-              hasFilters
-                  ? 'Try adjusting your search or filters.'
-                  : 'Your transactions will appear here\nonce you start spending or depositing.',
+              hasFilters ? l10n.noResultsHint : l10n.noTransactionsHint,
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Manrope',
@@ -450,7 +437,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   _categoryFilter = 'all';
                 }),
                 icon: const Icon(Icons.refresh_rounded),
-                label: const Text('Clear all filters'),
+                label: Text(l10n.clearFilters),
                 style: TextButton.styleFrom(
                   foregroundColor: AppTheme.primary,
                 ),
@@ -484,13 +471,13 @@ class _TypeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Removed unused l10n definition here
     final activeColor = color ?? AppTheme.primary;
     return GestureDetector(
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding:
-        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
         decoration: BoxDecoration(
           color: selected ? activeColor : Colors.white,
           borderRadius: BorderRadius.circular(20),
@@ -531,9 +518,11 @@ class _TransactionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // FIXED: Added missing localizations lookup
+    final l10n = AppLocalizations.of(context)!;
+
     final isWithdraw = transaction.type == 'withdraw';
-    final color =
-    isWithdraw ? const Color(0xFFE24B4A) : AppTheme.primary;
+    final color = isWithdraw ? const Color(0xFFE24B4A) : AppTheme.primary;
     final bgColor = isWithdraw
         ? const Color(0xFFE24B4A).withOpacity(0.08)
         : AppTheme.primaryContainer;
@@ -543,9 +532,8 @@ class _TransactionTile extends StatelessWidget {
 
     // Format time as "3:45 PM"
     final hour = transaction.createdAt.hour;
-    final minute =
-    transaction.createdAt.minute.toString().padLeft(2, '0');
-    final period = hour >= 12 ? 'PM' : 'AM';
+    final minute = transaction.createdAt.minute.toString().padLeft(2, '0');
+    final period = hour >= 12 ? l10n.pm : l10n.am;
     final displayHour = hour > 12
         ? hour - 12
         : hour == 0
@@ -554,7 +542,7 @@ class _TransactionTile extends StatelessWidget {
     final timeLabel = '$displayHour:$minute $period';
 
     // Auto tag for recurring
-    final isAuto = transaction.note.startsWith('[Auto]');
+    final isAuto = transaction.note.startsWith(l10n.auto);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -599,8 +587,7 @@ class _TransactionTile extends StatelessWidget {
                     Flexible(
                       child: Text(
                         transaction.note.isNotEmpty
-                            ? transaction.note
-                            .replaceFirst('[Auto] ', '')
+                            ? transaction.note.replaceFirst('[Auto] ', '')
                             : transaction.budgetTitle,
                         style: const TextStyle(
                           fontFamily: 'Manrope',
@@ -614,15 +601,15 @@ class _TransactionTile extends StatelessWidget {
                     if (isAuto) ...[
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 1),
+                        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 1),
                         decoration: BoxDecoration(
                           color: AppTheme.secondaryContainer,
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text(
-                          'Auto',
-                          style: TextStyle(
+                        // FIXED: Replaced hardcoded 'Auto' with translation
+                        child: Text(
+                          l10n.auto,
+                          style: const TextStyle(
                             fontFamily: 'Manrope',
                             fontSize: 10,
                             fontWeight: FontWeight.w600,

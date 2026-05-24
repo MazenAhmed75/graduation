@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../services/auth_service.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class SecurityScreen extends StatefulWidget {
   const SecurityScreen({super.key});
@@ -23,7 +24,16 @@ class _SecurityScreenState extends State<SecurityScreen> {
   bool _obscureNew = true;
 
   @override
+  void dispose() {
+    _oldPasswordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
     // IMPORTANT: Check the login provider.
     // We cannot change passwords for Google users via Firebase Auth.
     final isGoogle = _authService.isGoogleUser();
@@ -31,7 +41,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
     return Scaffold(
       backgroundColor: AppTheme.neutral,
       appBar: AppBar(
-        title: const Text('Privacy & Security'),
+        title: Text(l10n.privacyAndSecurity), // Fixed missing property assignment
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -40,24 +50,24 @@ class _SecurityScreenState extends State<SecurityScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Security Settings',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Text(
+              l10n.securitySettings,
+              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 8),
             Text(
               isGoogle
-                  ? 'Your account is managed via Google.'
-                  : 'Keep your account secure by updating your password regularly.',
+                  ? l10n.googleAccountManaged
+                  : l10n.keepAccountSecure,
               style: const TextStyle(color: AppTheme.onSurfaceVariant),
             ),
             const SizedBox(height: 32),
 
             // Use conditional rendering to show the correct UI based on login type
             if (isGoogle)
-              _buildGoogleUserCard()
+              _buildGoogleUserCard(context) // Fixed: Passed context
             else
-              _buildPasswordChangeForm(),
+              _buildPasswordChangeForm(context), // Fixed: Passed context
           ],
         ),
       ),
@@ -66,7 +76,8 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   /// UI for Google Users: Prevents them from seeing an "Update Password" form
   /// that would inevitably fail because Google owns their credentials.
-  Widget _buildGoogleUserCard() {
+  Widget _buildGoogleUserCard(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Fixed: Localized lookup initialization
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -74,19 +85,19 @@ class _SecurityScreenState extends State<SecurityScreen> {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppTheme.outlineVariant.withOpacity(0.5)),
       ),
-      child: const Column(
+      child: Column( // Fixed: Removed invalid const keyword here
         children: [
-          Icon(Icons.lock_person, size: 48, color: AppTheme.primary),
-          SizedBox(height: 16),
+          const Icon(Icons.lock_person, size: 48, color: AppTheme.primary),
+          const SizedBox(height: 16),
           Text(
-            'Signed in with Google',
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+            l10n.signedInWithGoogle,
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
           ),
-          SizedBox(height: 8),
+          const SizedBox(height: 8),
           Text(
-            'Because you use Google Sign-In, you can manage your password directly in your Google Account settings.',
+            l10n.googlePasswordInfo,
             textAlign: TextAlign.center,
-            style: TextStyle(color: AppTheme.onSurfaceVariant),
+            style: const TextStyle(color: AppTheme.onSurfaceVariant),
           ),
         ],
       ),
@@ -94,31 +105,35 @@ class _SecurityScreenState extends State<SecurityScreen> {
   }
 
   /// UI for Email Users: A standard form requiring current password for verification.
-  Widget _buildPasswordChangeForm() {
+  Widget _buildPasswordChangeForm(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // Fixed: Localized lookup initialization
     return Form(
       key: _formKey,
       child: Column(
         children: [
           // Verify current password to prove the user owns the account
           _buildPasswordField(
+              context, // Fixed: Passed context
               _oldPasswordController,
-              'Current Password',
+              l10n.currentPassword,
               _obscureOld,
                   (val) => setState(() => _obscureOld = !val)
           ),
           const SizedBox(height: 16),
           // Enter new password
           _buildPasswordField(
+              context, // Fixed: Passed context
               _newPasswordController,
-              'New Password',
+              l10n.newPassword,
               _obscureNew,
                   (val) => setState(() => _obscureNew = !val)
           ),
           const SizedBox(height: 16),
           // Confirm new password to catch typos
           _buildPasswordField(
+              context, // Fixed: Passed context
               _confirmPasswordController,
-              'Confirm New Password',
+              l10n.confirmNewPassword,
               _obscureNew,
               null,
               isConfirm: true
@@ -136,7 +151,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
               ),
               child: _isLoading
                   ? const CircularProgressIndicator(color: Colors.white)
-                  : const Text('Update Password', style: TextStyle(fontWeight: FontWeight.bold)),
+                  : Text(l10n.updatePassword, style: const TextStyle(fontWeight: FontWeight.bold)),
             ),
           ),
         ],
@@ -146,12 +161,14 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   /// Helper to build consistent password text fields
   Widget _buildPasswordField(
+      BuildContext context, // Fixed: Accepted context parameter
       TextEditingController controller,
       String label,
       bool obscure,
       Function(bool)? onToggle,
       {bool isConfirm = false}
       ) {
+    final l10n = AppLocalizations.of(context); // Fixed: Localized lookup initialization
     return TextFormField(
       controller: controller,
       obscureText: obscure,
@@ -166,11 +183,11 @@ class _SecurityScreenState extends State<SecurityScreen> {
             : null,
       ),
       validator: (value) {
-        if (value == null || value.isEmpty) return 'Field required';
+        if (value == null || value.isEmpty) return l10n.fieldRequired;
         // Check if the "Confirm" field matches the "New" field
-        if (isConfirm && value != _newPasswordController.text) return 'Passwords do not match';
+        if (isConfirm && value != _newPasswordController.text) return l10n.passwordsDoNotMatch;
         // Enforce basic password length
-        if (!isConfirm && value.length < 6) return 'Must be at least 6 characters';
+        if (!isConfirm && value.length < 6) return l10n.passwordTooShort;
         return null;
       },
     );
