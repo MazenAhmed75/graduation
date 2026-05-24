@@ -1,9 +1,8 @@
 /// App-wide constants.
 /// WARNING: Never commit real keys to a public repository.
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 class AppConstants {
   // ── Groq AI (OpenAI-compatible, free tier, ultra-fast LPU) ───────────────
-  static final String aiApiKey  = dotenv.env['GROQ_API_KEY'] ?? 'KEY_NOT_FOUND';
+  static const String aiApiKey  = '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';
   static const String aiBaseUrl = 'https://api.groq.com/openai/v1';
   static const String aiModel   = 'llama-3.3-70b-versatile';
 
@@ -18,7 +17,7 @@ class AppConstants {
   // Finnhub — US stock quotes (free tier, 60 req/min)
   // Get a free key at: https://finnhub.io/register
   static const String finnhubBase   = 'https://finnhub.io/api/v1';
-  static final String finnhubApiKey = dotenv.env['finnhubApiKey'] ?? 'KEY_NOT_FOUND';
+  static const String finnhubApiKey = 'd0sc31pr01qhkqg9p7bgd0sc31pr01qhkqg9p7c0'; // free demo key
 
   // ── Supported Asset IDs ───────────────────────────────────────────────────
   static const List<String> cryptoIds = [

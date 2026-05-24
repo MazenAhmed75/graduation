@@ -108,9 +108,9 @@ class InvestmentService {
       batch.update(posRef, {'quantity': newQty, 'buyPrice': newAvgPx, 'currentPrice': asset.price});
     } else {
       final model = InvestmentModel(
+        assetName: asset.name,
         id: asset.id, userId: uid,
         assetId: asset.id, assetSymbol: asset.symbol,
-        assetName: asset.name, 
         quantity: quantity, buyPrice: asset.price,
         currentPrice: asset.price, createdAt: DateTime.now(),
       );

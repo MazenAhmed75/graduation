@@ -1,48 +1,62 @@
 import 'dart:typed_data';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class StorageService {
-  final FirebaseStorage _storage = FirebaseStorage.instance;
+  //  Free Cloudinary credentials — sign up at cloudinary.com
+  static const String _cloudName = 'dmuhbahmn';
+  static const String _uploadPreset = 'mindful_curator'; // unsigned preset
 
-  /// Upload profile picture to Firebase Storage
-  /// Returns the download URL of the uploaded image
-  /// Updated to accept Uint8List for cross-platform support
-  Future<String> uploadProfilePicture(String userId, Uint8List imageBytes) async {
+  /// Upload to Cloudinary (free) and save URL to Firestore (free)
+  Future<String> uploadProfilePicture(
+      BuildContext context,
+      String userId,
+      Uint8List imageBytes,
+      ) async {
+    final l10n = AppLocalizations.of(context)!;
     try {
-      // Create a reference to the storage location
-      // Path: profile_pictures/{userId}/profile.jpg
-      final ref = _storage.ref().child('profile_pictures/$userId/profile.jpg');
-
-      // Upload the bytes directly using putData
-      // Added SettableMetadata to ensure the file is recognized as an image
-      final uploadTask = ref.putData(
-        imageBytes,
-        SettableMetadata(contentType: 'image/jpeg'),
+      final uri = Uri.parse(
+        'https://api.cloudinary.com/v1_1/$_cloudName/image/upload',
       );
 
-      // Wait for upload to complete
-      final snapshot = await uploadTask;
+      // Convert bytes to base64
+      final base64Image = base64Encode(imageBytes);
 
-      // Get the download URL
-      final downloadUrl = await snapshot.ref.getDownloadURL();
+      final response = await http.post(
+        uri,
+        body: {
+          'file': 'data:image/jpeg;base64,$base64Image',
+          'upload_preset': _uploadPreset,
+          'public_id': 'profile_$userId', // consistent name = auto overwrites old pic
+        },
+      ).timeout(const Duration(seconds: 30));
 
-      print('✅ Profile picture uploaded: $downloadUrl');
-      return downloadUrl;
+      if (response.statusCode != 200) {
+        throw Exception(
+          '${l10n.cloudinaryUploadFailed}: ${response.body}',
+        );
+      }
+
+      final data = jsonDecode(response.body);
+      final imageUrl = data['secure_url'] as String;
+
+      //  Save URL to Firestore (only the URL, not the image)
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .set({'profilePicUrl': imageUrl}, SetOptions(merge: true));
+
+      print('✅ Uploaded to Cloudinary: $imageUrl');
+      return imageUrl;
+
     } catch (e) {
-      print('❌ Error uploading profile picture: $e');
-      throw Exception('Failed to upload profile picture: $e');
-    }
-  }
-
-  /// Delete profile picture from Firebase Storage
-  Future<void> deleteProfilePicture(String userId) async {
-    try {
-      final ref = _storage.ref().child('profile_pictures/$userId/profile.jpg');
-      await ref.delete();
-      print('✅ Profile picture deleted');
-    } catch (e) {
-      print('⚠️ Error deleting profile picture: $e');
-      // Don't throw error - it's okay if file doesn't exist
+      print('❌ Upload error: $e');
+      throw Exception(
+        '${l10n.failedToUpload}: $e',
+      );
     }
   }
 }

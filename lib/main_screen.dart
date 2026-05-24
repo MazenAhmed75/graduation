@@ -5,6 +5,7 @@ import 'package:mindful_curator/screens/home_screen.dart';
 import 'package:mindful_curator/screens/budgets_screen.dart';
 import 'package:mindful_curator/screens/profile_screen.dart';
 import 'package:mindful_curator/screens/invest_screen.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -30,6 +31,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
     // Build screens here so we can pass the callback to HomeScreen
     final List<Widget> screens = [
       // Pass the _switchToTab function directly to HomeScreen
@@ -96,19 +98,29 @@ class _MainScreenState extends State<MainScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _buildNavItem(0, Icons.home_rounded, 'Home'),
                   _buildNavItem(
-                      1,
-                      Icons.account_balance_wallet_rounded,
-                      'Budgets'),
+                    0,
+                    Icons.home_rounded,
+                    l10n.home,
+                  ),
+
                   _buildNavItem(
-                      2,
-                      Icons.trending_up_rounded,
-                      'Invest'),
+                    1,
+                    Icons.account_balance_wallet_rounded,
+                    l10n.budgets,
+                  ),
+
                   _buildNavItem(
-                      3,
-                      Icons.person_rounded,
-                      'Profile'),
+                    2,
+                    Icons.trending_up_rounded,
+                    l10n.invest,
+                  ),
+
+                  _buildNavItem(
+                    3,
+                    Icons.person_rounded,
+                    l10n.profile,
+                  ),
                 ],
               ),
             ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
+import 'package:mindful_curator/l10n/app_localizations.dart';
 
 class BudgetCard extends StatelessWidget {
   final String title;
@@ -16,7 +17,9 @@ class BudgetCard extends StatelessWidget {
   final Color iconBg;
   final Color iconColor;
   final Color spentColor;
-  final VoidCallback onDeposit;
+  // 1. Add leftTextColor parameter + make onDeposit nullable
+  final VoidCallback? onDeposit;      // 👈 was VoidCallback (non-nullable)
+  final Color? leftTextColor;         // 👈 add this new parameter
   final VoidCallback onWithdraw;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -37,7 +40,8 @@ class BudgetCard extends StatelessWidget {
     required this.iconBg,
     required this.iconColor,
     required this.spentColor,
-    required this.onDeposit,
+    this.onDeposit,
+    this.leftTextColor,
     required this.onWithdraw,
     required this.onEdit,
     required this.onDelete,
@@ -110,8 +114,8 @@ class BudgetCard extends StatelessWidget {
                       color: AppTheme.onSurface,
                     ),
                   ),
-                  const Text(
-                    'ALLOCATED',
+                  Text(
+                    AppLocalizations.of(context)!.allocated.toUpperCase(),
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,
@@ -157,10 +161,10 @@ class BudgetCard extends StatelessWidget {
               ),
               Text(
                 leftText,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 12,
                   fontWeight: FontWeight.w500,
-                  color: AppTheme.onSurfaceVariant,
+                  color: leftTextColor ?? AppTheme.onSurfaceVariant, //  use leftTextColor
                 ),
               ),
             ],
@@ -170,11 +174,23 @@ class BudgetCard extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: _buildActionButton(Icons.add, 'DEPOSIT', AppTheme.primary, AppTheme.surfaceContainer, onDeposit),
+                child: _buildActionButton(
+                  Icons.add,
+                  AppLocalizations.of(context)!.deposit,
+                  AppTheme.primary,
+                  AppTheme.surfaceContainer,
+                  onDeposit,
+                ),
               ),
               const SizedBox(width: 8),
               Expanded(
-                child: _buildActionButton(Icons.remove, 'WITHDRAW', AppTheme.onSurfaceVariant, AppTheme.surfaceContainer, onWithdraw),
+                child: _buildActionButton(
+                  Icons.remove,
+                  AppLocalizations.of(context)!.withdraw,
+                  AppTheme.onSurfaceVariant,
+                  AppTheme.surfaceContainer,
+                  onWithdraw,
+                ),
               ),
               const SizedBox(width: 8),
               _buildIconButton(Icons.edit, AppTheme.onSurfaceVariant, AppTheme.surfaceContainer, onEdit),
@@ -213,7 +229,8 @@ class BudgetCard extends StatelessWidget {
     );
   }
 
-  Widget _buildActionButton(IconData icon, String label, Color color, Color bg, VoidCallback onTap) {
+  Widget _buildActionButton(IconData icon, String label, Color color, Color bg, VoidCallback? onTap,) {
+    final isDisabled = onTap == null;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -225,7 +242,7 @@ class BudgetCard extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 18, color: color),
+            Icon(icon, size: 18, color: isDisabled ? Colors.grey[300] : color),
             const SizedBox(width: 4),
             Text(
               label,
@@ -233,7 +250,7 @@ class BudgetCard extends StatelessWidget {
                 fontSize: 11,
                 fontWeight: FontWeight.bold,
                 letterSpacing: 1.2,
-                color: color,
+                color: isDisabled ? Colors.grey[300] : color,
               ),
             ),
           ],
