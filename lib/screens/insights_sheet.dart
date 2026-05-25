@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_underscores, unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
 import '../theme.dart';

@@ -10,10 +10,13 @@ import 'services/locale_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import 'services/notification_service.dart';
 
 // ── Global notifier — any widget can call this to switch language ─
 final ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('en'));
-
+Future<void> initializeNotifications() async {
+  await NotificationService.initialize();
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -21,6 +24,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
+
+  // Initialize notifications
+  await initializeNotifications();
 
   // Load the user's saved language preference before showing the app
   appLocale.value = await LocaleService.getSavedLocale();

@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_non_null_assertion, unused_local_variable
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/transaction_model.dart';
@@ -414,59 +416,61 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
     final hasFilters = _searchQuery.isNotEmpty || _typeFilter != 'all' || _categoryFilter != 'all';
 
     return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(40),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(24),
-              decoration: const BoxDecoration(
-                color: AppTheme.primaryContainer,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                hasFilters ? Icons.search_off_rounded : Icons.receipt_long_rounded,
-                size: 40,
-                color: AppTheme.onPrimaryContainer,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              hasFilters ? l10n.noResults : l10n.noTransactions,
-              style: const TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              hasFilters ? l10n.noResultsHint : l10n.noTransactionsHint,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 13,
-                color: Colors.grey[500],
-              ),
-            ),
-            if (hasFilters) ...[
-              const SizedBox(height: 20),
-              TextButton.icon(
-                onPressed: () => setState(() {
-                  _searchController.clear();
-                  _searchQuery = '';
-                  _typeFilter = 'all';
-                  _categoryFilter = 'all';
-                }),
-                icon: const Icon(Icons.refresh_rounded),
-                label: Text(l10n.clearFilters),
-                style: TextButton.styleFrom(
-                  foregroundColor: AppTheme.primary,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(40),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: const BoxDecoration(
+                  color: AppTheme.primaryContainer,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  hasFilters ? Icons.search_off_rounded : Icons.receipt_long_rounded,
+                  size: 40,
+                  color: AppTheme.onPrimaryContainer,
                 ),
               ),
+              const SizedBox(height: 20),
+              Text(
+                hasFilters ? l10n.noResults : l10n.noTransactions,
+                style: const TextStyle(
+                  fontFamily: 'Manrope',
+                  fontSize: 17,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                hasFilters ? l10n.noResultsHint : l10n.noTransactionsHint,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontFamily: 'Manrope',
+                  fontSize: 13,
+                  color: Colors.grey[500],
+                ),
+              ),
+              if (hasFilters) ...[
+                const SizedBox(height: 20),
+                TextButton.icon(
+                  onPressed: () => setState(() {
+                    _searchController.clear();
+                    _searchQuery = '';
+                    _typeFilter = 'all';
+                    _categoryFilter = 'all';
+                  }),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: Text(l10n.clearFilters),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.primary,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );

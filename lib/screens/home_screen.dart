@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/user_model.dart';

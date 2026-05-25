@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unused_element_parameter
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/recurring_transaction_model.dart';

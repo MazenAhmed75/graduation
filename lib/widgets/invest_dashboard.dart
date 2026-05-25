@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures, dead_code, unused_element, deprecated_member_use
+
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';

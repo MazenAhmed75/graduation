@@ -12,7 +12,7 @@ class NotificationService {
   static Future<void> initialize() async {
     // Android settings: the icon name references your app icon
     const AndroidInitializationSettings androidSettings =
-    AndroidInitializationSettings('ic_launcher');
+    AndroidInitializationSettings('@mipmap/app_icon');
 
     const InitializationSettings settings = InitializationSettings(
       android: androidSettings,

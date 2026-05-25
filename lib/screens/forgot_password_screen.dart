@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../services/auth_service.dart';
