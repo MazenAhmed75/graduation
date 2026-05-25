@@ -1,8 +1,5 @@
-<<<<<<< HEAD
 // ignore_for_file: unnecessary_non_null_assertion, unused_field
 
-=======
->>>>>>> 8d74ad55b5bab5a46ab285fac6e80e24915b999a
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
