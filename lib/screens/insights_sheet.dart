@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 // ignore_for_file: deprecated_member_use, unnecessary_underscores, unnecessary_non_null_assertion
 
+=======
+>>>>>>> 8d74ad55b5bab5a46ab285fac6e80e24915b999a
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
 import '../theme.dart';

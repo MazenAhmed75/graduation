@@ -55,7 +55,11 @@ dependencies:
   flutter_dotenv: ^6.0.1
   shared_preferences: ^2.3.2
   fl_chart: ^0.70.2
+<<<<<<< HEAD
   connectivity_plus: ^7.1.1
+=======
+  connectivity_plus: ^6.0.0
+>>>>>>> 8d74ad55b5bab5a46ab285fac6e80e24915b999a
   intl: any
 
 
