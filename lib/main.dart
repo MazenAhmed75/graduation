@@ -53,9 +53,10 @@ class MindfulCuratorApp extends StatelessWidget {
       valueListenable: appLocale,
       builder: (context, locale, _) {
         return MaterialApp(
-          title: 'Mindful Curator',
+          title: 'AI Based personal financial tracker',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.theme,
+          
 
           // ── Localization setup ──────────────────────────────
           locale: locale,

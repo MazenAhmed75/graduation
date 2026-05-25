@@ -1,4 +1,4 @@
-// ignore_for_file: deprecated_member_use, use_build_context_synchronously
+// ignore_for_file: unused_import, deprecated_member_use, use_build_context_synchronously
 import 'alpaca_settings_screen.dart';
 import 'budgets_screen.dart';
 import 'package:flutter/material.dart';
@@ -167,28 +167,35 @@ class ProfileScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.menu, color: AppTheme.primary),
-                  style: IconButton.styleFrom(
-                    backgroundColor: AppTheme.surfaceContainerLow,
+            Expanded(
+              child: Row(
+                children: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.menu, color: AppTheme.primary),
+                    style: IconButton.styleFrom(
+                      backgroundColor: AppTheme.surfaceContainerLow,
+                    ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Text(
-                  l10n.appName,
-                  style: const TextStyle(
-                    fontFamily: 'Manrope',
-                    fontSize: 24,
-                    fontWeight: FontWeight.w600,
-                    color: AppTheme.primary,
-                    letterSpacing: -0.5,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      l10n.appName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: const TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: AppTheme.primary,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            const SizedBox(width: 12),
             // Tap the avatar in the app bar to upload a new photo
             StreamBuilder<UserModel?>(
               stream: userService.getUserStream(userId),

@@ -58,31 +58,38 @@ class HomeScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                // 2. BUILDER WRAPPER: Required to open drawer from a button
-                Builder(
-                  builder: (context) => IconButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    icon: const Icon(Icons.menu, color: AppTheme.primary),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.surfaceContainerLow,
+            Expanded(
+              child: Row(
+                children: [
+                  // 2. BUILDER WRAPPER: Required to open drawer from a button
+                  Builder(
+                    builder: (context) => IconButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: const Icon(Icons.menu, color: AppTheme.primary),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.surfaceContainerLow,
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                 Text(
-                   l10n.appName,
-                  style: TextStyle(
-                    fontFamily: 'Manrope',
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: AppTheme.primary,
-                    letterSpacing: -0.5,
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Text(
+                      l10n.appName,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        fontFamily: 'Manrope',
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.primary,
+                        letterSpacing: -0.5,
+                      ),
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            const SizedBox(width: 12),
             // Profile picture in top right — tap to go to profile tab
             StreamBuilder<UserModel?>(
               stream: userService.getUserStream(userId),

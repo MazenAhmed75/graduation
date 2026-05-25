@@ -101,7 +101,7 @@ abstract class AppLocalizations {
   /// No description provided for @appName.
   ///
   /// In en, this message translates to:
-  /// **'Mindful Curator'**
+  /// **'AI Based personal financial tracker'**
   String get appName;
 
   /// No description provided for @goodMorning.
