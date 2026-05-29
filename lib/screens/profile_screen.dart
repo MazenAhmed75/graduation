@@ -131,7 +131,7 @@ class ProfileScreen extends StatelessWidget {
         Navigator.pop(context); // Close loading dialog
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('Failed to upload photo: $e'),
+            content: Text('${l10n.photoUploadFailed}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -232,11 +232,11 @@ class ProfileScreen extends StatelessWidget {
           }
 
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            return Center(child: Text('${l10n.error}: ${snapshot.error}'));
           }
 
           if (!snapshot.hasData || snapshot.data == null) {
-            return const Center(child: Text('User data not found'));
+            return Center(child: Text(l10n.userDataNotFound));
           }
 
           final user = snapshot.data!;
@@ -445,8 +445,8 @@ class ProfileScreen extends StatelessWidget {
                               borderRadius: BorderRadius.circular(12),
                             ),
                             alignment: user.notificationsEnabled
-                                ? Alignment.centerRight
-                                : Alignment.centerLeft,
+                                ? AlignmentDirectional.centerEnd
+                                : AlignmentDirectional.centerStart,
                             padding: const EdgeInsets.all(2),
                             child: Container(
                               width: 20,

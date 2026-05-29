@@ -212,7 +212,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
       if (error == null) {
         // Successful update
         ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Password updated successfully!'))
+            SnackBar(content: Text(l10n.passwordUpdatedSuccessfully))
         );
         Navigator.pop(context); // Return to profile
       } else {

@@ -3,6 +3,7 @@ import '../theme.dart';
 import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 
+
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
 

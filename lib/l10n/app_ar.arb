@@ -55,7 +55,7 @@
   "photoFailed": "فشل رفع الصورة",
   "ok": "حسناً",
   "home": "الرئيسية",
-  "invest": "استثمار",
+  "invest": "الاستثمار",
   "loading": "جارٍ التحميل...",
   "userDataNotFound": "لم يتم العثور على بيانات المستخدم",
   "newBudget": "ميزانية جديدة",
@@ -113,7 +113,8 @@
   "alreadyHaveAccount": "لديك حساب بالفعل؟",
   "fullNameHint": "أدخل اسمك",
   "emailHint": "you@example.com",
-  "passwordHint": "6 أحرف على الأقل",
+  "passwordHintRegister": "6 أحرف على الأقل",
+  "passwordHintLogin": "أدخل كلمة المرور",
   "confirmPasswordHint": "أعد إدخال كلمة المرور",
   "enterNameError": "من فضلك أدخل الاسم",
   "nameTooShortError": "يجب أن يكون الاسم حرفين على الأقل",
@@ -148,7 +149,7 @@
   "crypto": "العملات الرقمية",
   "usStocks": "الأسهم الأمريكية",
   "showOpportunities": "عرض الفرص",
-  "investBestPick": "استثمر in أفضل فرصة",
+  "investBestPick": "استثمر في أفضل فرصة",
   "fullAutoScan": "فحص تلقائي كامل",
   "portfolioReview": "مراجعة المحفظة",
   "lockInGains": "تثبيت الأرباح",
@@ -237,10 +238,10 @@
     }
   },
   "alpacaSymbol": "رمز Alpaca",
-  "realOrderWarning": "سيتم تنفيذ أمر حقيقي على Alpaca",
-  "paperTradeWarning": "تداول تجريبي — لا يتم استخدام أموال حقيقية",
-  "executeBuy": "تنفيذ الشراء",
-  "executeSell": "تنفيذ البيع",
+  "realOrderWarning": "⚠️ سيؤدي هذا إلى تقديم طلب حقيقي على Alpaca.",
+  "paperTradeWarning": "📄 تداول ورقي — لن يتم تحريك أموال حقيقية.",
+  "executeBuy": "تنفيذ الشراء ✓",
+  "executeSell": "تنفيذ البيع ✓",
   "boughtOrderSubmitted": "تم إرسال أمر الشراء إلى Alpaca",
   "soldOrderSubmitted": "تم إرسال أمر البيع إلى Alpaca",
   "units": "وحدات",
@@ -408,13 +409,13 @@
   "setupMonthTemplate": "قم بإعداد ميزانية الشهر ثم اضغط على \"حفظ كقالب\".",
   "add": "إضافة",
   "resetPassword": "إعادة تعيين كلمة المرور",
-  "resetPasswordDescription": "أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل إليك رسالة تحتوي على تعليمات لإعادة تعيين كلمة المرور.",
-  "resetPasswordEmailSentDescription": "تحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور. إذا لم يظهر خلال بضع دقائق، تحقق من مجلد الرسائل غير المرغوب فيها.",
-  "pleaseEnterEmail": "يرجى إدخال بريدك الإلكتروني",
-  "pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صالح",
+  "resetPasswordDescription": "أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.",
+  "resetPasswordEmailSentDescription": "يرجى التحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور.",
+  "pleaseEnterEmail": "يرجى إدخال البريد الإلكتروني",
+  "pleaseEnterValidEmail": "يرجى إدخال بريد إلكتروني صحيح",
   "sendResetLink": "إرسال رابط إعادة التعيين",
   "backToLogin": "العودة لتسجيل الدخول",
-  "passwordResetEmailSent": "تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!",
+  "passwordResetEmailSent": "تم إرسال بريد إعادة تعيين كلمة المرور بنجاح!",
   "choosePhotoSource": "اختر مصدر الصورة",
   "takePhoto": "التقاط صورة",
   "chooseFromGallery": "اختر من المعرض",
@@ -424,8 +425,6 @@
   "account": "الحساب",
   "membership": "العضوية",
   "settings": "الإعدادات",
-  "fullName": "الاسم الكامل",
-  "email": "البريد الإلكتروني",
   "currentPlan": "الخطة الحالية",
   "privacySecurity": "الخصوصية والأمان",
   "logout": "تسجيل الخروج",
@@ -434,8 +433,8 @@
   "cancel": "إلغاء",
   "editName": "تعديل الاسم",
   "save": "حفظ",
-  "appVersion": "إصدار التطبيق 1.0.0",
-  "recurring": "المعاملات المتكررة",
+  "appVersion": "إصدار التطبيق ١.٠.٠",
+  "recurring": "متكرر",
   "noRecurringTitle": "لا توجد معاملات متكررة",
   "noRecurringSubtitle": "عند إضافة أو صرف المال، فعّل خيار \"تكرار\" لجعلها تتكرر تلقائياً.",
   "deleteRecurringTitle": "حذف المعاملة المتكررة؟",
@@ -558,7 +557,7 @@
       "amount": {}
     }
   },
-  "budgetFullyUsedInsight": "تم استخدام الميزانية بالكامل. قد تنفد خلال {days} يوم.",
+  "budgetFullyUsedInsight": "تم استخدام Mيزانية بالكامل. قد تنفد خلال {days} يوم.",
   "@budgetFullyUsedInsight": {
     "placeholders": {
       "days": {}
@@ -567,125 +566,195 @@
   "spendingReport": "تقرير المصاريف",
   "breakdown": "تفصيل",
   "byCategory": "حسب الفئة",
-  "allocated": "المخصص",
-  "spent": "المصروف",
   "used": "المستخدم",
   "noBudgetData": "لا توجد بيانات للميزانية لعرضها",
-
-
-
-  "aiInsightLabel": "رؤية ذكية",
-
-  "aiInsightRefreshTooltip": "تحديث",
-
-  "aiInsightJustNow": "الآن",
-
-  "aiInsightMinutesAgo": "منذ {n} د",
-  "@aiInsightMinutesAgo": {
-    "placeholders": { "n": { "type": "int" } }
-  },
-
-  "aiInsightHoursAgo": "منذ {n} س",
-  "@aiInsightHoursAgo": {
-    "placeholders": { "n": { "type": "int" } }
-  },
-
-  "aiInsightErrorMsg": "تعذّر تحميل الرؤية الذكية.",
-
-  "aiInsightRetryBtn": "إعادة المحاولة",
-
-  "budgetsScreenTitle": "الميزانية",
-
-
-  "reportsTitle": "التقارير",
   "aiInsightLabel": "رؤية مالية ذكية",
   "aiInsightRefreshTooltip": "تحديث",
+  "aiInsightJustNow": "الآن",
+  "aiInsightMinutesAgo": "منذ {n} د",
+  "@aiInsightMinutesAgo": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "aiInsightHoursAgo": "منذ {n} س",
+  "@aiInsightHoursAgo": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
   "aiInsightErrorMsg": "تعذّر تحميل الرؤية الذكية.",
   "aiInsightRetryBtn": "إعادة المحاولة",
+  "budgetsScreenTitle": "الميزانية",
+  "reportsTitle": "التقارير",
   "localInsightsSectionTitle": "ملاحظات فورية",
-
   "insightHighestSpending": "{category} هو أكبر نفقاتك بنسبة {percent} من ميزانيته.",
   "@insightHighestSpending": {
     "placeholders": {
       "category": { "type": "String" },
-      "percent":  { "type": "String" }
+      "percent": { "type": "String" }
     }
   },
-
   "insightOverBudget": "لقد تجاوزت ميزانيتك في: {categories}.",
   "@insightOverBudget": {
-    "placeholders": { "categories": { "type": "String" } }
+    "placeholders": {
+      "categories": { "type": "String" }
+    }
   },
-
   "insightWarningTotal": "لقد استخدمت {percent} من إجمالي ميزانيتك الشهرية — تمهّل!",
   "@insightWarningTotal": {
-    "placeholders": { "percent": { "type": "String" } }
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
   },
-
   "insightGreatProgress": "انضباط رائع! لم تنفق سوى {percent} من ميزانيتك حتى الآن.",
   "@insightGreatProgress": {
-    "placeholders": { "percent": { "type": "String" } }
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
   },
-
   "insightUnderUtilized": "إنفاق منخفض في {categories} — فكّر في إعادة توزيع الفائض.",
   "@insightUnderUtilized": {
-    "placeholders": { "categories": { "type": "String" } }
+    "placeholders": {
+      "categories": { "type": "String" }
+    }
   },
-
   "insightNearLimit": "{category} على وشك الوصول إلى حدّه ({percent}).",
   "@insightNearLimit": {
     "placeholders": {
       "category": { "type": "String" },
-      "percent":  { "type": "String" }
+      "percent": { "type": "String" }
     }
   },
-
-
   "cloudinaryUploadFailed": "فشل رفع الصورة إلى كلاوديناري",
-  "@cloudinaryUploadFailed": {
-    "description": "رسالة خطأ عند فشل رفع الصورة"
-  },
-
   "failedToUpload": "فشل في رفع الصورة",
-  "@failedToUpload": {
-    "description": "رسالة خطأ عامة عند فشل الرفع"
-  },
-
-
   "category_groceries": "بقالة",
   "category_travel": "سفر",
   "category_entertainment": "ترفيه",
   "category_food": "طعام",
   "category_shopping": "تسوق",
   "category_custom": "فئة خاصه",
-
-
-  "allocated": " المخصص",
   "deposit": "إيداع",
   "withdraw": "سحب",
-
-    "home": "الرئيسية",
-    "budgets": "الميزانيات",
-    "invest": "الاستثمار",
-    "profile": "الملف الشخصي",
-    "fullName": "الاسم الكامل",
-      "failedToSave": "فشل الحفظ: {error}",
-      "@failedToSave": {
-        "placeholders": {
-          "error": {}
-        }
-      },
-"replaceCurrentCategories": "استبدال الفئات الحالية؟",
-"replaceCategoriesWarning": "تطبيق هذا القالب سيؤدي إلى إزالة ميزانيات فئاتك الحالية واستبدالها بفئات القالب.",
-"replace": "استبدال",
-"overBy": "⚠ تجاوز بمقدار {amount}",
-
-"everyMonth": "كل شهر",
-  "everyWeek": "كل أسبوع",
-  "recurring": "متكرر",
-  "offlineBanner": "أنت غير متصل — ستتم مزامنة التغييرات عند إعادة الاتصال"
-
-
-
-
+  "failedToSave": "فشل الحفظ: {error}",
+  "@failedToSave": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "replaceCurrentCategories": "استبدال الفئات الحالية؟",
+  "replaceCategoriesWarning": "تطبيق هذا القالب سيؤدي إلى إزالة ميزانيات فئاتك الحالية واستبدالها بفئات القالب.",
+  "replace": "استبدال",
+  "overBy": "⚠ تجاوز بمقدار {amount}",
+  "offlineBanner": "أنت غير متصل — ستتم مزامنة التغييرات عند إعادة الاتصال",
+  "backendErrorTitle": "خطأ في الاتصال بالخادم",
+  "backendErrorSubtitle": "تعذر جلب سجل المعاملات الخاصة بك. يرجى التحقق من اتصالك بالإنترنت أو المحاولة مرة أخرى لاحقاً.",
+  "photoUploadFailed": "فشل تحميل الصورة",
+  "error": "خطأ",
+  "buyActionAmount": "🛒 شراء {amount} من {assetName}",
+  "@buyActionAmount": {
+    "placeholders": {
+      "amount": {},
+      "assetName": {}
+    }
+  },
+  "sellActionPercent": "💰 بيع {percent}% من {assetName}",
+  "@sellActionPercent": {
+    "placeholders": {
+      "percent": {},
+      "assetName": {}
+    }
+  },
+  "currentPriceLabel": "{price} السعر الحالي",
+  "@currentPriceLabel": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "alpacaSymbolLabel": "رمز ألباكا: {symbol}",
+  "@alpacaSymbolLabel": {
+    "placeholders": {
+      "symbol": {}
+    }
+  },
+  "dashboardBuySuccess": "✅ تم شراء {amount} من {assetName}",
+  "@dashboardBuySuccess": {
+    "placeholders": {
+      "amount": {},
+      "assetName": {}
+    }
+  },
+  "orderSubmittedSuccess": "✅ {actionType} — تم تقديم الطلب إلى Alpaca",
+  "@orderSubmittedSuccess": {
+    "placeholders": {
+      "actionType": {}
+    }
+  },
+  "boughtLabel": "تم الشراء",
+  "soldLabel": "تم البيع",
+  "suggestedLabel": "مقترح {amount} • {horizon}",
+  "@suggestedLabel": {
+    "placeholders": {
+      "amount": {},
+      "horizon": {}
+    }
+  },
+  "tradeBuyLabel": "صفقة: شراء {amount} من {assetName}",
+  "@tradeBuyLabel": {
+    "placeholders": {
+      "amount": {},
+      "assetName": {}
+    }
+  },
+  "tradeSellLabel": "صفقة: بيع {percent}% من {assetName}",
+  "@tradeSellLabel": {
+    "placeholders": {
+      "percent": {},
+      "assetName": {}
+    }
+  },
+  "unrealizedPnlLabel": "{amount} أرباح/خسائر غير محققة",
+  "@unrealizedPnlLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashLabel": "النقدي: {amount}",
+  "@cashLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "buyingPowerLabel": "القدرة الشرائية: {amount}",
+  "@buyingPowerLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "unitsLabel": "{count} وحدات",
+  "@unitsLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "valueLabel": "القيمة: {amount}",
+  "@valueLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "pnlLabel": "الأرباح والخسائر: {amount}",
+  "@pnlLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "closePositionBtn": "إغلاق المركز",
+  "closedSuccess": "✅ تم إغلاق {assetName} — تم تقديم الطلب",
+  "@closedSuccess": {
+    "placeholders": {
+      "assetName": {}
+    }
+  },
+  "passwordUpdatedSuccessfully": "تم تحديث كلمة المرور بنجاح!"
 }

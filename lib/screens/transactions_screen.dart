@@ -6,6 +6,8 @@ import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
 import '../utils/budget_categories.dart';
+import 'package:intl/intl.dart';
+import '../utils/currency_formatter.dart'
 
 // ============================================================
 // TransactionsScreen
@@ -126,6 +128,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
+          }
+
+          // checks if there is error and pass it to the error handling method
+          if (snapshot.hasError) {
+            return _buildBackendErrorState(snapshot.error.toString());
           }
 
           final all = snapshot.data ?? [];
@@ -342,7 +349,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       child: Row(
         children: [
           Text(
-            l10n.transactionsCount(filtered.length.toString()),
+            //  NEW LOCALIZED LINE:
+            l10n.transactionsCount(NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(filtered.length)),
             style: TextStyle(
               fontFamily: 'Manrope',
               fontSize: 12,
@@ -351,28 +359,31 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
           ),
           const Spacer(),
-          if (totalIn > 0)
-            Text(
-              '+\$${totalIn.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: AppTheme.primary,
-              ),
-            ),
-          if (totalIn > 0 && totalOut > 0)
-            Text('  ', style: TextStyle(color: Colors.grey[300])),
-          if (totalOut > 0)
-            Text(
-              '-\$${totalOut.toStringAsFixed(2)}',
-              style: const TextStyle(
-                fontFamily: 'Manrope',
-                fontSize: 12,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFFE24B4A),
-              ),
-            ),
+            //  NEW LOCALIZED BLOCK:
+            final locale = Localizations.localeOf(context).languageCode;
+
+    if (totalIn > 0)
+    Text(
+    '+ ${CurrencyFormatter.format(totalIn, locale)}',
+    style: const TextStyle(
+    fontFamily: 'Manrope',
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: AppTheme.primary,
+    ),
+    ),
+    if (totalIn > 0 && totalOut > 0)
+    Text('  ', style: TextStyle(color: Colors.grey[300])),
+    if (totalOut > 0)
+    Text(
+    '- ${CurrencyFormatter.format(totalOut, locale)}',
+    style: const TextStyle(
+    fontFamily: 'Manrope',
+    fontSize: 12,
+    fontWeight: FontWeight.w600,
+    color: Color(0xFFE24B4A),
+    ),
+    ),
         ],
       ),
     );
@@ -476,6 +487,34 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       a.year == b.year && a.month == b.month && a.day == b.day;
 }
 
+
+// back end error handling in ui
+Widget _buildBackendErrorState(String errorDetails) {
+  final l10n = AppLocalizations.of(context)!;
+  return Center(
+    child: Padding(
+      padding: const EdgeInsets.all(40),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.cloud_off_rounded, size: 48, color: Color(0xFFE24B4A)),
+          const SizedBox(height: 16),
+          Text(
+            l10n.backendErrorTitle,
+            style: const TextStyle(fontFamily: 'Manrope', fontSize: 16, fontWeight: FontWeight.w700),
+          ),
+          const SizedBox(height: 6),
+          Text(
+            l10n.backendErrorSubtitle,
+            textAlign: TextAlign.center,
+            style: TextStyle(fontFamily: 'Manrope', fontSize: 13, color: Colors.grey[500]),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 // ============================================================
 // _TypeChip — reusable filter chip
 // ============================================================
@@ -544,25 +583,21 @@ class _TransactionTile extends StatelessWidget {
     // Added missing localizations lookup
     final l10n = AppLocalizations.of(context)!;
 
+    //  NEW LOCALIZED CHUNK:
+    final locale = Localizations.localeOf(context).languageCode;
     final isWithdraw = transaction.type == 'withdraw';
     final color = isWithdraw ? const Color(0xFFE24B4A) : AppTheme.primary;
     final bgColor = isWithdraw
         ? const Color(0xFFE24B4A).withOpacity(0.08)
         : AppTheme.primaryContainer;
-    final amountLabel = isWithdraw
-        ? '-\$${transaction.amount.toStringAsFixed(2)}'
-        : '+\$${transaction.amount.toStringAsFixed(2)}';
 
-    // Format time as "3:45 PM"
-    final hour = transaction.createdAt.hour;
-    final minute = transaction.createdAt.minute.toString().padLeft(2, '0');
-    final period = hour >= 12 ? l10n.pm : l10n.am;
-    final displayHour = hour > 12
-        ? hour - 12
-        : hour == 0
-        ? 12
-        : hour;
-    final timeLabel = '$displayHour:$minute $period';
+// Formats currency dynamically via your helper
+    final amountLabel = isWithdraw
+        ? '- ${CurrencyFormatter.format(transaction.amount, locale)}'
+        : '+ ${CurrencyFormatter.format(transaction.amount, locale)}';
+
+// Automatically handles localized hours, padded minutes, and AM/PM strings out-of-the-box!
+    final timeLabel = DateFormat.jm(locale).format(transaction.createdAt);
 
     // Auto tag for recurring
     final isAuto = transaction.note.startsWith(l10n.auto);

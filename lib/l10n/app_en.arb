@@ -12,7 +12,6 @@
   "totalSaved": "Total Saved",
   "remaining": "Remaining",
   "available": "Available",
-  "daysLeft": "Days Left",
   "completed": "Completed",
   "thisMonth": "this month",
   "spent": "Spent",
@@ -114,7 +113,8 @@
   "alreadyHaveAccount": "Already have an account?",
   "fullNameHint": "Enter your name",
   "emailHint": "you@example.com",
-  "passwordHint": "At least 6 characters",
+  "passwordHintRegister": "At least 6 characters",
+  "passwordHintLogin": "Enter your password",
   "confirmPasswordHint": "Re-enter your password",
   "enterNameError": "Please enter your name",
   "nameTooShortError": "Name must be at least 2 characters",
@@ -238,10 +238,10 @@
     }
   },
   "alpacaSymbol": "Alpaca symbol",
-  "realOrderWarning": "This will place a REAL order on Alpaca.",
-  "paperTradeWarning": "Paper trade — no real money moves.",
-  "executeBuy": "Execute Buy",
-  "executeSell": "Execute Sell",
+  "realOrderWarning": "⚠️ This will place a REAL order on Alpaca.",
+  "paperTradeWarning": "📄 Paper trade — no real money moves.",
+  "executeBuy": "Execute Buy ✓",
+  "executeSell": "Execute Sell ✓",
   "boughtOrderSubmitted": "Bought — order submitted to Alpaca",
   "soldOrderSubmitted": "Sold — order submitted to Alpaca",
   "units": "units",
@@ -409,13 +409,13 @@
   "setupMonthTemplate": "Set up a month and tap \"Save as Template\".",
   "add": "Add",
   "resetPassword": "Reset Password",
-  "resetPasswordDescription": "Enter the email associated with your account and we'll send an email with instructions to reset your password.",
-  "resetPasswordEmailSentDescription": "Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.",
+  "resetPasswordDescription": "Enter your email address and we'll send you a link to reset your password.",
+  "resetPasswordEmailSentDescription": "Check your email for a link to reset your password.",
   "pleaseEnterEmail": "Please enter your email",
-  "pleaseEnterValidEmail": "Please enter a valid email",
+  "pleaseEnterValidEmail": "Please enter a valid email address",
   "sendResetLink": "Send Reset Link",
   "backToLogin": "Back to Login",
-  "passwordResetEmailSent": "Password reset link sent to your email!",
+  "passwordResetEmailSent": "Password reset email sent successfully!",
   "choosePhotoSource": "Choose Photo Source",
   "takePhoto": "Take Photo",
   "chooseFromGallery": "Choose from Gallery",
@@ -425,20 +425,13 @@
   "account": "Account",
   "membership": "Membership",
   "settings": "Settings",
-  "fullName": "FULL NAME",
-  "email": "EMAIL",
   "currentPlan": "CURRENT PLAN",
-  "free": "Free",
-  "upgrade": "Upgrade",
-  "notifications": "Notifications",
-  "language": "Language",
   "privacySecurity": "Privacy & Security",
   "logout": "Logout",
   "logoutConfirmTitle": "Log Out",
   "logoutConfirmMessage": "Are you sure you want to log out?",
   "cancel": "Cancel",
   "editName": "Edit Name",
-  "fullNameHint": "Enter your name",
   "save": "Save",
   "appVersion": "App Version 1.0.0",
   "recurring": "Recurring",
@@ -574,155 +567,214 @@
   "breakdown": "Breakdown",
   "byCategory": "By Category",
   "allocated": "Allocated",
-  "spent": "Spent",
-  "remaining": "Remaining",
+  "spendingReportSpent": "Spent",
+  "spendingReportRemaining": "Remaining",
   "used": "Used",
   "noBudgetData": "No budget data to display.",
-
-
-
-  "aiInsightLabel": "AI Insight",
+  "aiInsightLabel": "AI Financial Insight",
   "@aiInsightLabel": {
-    "description": "Label on the Gemini AI insight card in Budgets screen"
+    "description": "Label above the Gemini insight card"
   },
-
   "aiInsightRefreshTooltip": "Refresh",
   "@aiInsightRefreshTooltip": {},
-
   "aiInsightJustNow": "Just now",
   "@aiInsightJustNow": {},
-
   "aiInsightMinutesAgo": "{n} min ago",
   "@aiInsightMinutesAgo": {
-    "placeholders": { "n": { "type": "int" } }
+    "placeholders": {
+      "n": { "type": "int" }
+    }
   },
-
   "aiInsightHoursAgo": "{n}h ago",
   "@aiInsightHoursAgo": {
-    "placeholders": { "n": { "type": "int" } }
+    "placeholders": {
+      "n": { "type": "int" }
+    }
   },
-
   "aiInsightErrorMsg": "Could not load AI insight.",
   "@aiInsightErrorMsg": {},
-
   "aiInsightRetryBtn": "Retry",
   "@aiInsightRetryBtn": {},
-
   "budgetsScreenTitle": "Budgets",
   "@budgetsScreenTitle": {},
-
-
-
   "reportsTitle": "Reports",
-  "@reportsTitle": { "description": "Reports screen app bar title" },
-
-  "aiInsightLabel": "AI Financial Insight",
-  "@aiInsightLabel": { "description": "Label above the Gemini insight card" },
-
-  "aiInsightRefreshTooltip": "Refresh",
-  "@aiInsightRefreshTooltip": {},
-
-  "aiInsightErrorMsg": "Could not load AI insight.",
-  "@aiInsightErrorMsg": {},
-
-  "aiInsightRetryBtn": "Retry",
-  "@aiInsightRetryBtn": {},
-
+  "@reportsTitle": {
+    "description": "Reports screen app bar title"
+  },
   "localInsightsSectionTitle": "Quick Insights",
   "@localInsightsSectionTitle": {},
-
   "insightHighestSpending": "{category} is your biggest expense at {percent} of its budget.",
   "@insightHighestSpending": {
     "placeholders": {
       "category": { "type": "String" },
-      "percent":  { "type": "String" }
+      "percent": { "type": "String" }
     }
   },
-
   "insightOverBudget": "You've exceeded your budget in: {categories}.",
   "@insightOverBudget": {
-    "placeholders": { "categories": { "type": "String" } }
+    "placeholders": {
+      "categories": { "type": "String" }
+    }
   },
-
   "insightWarningTotal": "You've used {percent} of your total monthly budget — slow down!",
   "@insightWarningTotal": {
-    "placeholders": { "percent": { "type": "String" } }
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
   },
-
   "insightGreatProgress": "Great discipline! Only {percent} of your budget spent so far.",
   "@insightGreatProgress": {
-    "placeholders": { "percent": { "type": "String" } }
+    "placeholders": {
+      "percent": { "type": "String" }
+    }
   },
-
   "insightUnderUtilized": "Low spend in {categories} — consider reallocating the surplus.",
   "@insightUnderUtilized": {
-    "placeholders": { "categories": { "type": "String" } }
+    "placeholders": {
+      "categories": { "type": "String" }
+    }
   },
-
   "insightNearLimit": "{category} is almost at its limit ({percent}).",
   "@insightNearLimit": {
     "placeholders": {
       "category": { "type": "String" },
-      "percent":  { "type": "String" }
+      "percent": { "type": "String" }
     }
   },
-
-    "cloudinaryUploadFailed": "Cloudinary upload failed",
-    "@cloudinaryUploadFailed": {
-      "description": "Error shown when Cloudinary upload fails"
-    },
-
-    "failedToUpload": "Failed to upload",
-    "@failedToUpload": {
-      "description": "Generic upload failure message"
-    },
-
-
+  "cloudinaryUploadFailed": "Cloudinary upload failed",
+  "failedToUpload": "Failed to upload",
   "category_groceries": "Groceries",
   "category_travel": "Travel",
   "category_entertainment": "Entertainment",
   "category_food": "Food",
   "category_shopping": "Shopping",
   "category_custom": "Custom",
-
-  "allocated": "Allocated",
   "deposit": "Deposit",
   "withdraw": "Withdraw",
-
-    "home": "Home",
-    "budgets": "Budgets",
-    "invest": "Invest",
-    "profile": "Profile",
-    "fullName": "Full Name",
-     "failedToSave": "Failed to save: {error}",
-      "@failedToSave": {
-        "placeholders": {
-          "error": {}
-        }
-      },
-
-"replaceCurrentCategories": "Replace Current Categories?",
-"replaceCategoriesWarning": "Applying this template will remove your current category budgets and replace them with the template categories.",
-"replace": "Replace",
-"overBy": "⚠ Over by {amount}",
-"@overBy": {
-  "placeholders": {
-    "amount": {
-      "type": "String"
+  "failedToSave": "Failed to save: {error}",
+  "@failedToSave": {
+    "placeholders": {
+      "error": {}
     }
-  }
-},
-"everyMonth": "Every Month",
-  "everyWeek": "Every Week",
-  "recurring": "Recurring",
+  },
+  "replaceCurrentCategories": "Replace Current Categories?",
+  "replaceCategoriesWarning": "Applying this template will remove your current category budgets and replace them with the template categories.",
+  "replace": "Replace",
+  "overBy": "⚠️ Over by {amount}",
+  "@overBy": {
+    "placeholders": {
+      "amount": { "type": "String" }
+    }
+  },
   "offlineBanner": "You're offline — changes will sync when reconnected",
-  "@offlineBanner": {
-    "description": "Banner shown at the top of the screen when the device has no internet connection"
-  }
-
-
-
-
+  "backendErrorTitle": "Server Connection Error",
+  "backendErrorSubtitle": "We couldn't retrieve your transaction history. Please check your internet connection or try again later.",
+  "photoUploadFailed": "Failed to upload photo",
+  "error": "Error",
+  "buyActionAmount": "🛒 Buy {amount} of {assetName}",
+  "@buyActionAmount": {
+    "placeholders": {
+      "amount": {},
+      "assetName": {}
+    }
+  },
+  "sellActionPercent": "💰 Sell {percent}% of {assetName}",
+  "@sellActionPercent": {
+    "placeholders": {
+      "percent": {},
+      "assetName": {}
+    }
+  },
+  "currentPriceLabel": "{price} current price",
+  "@currentPriceLabel": {
+    "placeholders": {
+      "price": {}
+    }
+  },
+  "alpacaSymbolLabel": "Alpaca symbol: {symbol}",
+  "@alpacaSymbolLabel": {
+    "placeholders": {
+      "symbol": {}
+    }
+  },
+  "dashboardBuySuccess": "✅ Bought {amount} of {assetName}",
+  "@dashboardBuySuccess": {
+    "placeholders": {
+      "amount": {},
+      "assetName": {}
+    }
+  },
+  "orderSubmittedSuccess": "✅ {actionType} — order submitted to Alpaca",
+  "@orderSubmittedSuccess": {
+    "placeholders": {
+      "actionType": {}
+    }
+  },
+  "boughtLabel": "Bought",
+  "soldLabel": "Sold",
+  "suggestedLabel": "{amount} suggested • {horizon}",
+  "@suggestedLabel": {
+    "placeholders": {
+      "amount": {},
+      "horizon": {}
+    }
+  },
+  "tradeBuyLabel": "Trade: BUY {amount} of {assetName}",
+  "@tradeBuyLabel": {
+    "placeholders": {
+      "amount": {},
+      "assetName": {}
+    }
+  },
+  "tradeSellLabel": "Trade: SELL {percent}% of {assetName}",
+  "@tradeSellLabel": {
+    "placeholders": {
+      "percent": {},
+      "assetName": {}
+    }
+  },
+  "unrealizedPnlLabel": "{amount} unrealized P&L",
+  "@unrealizedPnlLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "cashLabel": "Cash: {amount}",
+  "@cashLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "buyingPowerLabel": "Buying power: {amount}",
+  "@buyingPowerLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "unitsLabel": "{count} units",
+  "@unitsLabel": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "valueLabel": "Value: {amount}",
+  "@valueLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "pnlLabel": "P&L: {amount}",
+  "@pnlLabel": {
+    "placeholders": {
+      "amount": {}
+    }
+  },
+  "closePositionBtn": "Close Position",
+  "closedSuccess": "✅ Closed {assetName} — order submitted",
+  "@closedSuccess": {
+    "placeholders": {
+      "assetName": {}
+    }
+  },
+  "passwordUpdatedSuccessfully": "Password updated successfully!"
 }
-
-

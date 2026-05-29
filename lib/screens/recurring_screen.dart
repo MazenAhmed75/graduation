@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
 import '../utils/budget_categories.dart';
+import 'package:intl/intl.dart';
 
 // ============================================================
 // RecurringScreen

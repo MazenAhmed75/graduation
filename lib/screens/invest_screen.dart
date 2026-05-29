@@ -283,7 +283,7 @@ class _InvestScreenState extends State<InvestScreen>
       backgroundColor: result.success
           ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C),
       content: Text(result.success
-          ? '✅ Bought \$${opp.suggestedUsd.toStringAsFixed(0)} of ${opp.assetName}'
+          ? AppLocalizations.of(context).dashboardBuySuccess('\$${opp.suggestedUsd.toStringAsFixed(0)}', opp.assetName)
           : '❌ ${result.error}'),
       duration: const Duration(seconds: 5),
     ));
@@ -345,7 +345,7 @@ class _InvestScreenState extends State<InvestScreen>
             size: 26, color: AppTheme.primary,
           ),
           const SizedBox(width: 8),
-          Text(action.type == 'buy' ? 'Confirm Buy' : 'Confirm Sell',
+          Text(action.type == 'buy' ? AppLocalizations.of(context).confirmBuy : AppLocalizations.of(context).confirmSell,
               style: const TextStyle(fontWeight: FontWeight.bold)),
         ]),
         content: Column(mainAxisSize: MainAxisSize.min,
@@ -358,15 +358,15 @@ class _InvestScreenState extends State<InvestScreen>
             ),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               Text(action.type == 'buy'
-                  ? '🛒 Buy \$${action.usdAmount.toStringAsFixed(2)} of ${asset.name}'
-                  : '💰 Sell ${(action.sellFraction * 100).toStringAsFixed(0)}% of ${asset.name}',
+                  ? AppLocalizations.of(context).buyActionAmount('\$${action.usdAmount.toStringAsFixed(2)}', asset.name)
+                  : AppLocalizations.of(context).sellActionPercent((action.sellFraction * 100).toStringAsFixed(0), asset.name),
                   style: const TextStyle(fontWeight: FontWeight.bold,
                       color: AppTheme.primary, fontSize: 15)),
               const SizedBox(height: 4),
-              Text('${asset.displayPrice} current price',
+              Text(AppLocalizations.of(context).currentPriceLabel(asset.displayPrice),
                   style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
               if (alpacaSymbol != null)
-                Text('Alpaca symbol: $alpacaSymbol',
+                Text(AppLocalizations.of(context).alpacaSymbolLabel(alpacaSymbol),
                     style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
             ]),
           ),
@@ -379,23 +379,24 @@ class _InvestScreenState extends State<InvestScreen>
                 style: const TextStyle(fontSize: 13, color: AppTheme.onSurface, height: 1.4)),
           ),
           const SizedBox(height: 10),
-          Text(
-            _alpacaSvc.isConfigured
-                ? '⚠️ This will place a REAL order on Alpaca.'
-                : '📄 Paper trade — no real money moves.',
-            style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant,
-                fontStyle: FontStyle.italic),
+      Text(
+        _alpacaSvc.isConfigured
+            ? AppLocalizations.of(context).realOrderWarning
+            : AppLocalizations.of(context).paperTradeWarning,
+        style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant,
+            fontStyle: FontStyle.italic),
+      ),
           ),
         ]),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancel')),
+    TextButton(onPressed: () => Navigator.pop(context, false),
+    child: Text(AppLocalizations.of(context).cancel)),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primary, foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-            onPressed: () => Navigator.pop(context, true),
-            child: Text(action.type == 'buy' ? 'Execute Buy ✓' : 'Execute Sell ✓'),
+    onPressed: () => Navigator.pop(context, true),
+    child: Text(action.type == 'buy' ? AppLocalizations.of(context).executeBuy : AppLocalizations.of(context).executeSell),
           ),
         ],
       ),
@@ -426,10 +427,12 @@ class _InvestScreenState extends State<InvestScreen>
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: result.success ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C),
-      content: Text(
-        result.success
-            ? '✅ ${action.type == 'buy' ? 'Bought' : 'Sold'} — order submitted to Alpaca'
-            : '❌ ${result.error}',
+    content: Text(
+    result.success
+    ? (action.type == 'buy'
+    ? AppLocalizations.of(context).orderSubmittedSuccess(AppLocalizations.of(context).boughtLabel)
+        : AppLocalizations.of(context).orderSubmittedSuccess(AppLocalizations.of(context).soldLabel))
+        : '❌ ${result.error}',
         style: const TextStyle(color: Colors.white),
       ),
       duration: const Duration(seconds: 5),
@@ -937,7 +940,7 @@ class _InvestScreenState extends State<InvestScreen>
           Text(opp.reason, style: const TextStyle(
               fontSize: 12, color: AppTheme.onSurfaceVariant)),
           const SizedBox(height: 2),
-          Text('\$${opp.suggestedUsd.toStringAsFixed(0)} suggested • ${opp.timeHorizon}',
+          Text(AppLocalizations.of(context).suggestedLabel('\$${opp.suggestedUsd.toStringAsFixed(0)}', opp.timeHorizon),
               style: TextStyle(fontSize: 11, color: color, fontWeight: FontWeight.w600)),
         ])),
         const SizedBox(width: 12),
@@ -973,8 +976,8 @@ class _InvestScreenState extends State<InvestScreen>
         const SizedBox(width: 10),
         Expanded(child: Text(
           isBuy
-              ? 'Trade: BUY \$${action.usdAmount.toStringAsFixed(0)} of ${action.assetName}'
-              : 'Trade: SELL ${(action.sellFraction * 100).toStringAsFixed(0)}% of ${action.assetName}',
+              ? AppLocalizations.of(context).tradeBuyLabel('\$${action.usdAmount.toStringAsFixed(0)}', action.assetName)
+              : AppLocalizations.of(context).tradeSellLabel((action.sellFraction * 100).toStringAsFixed(0), action.assetName),
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: color),
         )),
         const SizedBox(width: 8),
@@ -1056,15 +1059,15 @@ class _InvestScreenState extends State<InvestScreen>
                 Icon(isUp ? Icons.trending_up_rounded : Icons.trending_down_rounded,
                     color: isUp ? const Color(0xFF4CAF50) : const Color(0xFFEF5350), size: 18),
                 const SizedBox(width: 4),
-                Text('${isUp ? "+" : ""}\$${totalPnl.toStringAsFixed(2)} unrealized P&L',
+                Text(AppLocalizations.of(context).unrealizedPnlLabel('${isUp ? "+" : ""}\$${totalPnl.toStringAsFixed(2)}'),
                     style: TextStyle(
                         color: isUp ? const Color(0xFF4CAF50) : const Color(0xFFEF5350),
                         fontWeight: FontWeight.bold, fontSize: 14)),
               ]),
               if (_account != null) ...[
                 const SizedBox(height: 8),
-                Text('Cash: \$${_account!.cash.toStringAsFixed(2)}  •  '
-                    'Buying power: \$${_account!.buyingPower.toStringAsFixed(2)}',
+                Text('${AppLocalizations.of(context).cashLabel('\$${_account!.cash.toStringAsFixed(2)}')}  •  '
+                    '${AppLocalizations.of(context).buyingPowerLabel('\$${_account!.buyingPower.toStringAsFixed(2)}')}',
                     style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 12)),
               ],
             ]),
@@ -1122,7 +1125,7 @@ class _InvestScreenState extends State<InvestScreen>
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(pos.displayName, style: const TextStyle(
                 fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.onSurface)),
-            Text('${pos.qty.toStringAsFixed(4)} units',
+            Text(AppLocalizations.of(context).unitsLabel(pos.qty.toStringAsFixed(4)),
                 style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant)),
           ])),
           // Live P&L badge
@@ -1208,9 +1211,9 @@ class _InvestScreenState extends State<InvestScreen>
               Text(pos.displayName, style: const TextStyle(
                   fontWeight: FontWeight.bold, fontSize: 15)),
               const SizedBox(height: 4),
-              Text('Value: \$${pos.marketValue.toStringAsFixed(2)}',
+              Text(AppLocalizations.of(context).valueLabel('\$${pos.marketValue.toStringAsFixed(2)}'),
                   style: const TextStyle(fontSize: 13)),
-              Text('P&L: ${pos.isProfit ? "+" : ""}\$${pos.unrealizedPl.toStringAsFixed(2)}',
+              Text(AppLocalizations.of(context).pnlLabel('${pos.isProfit ? "+" : ""}\$${pos.unrealizedPl.toStringAsFixed(2)}'),
                   style: TextStyle(
                     fontSize: 13,
                     color: pos.isProfit ? const Color(0xFF2E7D32) : const Color(0xFFD32F2F),
@@ -1230,7 +1233,7 @@ class _InvestScreenState extends State<InvestScreen>
             style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD32F2F), foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-            child: const Text('Close Position', style: TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(AppLocalizations.of(context).closePositionBtn, style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ],
       ),
@@ -1247,7 +1250,7 @@ class _InvestScreenState extends State<InvestScreen>
       backgroundColor: result.success
           ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C),
       content: Text(result.success
-          ? '✅ Closed ${pos.displayName} — order submitted'
+          ? AppLocalizations.of(context).closedSuccess(pos.displayName)
           : '❌ ${result.error}'),
       duration: const Duration(seconds: 5),
     ));

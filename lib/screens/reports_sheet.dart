@@ -4,6 +4,8 @@ import '../models/budget_model.dart';
 import '../theme.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
+import 'package:intl/intl.dart';
+import '../utils/currency_formatter.dart'; // Adjust path if necessary
 
 /// Open with: showReportsSheet(context, budgets)
 void showReportsSheet(BuildContext context, List<BudgetModel> budgets) {
@@ -251,7 +253,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '$spentPercent%',
+                    '${NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(spentPercent)}%',
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
@@ -274,9 +276,10 @@ class _ReportsSheetState extends State<ReportsSheet>
         // Legend
         ...List.generate(budgets.length, (i) {
           final b = budgets[i];
-          final pct = totalAllocated > 0
-              ? ((b.spent / totalAllocated) * 100).toStringAsFixed(1)
-              : '0';
+          final localeCode = Localizations.localeOf(context).languageCode;
+          final intFormatter = NumberFormat.decimalPattern(localeCode);
+          final percentFormatter = NumberFormat.decimalPattern(localeCode)..maximumFractionDigits = 1;
+          final pctValue = totalAllocated > 0 ? ((b.spent / totalAllocated) * 100) : 0.0;
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Row(
@@ -304,7 +307,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                   ),
                 ),
                 Text(
-                  '${b.spent.toStringAsFixed(0)}  ($pct%)',
+                  '${intFormatter.format(b.spent)}  (${percentFormatter.format(pctValue)}%)',
                   style: const TextStyle(
                     fontSize: 13,
                     color: AppTheme.onSurfaceVariant,
@@ -387,7 +390,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                     showTitles: true,
                     reservedSize: 40,
                     getTitlesWidget: (value, _) => Text(
-                      value.toStringAsFixed(0),
+                      NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(value),
                       style: const TextStyle(
                         fontSize: 10,
                         color: AppTheme.onSurfaceVariant,
@@ -410,15 +413,16 @@ class _ReportsSheetState extends State<ReportsSheet>
                       );
                       return Padding(
                         padding: const EdgeInsets.only(top: 6),
-                        child: Text(
-                          label.length > 6
-                              ? '${label.substring(0, 6)}…'
-                              : label,
+                        child:
+                        Text(
+                          label,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 10,
                             color: AppTheme.onSurfaceVariant,
                           ),
-                        ),
+                        )
                       );
                     },
                   ),
@@ -439,6 +443,10 @@ class _ReportsSheetState extends State<ReportsSheet>
         ...List.generate(budgets.length, (i) {
           final b = budgets[i];
           final ratio = b.spentRatio.clamp(0.0, 1.0);
+
+          // 1. Define the localized number formatter here
+          final detailsFormatter = NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode);
+
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Column(
@@ -468,8 +476,9 @@ class _ReportsSheetState extends State<ReportsSheet>
                         ),
                       ),
                     ),
+                    // 2. Use the formatter here to translate the numbers
                     Text(
-                      '${b.spent.toStringAsFixed(0)} / ${b.allocated.toStringAsFixed(0)}',
+                      '${detailsFormatter.format(b.spent)} / ${detailsFormatter.format(b.allocated)}',
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppTheme.onSurfaceVariant,
@@ -533,7 +542,7 @@ class _TotalChip extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              amount.toStringAsFixed(0),
+              NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(amount),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,

@@ -11,6 +11,8 @@ import '../screens/insights_sheet.dart';
 import '../screens/reports_sheet.dart';
 import '../utils/category_localization.dart';
 import '../utils/budget_categories.dart';
+import 'package:intl/intl.dart'; //  arabic numbers
+
 class HomeScreen extends StatelessWidget {
   // ============================================================
   // onNavigateToBudgets is a callback from MainScreen.
@@ -30,6 +32,8 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    // Get the current active language ('en', 'ar', etc.)
+    final String locale = Localizations.localeOf(context).languageCode;
     final UserService userService = UserService();
     final BudgetService budgetService = BudgetService();
     final AuthService authService = AuthService();
@@ -235,17 +239,17 @@ class HomeScreen extends StatelessWidget {
                                           ),
                                         ),
                                         const SizedBox(height: 4),
-                                        // Tap to edit savings goal
-                                        GestureDetector(
-                                          onTap: () =>
-                                              _showEditSavingsGoalDialog(
-                                                  context, user, userService),
-                                          child: Row(
-                                            children: [
-                                              Text(
-                                                CurrencyFormatter.format(
-                                                    user.monthlySavingsGoal)
-                                                    .replaceAll('.00', ''),
+                      // Tap to edit savings goal
+                      GestureDetector(
+                        onTap: () =>
+                            _showEditSavingsGoalDialog(
+                                context, user, userService),
+                        child: Row(
+                            children: [
+                        Text(
+                        // Pass the locale, and handle truncation safely via NumberFormat if your utility supports it,
+                        // or let it format with digits natively.
+                        CurrencyFormatter.format(user.monthlySavingsGoal, locale),
                                                 style: const TextStyle(
                                                   fontSize: 30,
                                                   fontWeight: FontWeight.bold,
@@ -288,7 +292,7 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '$savingsPercent%',
+                                      '${NumberFormat.decimalPattern(locale).format(savingsPercent)}%',
                                       style: const TextStyle(
                                         fontSize: 36,
                                         fontWeight: FontWeight.w800,
@@ -333,8 +337,8 @@ class HomeScreen extends StatelessWidget {
                                 const SizedBox(height: 12),
                                 Text(
                                   l10n.savedGoalText(
-                                    CurrencyFormatter.format(liveSavings),
-                                    CurrencyFormatter.format(user.monthlySavingsGoal),
+                                    CurrencyFormatter.format(liveSavings, locale),
+                                    CurrencyFormatter.format(user.monthlySavingsGoal, locale),
                                   ),
                                   style: const TextStyle(
                                     fontSize: 12,
@@ -496,7 +500,7 @@ class HomeScreen extends StatelessWidget {
                                     ? CategoryLocalization.getCategoryName(context, budget.customTitle, '')
                                     : CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
                                 l10n.amountLeftText(
-                                  budget.remaining.toStringAsFixed(0),
+                                  NumberFormat.decimalPattern(locale).format(budget.remaining),
                                 ),
                                 budget.spentRatio,
                                 _getIconData(budget.iconName),
@@ -687,8 +691,15 @@ class HomeScreen extends StatelessWidget {
 
   static void _showEditSavingsGoalDialog(
       BuildContext context, UserModel user, UserService userService) {
-    final controller =
-    TextEditingController(text: user.monthlySavingsGoal.toStringAsFixed(0));
+    // 1. Get the current active language code
+    final String locale = Localizations.localeOf(context).languageCode;
+
+    // 2. Use '0' pattern instead of decimalPattern to avoid inserting thousands-separator
+    // commas (like ١٬٥٠٠) inside the input field, making it much easier to edit.
+    final controller = TextEditingController(
+      text: NumberFormat('0', locale).format(user.monthlySavingsGoal),
+    );
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -698,10 +709,14 @@ class HomeScreen extends StatelessWidget {
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
-          decoration:  InputDecoration(
+
+          // ======= ARABIC FORMATTER =======
+          inputFormatters: [ArabicNumberInputFormatter(locale)],
+          // =================================
+
+          decoration: InputDecoration(
             labelText: AppLocalizations.of(context)!.monthlyGoal,
-            hintText: AppLocalizations.of(context)!
-                .enterMonthlySavingsGoal,
+            hintText: AppLocalizations.of(context)!.enterMonthlySavingsGoal,
           ),
         ),
         actions: [
@@ -711,7 +726,26 @@ class HomeScreen extends StatelessWidget {
           ),
           TextButton(
             onPressed: () async {
-              final newGoal = double.tryParse(controller.text) ?? 0.0;
+              // 3. SANITIZE THE INPUT BEFORE PARSING
+              String textInput = controller.text;
+
+              // Maps Eastern Arabic digits to standard Western digits
+              const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+              const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+
+              for (int i = 0; i < 10; i++) {
+                textInput = textInput.replaceAll(arabicDigits[i], englishDigits[i]);
+              }
+
+              // Replace Arabic decimal separators (٫) and thousands separators spaces/commas
+              textInput = textInput
+                  .replaceAll('٫', '.')
+                  .replaceAll(',', '')
+                  .replaceAll(' ', '');
+
+              // 4. Now double.tryParse can read it perfectly!
+              final newGoal = double.tryParse(textInput) ?? 0.0;
+
               if (newGoal > 0) {
                 await userService.updateSavingsGoal(user.id, newGoal);
               }

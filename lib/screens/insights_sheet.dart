@@ -3,6 +3,7 @@ import '../models/budget_model.dart';
 import '../theme.dart';
 import '../utils/budget_insight_helper.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 
 /// A bottom sheet that summarises all category insights for the current month.
 /// Open it with: showInsightsSheet(context, budgets, daysLeft)
@@ -181,7 +182,7 @@ class InsightsSheet extends StatelessWidget {
                               ),
                             ),
                             Text(
-                              '${(ratio * 100).round()}%',
+                              NumberFormat.percentPattern(Localizations.localeOf(context).languageCode).format(ratio),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: item.insight.color,

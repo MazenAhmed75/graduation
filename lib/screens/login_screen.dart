@@ -161,7 +161,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           keyboardType: TextInputType.emailAddress,
                           decoration: InputDecoration(
                             labelText: l10n.emailAddress,
-                            hintText: 'you@example.com',
+                            hintText: l10n.emailHint,
                             prefixIcon: const Icon(Icons.email_outlined),
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -187,7 +187,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           obscureText: _obscurePassword,
                           decoration: InputDecoration(
                             labelText: l10n.password,
-                            hintText: 'Enter your password',
+                            hintText: l10n.passwordHintLogin,
                             prefixIcon: const Icon(Icons.lock_outlined),
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -221,7 +221,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
                         // Forgot Password Link
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: AlignmentDirectional.centerEnd,
                           child: TextButton(
                             onPressed: () {
                               // Navigate to Forgot Password Screen

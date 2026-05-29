@@ -19,6 +19,7 @@ import '../utils/budget_categories.dart';
 import '../utils/category_localization.dart';
 import 'package:connectivity_plus/connectivity_plus.dart'; // offline support
 import 'dart:async'; // offline support
+import 'package:intl/intl.dart'; // Required for NumberFormat
 
 
 
@@ -83,8 +84,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   /// Called when no monthly budget exists yet, or user wants to edit it.
   void _showSetMonthlyBudgetDialog({MonthlyBudgetModel? existing}) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode; // to know the language
+    final formatNum = NumberFormat('#####0.00', locale);
     final controller = TextEditingController(
-      text: existing != null ? existing.totalAmount.toStringAsFixed(2) : '',
+      text: existing != null ? formatNum.format(existing.totalAmount) : '',
     );
 
     showDialog(
@@ -110,6 +113,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
               controller: controller,
               keyboardType:
               const TextInputType.numberWithOptions(decimal: true),
+              inputFormatters: [ArabicNumberInputFormatter(locale)], // number formater
               autofocus: true,
               decoration:  InputDecoration(
                 labelText: l10n.totalMonthlyBudget,
@@ -125,7 +129,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           ),
           ElevatedButton(
             onPressed: () async {
-              final amount = double.tryParse(controller.text) ?? 0.0;
+              final amount = CurrencyFormatter.parse(controller.text);
               if (amount > 0) {
                 await _budgetService.setMonthlyBudget(
                   userId: _authService.currentUser!.uid,
@@ -153,6 +157,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     required List<BudgetModel> existing,
   }) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode; //  this line to know the language
+    final formatNum = NumberFormat('#####0.00', locale); // this helps to format decimals
 
     // Calculate how much money is left unassigned
     final totalAllocated = existing.fold(0.0, (sum, b) => sum + b.allocated);
@@ -165,7 +171,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         builder: (context) => AlertDialog(
           title: Text(l10n.fullyAllocated),
           content: Text(
-            l10n.fullyAllocatedDescription(monthly.totalAmount.toStringAsFixed(2)),
+            l10n.fullyAllocatedDescription(formatNum.format(monthly.totalAmount)), // arabic number formatter
           ),
           actions: [
             TextButton(
@@ -206,7 +212,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                       Icon(Icons.info_outline, size: 16, color: AppTheme.onPrimaryContainer),
                       const SizedBox(width: 8),
                       Text(
-                        l10n.availableToAssign(remaining.toStringAsFixed(2)),
+                        l10n.availableToAssign(formatNum.format(remaining)), // arabic numbers
                         style: TextStyle(
                           color: AppTheme.onPrimaryContainer,
                           fontSize: 13,
@@ -271,9 +277,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 TextField(
                   controller: amountController,
                   keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                  inputFormatters: [ArabicNumberInputFormatter(locale)], // arabic number formatter
                   decoration: InputDecoration(
                     labelText: l10n.amount,
-                    hintText: l10n.maxAmount(remaining.toStringAsFixed(2)),
+                    hintText: l10n.maxAmount(formatNum.format(remaining)), // arabic numbers
                   ),
                 ),
               ],
@@ -286,7 +293,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
-                final amount = double.tryParse(amountController.text) ?? 0.0;
+                final amount = CurrencyFormatter.parse(amountController.text);
 
                 if (amount <= 0) return;
 
@@ -294,7 +301,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 if (amount > remaining) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(l10n.amountExceedsRemaining(remaining.toStringAsFixed(2))),
+                      content: Text(l10n.amountExceedsRemaining(formatNum.format(remaining))),
                       backgroundColor: Colors.redAccent,
                     ),
                   );
@@ -342,8 +349,9 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showAddMoneyDialog(BudgetModel budget) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
 
-    // ✅ Capture BEFORE dialog opens — stays valid after pop
+    // Capture BEFORE dialog opens — stays valid after pop
     final screenContext = context;
 
     final controller = TextEditingController();
@@ -367,6 +375,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 controller: controller,
                 keyboardType:
                 const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [ArabicNumberInputFormatter(locale)],
                 decoration: InputDecoration(
                   labelText: l10n.amount,
                 ),
@@ -434,17 +443,16 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
             TextButton(
               onPressed: () async {
-                final amount =
-                    double.tryParse(controller.text) ?? 0.0;
+                final amount = CurrencyFormatter.parse(controller.text);
 
                 if (amount <= 0) return;
 
-                // ✅ snapshot values before pop
+                //  snapshot values before pop
                 final capturedIsRecurring = isRecurring;
                 final capturedFrequency = frequency;
                 final capturedNote = noteController.text;
 
-                // ✅ close dialog immediately
+                //  close dialog immediately
                 Navigator.pop(dialogContext);
 
                 try {
@@ -474,7 +482,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                   );
 
                   if (mounted) {
-                    // ✅ use screenContext
+                    //  use screenContext
                     ScaffoldMessenger.of(screenContext).showSnackBar(
                       SnackBar(
                         content: Text(
@@ -499,8 +507,9 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showSubtractMoneyDialog(BudgetModel budget) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
 
-    // ✅ Capture BEFORE dialog opens — stays valid after pop
+    //  Capture BEFORE dialog opens — stays valid after pop
     final screenContext = context;
 
     final controller = TextEditingController();
@@ -524,6 +533,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 controller: controller,
                 keyboardType:
                 const TextInputType.numberWithOptions(decimal: true),
+                inputFormatters: [ArabicNumberInputFormatter(locale)],
                 decoration: InputDecoration(
                   labelText: l10n.amount,
                 ),
@@ -591,17 +601,16 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
             TextButton(
               onPressed: () async {
-                final amount =
-                    double.tryParse(controller.text) ?? 0.0;
+                final amount = CurrencyFormatter.parse(controller.text);
 
                 if (amount <= 0) return;
 
-                // ✅ snapshot values before pop
+                //  snapshot values before pop
                 final capturedIsRecurring = isRecurring;
                 final capturedFrequency = frequency;
                 final capturedNote = noteController.text;
 
-                // ✅ close dialog immediately
+                //  close dialog immediately
                 Navigator.pop(dialogContext);
 
                 try {
@@ -657,6 +666,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   void _showEditBudgetDialog(BudgetModel budget) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
+    final formatNum = NumberFormat('#####0.00', locale);
     final controller =
     TextEditingController(text: budget.allocated.toStringAsFixed(2));
     showDialog(
@@ -666,6 +677,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         content: TextField(
           controller: controller,
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
+          inputFormatters: [ArabicNumberInputFormatter(locale)],
           decoration:  InputDecoration(
             labelText: l10n.allocatedAmount,
           ),
@@ -677,7 +689,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           ),
           TextButton(
             onPressed: () async {
-              final amount = double.tryParse(controller.text) ?? 0.0;
+              final amount = CurrencyFormatter.parse(controller.text);
               if (amount > 0) {
                 await _budgetService.editAllocated(
                   userId: _authService.currentUser!.uid,
@@ -1055,6 +1067,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
     required List<BudgetModel> categories,
   }) {
     final l10n = AppLocalizations.of(context)!;
+    final locale = Localizations.localeOf(context).languageCode;
     final totalAllocated =
     categories.fold(0.0, (sum, b) => sum + b.allocated);
     final unallocated = monthly.totalAmount - totalAllocated;
@@ -1115,7 +1128,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
           const SizedBox(height: 6),
           // Total amount
           Text(
-            CurrencyFormatter.format(monthly.totalAmount),
+            CurrencyFormatter.format(monthly.totalAmount, locale),
             style: const TextStyle(
               color: Colors.white,
               fontSize: 34,
@@ -1147,14 +1160,14 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             children: [
               _budgetStat(
                 label: l10n.allocatedToCategories,
-                value: CurrencyFormatter.format(totalAllocated),
+                value: CurrencyFormatter.format(totalAllocated, locale),
                 color: Colors.white,
               ),
               _budgetStat(
                 label: isFullyAllocated ? l10n.fullyAllocatedCheck : l10n.unallocated,
                 value: isFullyAllocated
                     ? ''
-                    : CurrencyFormatter.format(unallocated),
+                    : CurrencyFormatter.format(unallocated, locale),
                 color: isFullyAllocated
                     ? const Color(0xFFEBFFE0)
                     : Colors.white70,
@@ -1561,6 +1574,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                       // ── Category budget cards ──
                       ...categories.map((budget) {
+                        final locale = Localizations.localeOf(context).languageCode;
+                        final formatNum = NumberFormat('#####0.00', locale);
                         // ── Compute state flags once, used throughout the card ──────────────
                         // True when the user has spent more than they allocated for this category
                         final isOverBudget = budget.spent > budget.allocated;
@@ -1591,16 +1606,16 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
 
                           // ── Amounts ─────────────────────────────────────────────────────────
                           // The total budget ceiling the user set for this category
-                          amount: CurrencyFormatter.format(budget.allocated),
+                          amount: CurrencyFormatter.format(budget.allocated, locale),
                           // How much has been spent so far this month
-                          spentText: l10n.spentAmount(budget.spent.toStringAsFixed(2)),
+                          spentText: l10n.spentAmount(formatNum.format(budget.spent)),
 
                           // ── Left / Over label ────────────────────────────────────────────────
                           // Normal:     "X left"       → how much remains before hitting the limit
                           // Over budget: "⚠ Over by X" → how far past the limit the user has gone
                           leftText: isOverBudget
-                              ? l10n.overBy((budget.spent - budget.allocated).toStringAsFixed(2))
-                              : l10n.leftAmount(budget.remaining.toStringAsFixed(2)),
+                              ? l10n.overBy(formatNum.format(budget.spent - budget.allocated))
+                              : l10n.leftAmount(formatNum.format(budget.remaining)),
                           // Red when over budget, default grey otherwise (null = use card default)
                           leftTextColor: isOverBudget ? Colors.redAccent : null,
 
