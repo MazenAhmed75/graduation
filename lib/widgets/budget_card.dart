@@ -115,7 +115,7 @@ class BudgetCard extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    AppLocalizations.of(context)!.allocated.toUpperCase(),
+                    AppLocalizations.of(context)!.allocatedAmount.toUpperCase(),
                     style: TextStyle(
                       fontSize: 10,
                       fontWeight: FontWeight.bold,

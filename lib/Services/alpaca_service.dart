@@ -77,7 +77,10 @@ class AlpacaService {
     required double notional, // USD amount to spend
   }) async {
     if (!isConfigured) {
-      return AlpacaOrderResult(success: false, error: 'Alpaca API not configured. Add your API keys in Settings.');
+      return AlpacaOrderResult(
+        success: false,
+        errorKey: 'alpaca_not_configured_settings',
+      );
     }
 
     final isCrypto = symbol.contains('/');
@@ -108,17 +111,25 @@ class AlpacaService {
       }
       return AlpacaOrderResult(
         success: false,
-        error: data['message'] ?? 'Order failed',
+        errorKey: data['message'] != null ? 'alpaca_api_error' : 'order_failed',
+        errorArgs: data['message'] != null ? [data['message'].toString()] : null,
       );
     } catch (e) {
-      return AlpacaOrderResult(success: false, error: e.toString());
+      return AlpacaOrderResult(
+        success: false,
+        errorKey: 'alpaca_exception',
+        errorArgs: [e.toString()],
+      );
     }
   }
 
   /// Close an ENTIRE position via DELETE — most reliable method
   Future<AlpacaOrderResult> closePosition(String symbol) async {
     if (!isConfigured) {
-      return AlpacaOrderResult(success: false, error: 'Alpaca not configured.');
+      return AlpacaOrderResult(
+        success: false,
+        errorKey: 'alpaca_not_configured',
+      );
     }
     // Alpaca uses '%2F' encoding for crypto pairs like BTC/USD
     final encoded = Uri.encodeComponent(symbol.toUpperCase());
@@ -137,9 +148,16 @@ class AlpacaService {
       }
       final err = jsonDecode(resp.body);
       return AlpacaOrderResult(
-          success: false, error: err['message'] ?? 'Close failed (${resp.statusCode})');
+        success: false,
+        errorKey: err['message'] != null ? 'alpaca_api_error' : 'close_failed',
+        errorArgs: [err['message'] ?? resp.statusCode.toString()],
+      );
     } catch (e) {
-      return AlpacaOrderResult(success: false, error: e.toString());
+      return AlpacaOrderResult(
+        success: false,
+        errorKey: 'alpaca_exception',
+        errorArgs: [e.toString()],
+      );
     }
   }
 
@@ -150,7 +168,10 @@ class AlpacaService {
     required double currentQty,
   }) async {
     if (!isConfigured) {
-      return AlpacaOrderResult(success: false, error: 'Alpaca not configured.');
+      return AlpacaOrderResult(
+        success: false,
+        errorKey: 'alpaca_not_configured',
+      );
     }
     // Full close → use DELETE which is more reliable
     if (fraction >= 0.99) return closePosition(symbol);
@@ -178,9 +199,16 @@ class AlpacaService {
             symbol: data['symbol'], status: data['status']);
       }
       return AlpacaOrderResult(
-          success: false, error: data['message'] ?? 'Sell failed (${resp.statusCode})');
+        success: false,
+        errorKey: data['message'] != null ? 'alpaca_api_error' : 'sell_failed',
+        errorArgs: [data['message'] ?? resp.statusCode.toString()],
+      );
     } catch (e) {
-      return AlpacaOrderResult(success: false, error: e.toString());
+      return AlpacaOrderResult(
+        success: false,
+        errorKey: 'alpaca_exception',
+        errorArgs: [e.toString()],
+      );
     }
   }
 
@@ -341,14 +369,14 @@ class AlpacaOrderResult {
   final String? orderId;
   final String? symbol;
   final String? status;
-  final String? error;
+  final String? errorKey;         // Added for structural localization
+  final List<String>? errorArgs;  // Added for dynamic arguments (e.g. status codes)
 
   AlpacaOrderResult({
     required this.success,
-    this.orderId, this.symbol, this.status, this.error,
+    this.orderId, this.symbol, this.status, this.errorKey, this.errorArgs,
   });
 }
-
 /// Supported trading symbols — maps our asset IDs to Alpaca symbols
 class AlpacaSymbols {
   static const Map<String, String> assetIdToSymbol = {

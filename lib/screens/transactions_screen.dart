@@ -7,7 +7,7 @@ import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
 import '../utils/budget_categories.dart';
 import 'package:intl/intl.dart';
-import '../utils/currency_formatter.dart'
+import '../utils/currency_formatter.dart';
 
 // ============================================================
 // TransactionsScreen
@@ -33,9 +33,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ── Search & filter state ────────────────────────────────────
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  String _typeFilter = 'all';      // 'all' | 'withdraw' | 'deposit'
-  String _categoryFilter = 'all';  // 'all' | any budgetTitle
-  String _sortBy = 'newest';       // 'newest' | 'largest'
+  String _typeFilter = 'all'; // 'all' | 'withdraw' | 'deposit'
+  String _categoryFilter = 'all'; // 'all' | any budgetTitle
+  String _sortBy = 'newest'; // 'newest' | 'largest'
 
   //  Constant reload fix
   late Stream<List<TransactionModel>> _transactionsStream;
@@ -58,9 +58,11 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   List<TransactionModel> _applyFilters(List<TransactionModel> all) {
     var result = all.where((t) {
       // Get the correct string to display/filter by /// Dynamic translation fix
-      final displayTitle = (t.categoryKey == 'custom' && budgetCategories.any((c) => c.key == t.customTitle))
+      final displayTitle = (t.categoryKey == 'custom' &&
+          budgetCategories.any((c) => c.key == t.customTitle))
           ? CategoryLocalization.getCategoryName(context, t.customTitle, '')
-          : CategoryLocalization.getCategoryName(context, t.categoryKey, t.customTitle);
+          : CategoryLocalization.getCategoryName(
+          context, t.categoryKey, t.customTitle);
 
       // Search: matches note or category name
       final query = _searchQuery.toLowerCase();
@@ -93,9 +95,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   List<String> _getCategories(List<TransactionModel> all) {
     //Dynamic translation fix
     final cats = all.map(
-          (t) => (t.categoryKey == 'custom' && budgetCategories.any((c) => c.key == t.customTitle))
+          (t) =>
+      (t.categoryKey == 'custom' &&
+          budgetCategories.any((c) => c.key == t.customTitle))
           ? CategoryLocalization.getCategoryName(context, t.customTitle, '')
-          : CategoryLocalization.getCategoryName(context, t.categoryKey, t.customTitle),
+          : CategoryLocalization.getCategoryName(
+          context, t.categoryKey, t.customTitle),
     ).toSet().toList();
     cats.sort();
     return cats;
@@ -159,7 +164,10 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     top: 8,
                     left: 16,
                     right: 16,
-                    bottom: MediaQuery.of(context).padding.bottom + 32,
+                    bottom: MediaQuery
+                        .of(context)
+                        .padding
+                        .bottom + 32,
                   ),
                   itemCount: filtered.length,
                   itemBuilder: (context, index) {
@@ -218,10 +226,12 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                     fontSize: 14,
                     color: Colors.grey[400],
                   ),
-                  prefixIcon: Icon(Icons.search_rounded, color: Colors.grey[400]),
+                  prefixIcon: Icon(
+                      Icons.search_rounded, color: Colors.grey[400]),
                   suffixIcon: _searchQuery.isNotEmpty
                       ? IconButton(
-                    icon: Icon(Icons.close_rounded, color: Colors.grey[400], size: 18),
+                    icon: Icon(
+                        Icons.close_rounded, color: Colors.grey[400], size: 18),
                     onPressed: () {
                       _searchController.clear();
                       setState(() => _searchQuery = '');
@@ -237,7 +247,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
           const SizedBox(width: 10),
           // ── Sort button ───────────────────────────────────────
           GestureDetector(
-            onTap: () => setState(() => _sortBy = _sortBy == 'newest' ? 'largest' : 'newest'),
+            onTap: () =>
+                setState(() =>
+                _sortBy = _sortBy == 'newest' ? 'largest' : 'newest'),
             child: Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -325,14 +337,15 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             selected: _categoryFilter == 'all',
             onTap: () => setState(() => _categoryFilter = 'all'),
           ),
-          ...categories.map((cat) => Padding(
-            padding: const EdgeInsets.only(left: 8),
-            child: _TypeChip(
-              label: cat,
-              selected: _categoryFilter == cat,
-              onTap: () => setState(() => _categoryFilter = cat),
-            ),
-          )),
+          ...categories.map((cat) =>
+              Padding(
+                padding: const EdgeInsets.only(left: 8),
+                child: _TypeChip(
+                  label: cat,
+                  selected: _categoryFilter == cat,
+                  onTap: () => setState(() => _categoryFilter = cat),
+                ),
+              )),
         ],
       ),
     );
@@ -341,8 +354,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ── Summary row: total results + net amount ──────────────────
   Widget _buildSummaryRow(List<TransactionModel> filtered) {
     final l10n = AppLocalizations.of(context)!;
-    final totalIn = filtered.where((t) => t.type == 'deposit').fold(0.0, (s, t) => s + t.amount);
-    final totalOut = filtered.where((t) => t.type == 'withdraw').fold(0.0, (s, t) => s + t.amount);
+    final totalIn = filtered.where((t) => t.type == 'deposit').fold(
+        0.0, (s, t) => s + t.amount);
+    final totalOut = filtered.where((t) => t.type == 'withdraw').fold(
+        0.0, (s, t) => s + t.amount);
+    final locale = Localizations
+        .localeOf(context)
+        .languageCode;
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
@@ -350,7 +368,9 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         children: [
           Text(
             //  NEW LOCALIZED LINE:
-            l10n.transactionsCount(NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(filtered.length)),
+            l10n.transactionsCount(NumberFormat.decimalPattern(Localizations
+                .localeOf(context)
+                .languageCode).format(filtered.length)),
             style: TextStyle(
               fontFamily: 'Manrope',
               fontSize: 12,
@@ -359,31 +379,30 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
           ),
           const Spacer(),
-            //  NEW LOCALIZED BLOCK:
-            final locale = Localizations.localeOf(context).languageCode;
 
-    if (totalIn > 0)
-    Text(
-    '+ ${CurrencyFormatter.format(totalIn, locale)}',
-    style: const TextStyle(
-    fontFamily: 'Manrope',
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    color: AppTheme.primary,
-    ),
-    ),
-    if (totalIn > 0 && totalOut > 0)
-    Text('  ', style: TextStyle(color: Colors.grey[300])),
-    if (totalOut > 0)
-    Text(
-    '- ${CurrencyFormatter.format(totalOut, locale)}',
-    style: const TextStyle(
-    fontFamily: 'Manrope',
-    fontSize: 12,
-    fontWeight: FontWeight.w600,
-    color: Color(0xFFE24B4A),
-    ),
-    ),
+
+          if (totalIn > 0)
+            Text(
+              '+ ${CurrencyFormatter.format(totalIn, locale)}',
+              style: const TextStyle(
+                fontFamily: 'Manrope',
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: AppTheme.primary,
+              ),
+            ),
+          if (totalIn > 0 && totalOut > 0)
+            Text('  ', style: TextStyle(color: Colors.grey[300])),
+          if (totalOut > 0)
+            Text(
+              '- ${CurrencyFormatter.format(totalOut, locale)}',
+              style: const TextStyle(
+                fontFamily: 'Manrope',
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFFE24B4A),
+              ),
+            ),
         ],
       ),
     );
@@ -422,7 +441,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ── Empty state ──────────────────────────────────────────────
   Widget _buildEmptyState() {
     final l10n = AppLocalizations.of(context)!;
-    final hasFilters = _searchQuery.isNotEmpty || _typeFilter != 'all' || _categoryFilter != 'all';
+    final hasFilters = _searchQuery.isNotEmpty || _typeFilter != 'all' ||
+        _categoryFilter != 'all';
 
     return Center(
       child: Padding(
@@ -437,7 +457,8 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                hasFilters ? Icons.search_off_rounded : Icons.receipt_long_rounded,
+                hasFilters ? Icons.search_off_rounded : Icons
+                    .receipt_long_rounded,
                 size: 40,
                 color: AppTheme.onPrimaryContainer,
               ),
@@ -464,12 +485,13 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             if (hasFilters) ...[
               const SizedBox(height: 20),
               TextButton.icon(
-                onPressed: () => setState(() {
-                  _searchController.clear();
-                  _searchQuery = '';
-                  _typeFilter = 'all';
-                  _categoryFilter = 'all';
-                }),
+                onPressed: () =>
+                    setState(() {
+                      _searchController.clear();
+                      _searchQuery = '';
+                      _typeFilter = 'all';
+                      _categoryFilter = 'all';
+                    }),
                 icon: const Icon(Icons.refresh_rounded),
                 label: Text(l10n.clearFilters),
                 style: TextButton.styleFrom(
@@ -485,36 +507,39 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
 
   bool _isSameDay(DateTime a, DateTime b) =>
       a.year == b.year && a.month == b.month && a.day == b.day;
-}
 
 
 // back end error handling in ui
-Widget _buildBackendErrorState(String errorDetails) {
-  final l10n = AppLocalizations.of(context)!;
-  return Center(
-    child: Padding(
-      padding: const EdgeInsets.all(40),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.cloud_off_rounded, size: 48, color: Color(0xFFE24B4A)),
-          const SizedBox(height: 16),
-          Text(
-            l10n.backendErrorTitle,
-            style: const TextStyle(fontFamily: 'Manrope', fontSize: 16, fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            l10n.backendErrorSubtitle,
-            textAlign: TextAlign.center,
-            style: TextStyle(fontFamily: 'Manrope', fontSize: 13, color: Colors.grey[500]),
-          ),
-        ],
+  Widget _buildBackendErrorState(String errorDetails) {
+    final l10n = AppLocalizations.of(context)!;
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(40),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(
+                Icons.cloud_off_rounded, size: 48, color: Color(0xFFE24B4A)),
+            const SizedBox(height: 16),
+            Text(
+              l10n.backendErrorTitle,
+              style: const TextStyle(fontFamily: 'Manrope',
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              l10n.backendErrorSubtitle,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  fontFamily: 'Manrope', fontSize: 13, color: Colors.grey[500]),
+            ),
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
-
 // ============================================================
 // _TypeChip — reusable filter chip
 // ============================================================

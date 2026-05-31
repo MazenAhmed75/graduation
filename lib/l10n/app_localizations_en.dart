@@ -45,11 +45,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get available => 'Available';
 
   @override
-  String daysLeft(int days) {
-    return '$days days left this month';
-  }
-
-  @override
   String get completed => 'Completed';
 
   @override
@@ -154,7 +149,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fullName => 'Full Name';
 
   @override
-  String get email => 'EMAIL';
+  String get email => 'Email';
 
   @override
   String get free => 'Free';
@@ -301,7 +296,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get emailHint => 'you@example.com';
 
   @override
-  String get passwordHint => 'At least 6 characters';
+  String get passwordHintRegister => 'At least 6 characters';
+
+  @override
+  String get passwordHintLogin => 'Enter your password';
 
   @override
   String get confirmPasswordHint => 'Re-enter your password';
@@ -535,16 +533,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get alpacaSymbol => 'Alpaca symbol';
 
   @override
-  String get realOrderWarning => 'This will place a REAL order on Alpaca.';
+  String get realOrderWarning => '⚠️ This will place a REAL order on Alpaca.';
 
   @override
-  String get paperTradeWarning => 'Paper trade — no real money moves.';
+  String get paperTradeWarning => '📄 Paper trade — no real money moves.';
 
   @override
-  String get executeBuy => 'Execute Buy';
+  String get executeBuy => 'Execute Buy ✓';
 
   @override
-  String get executeSell => 'Execute Sell';
+  String get executeSell => 'Execute Sell ✓';
 
   @override
   String get boughtOrderSubmitted => 'Bought — order submitted to Alpaca';
@@ -843,17 +841,17 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get resetPasswordDescription =>
-      'Enter the email associated with your account and we\'ll send an email with instructions to reset your password.';
+      'Enter your email address and we\'ll send you a link to reset your password.';
 
   @override
   String get resetPasswordEmailSentDescription =>
-      'Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.';
+      'Check your email for a link to reset your password.';
 
   @override
   String get pleaseEnterEmail => 'Please enter your email';
 
   @override
-  String get pleaseEnterValidEmail => 'Please enter a valid email';
+  String get pleaseEnterValidEmail => 'Please enter a valid email address';
 
   @override
   String get sendResetLink => 'Send Reset Link';
@@ -863,7 +861,7 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get passwordResetEmailSent =>
-      'Password reset link sent to your email!';
+      'Password reset email sent successfully!';
 
   @override
   String get choosePhotoSource => 'Choose Photo Source';
@@ -1098,6 +1096,11 @@ class AppLocalizationsEn extends AppLocalizations {
   String get spendingInsights => 'Spending Insights';
 
   @override
+  String daysLeft(int days) {
+    return '$days days left this month';
+  }
+
+  @override
   String onTrack(int count) {
     return '$count on track';
   }
@@ -1162,6 +1165,12 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get allocated => 'Allocated';
+
+  @override
+  String get spendingReportSpent => 'Spent';
+
+  @override
+  String get spendingReportRemaining => 'Remaining';
 
   @override
   String get used => 'Used';
@@ -1249,7 +1258,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get category_entertainment => 'Entertainment';
 
   @override
-  String get category_food => 'Food';
+  String get category_food => 'Food & Dining';
 
   @override
   String get category_shopping => 'Shopping';
@@ -1279,11 +1288,407 @@ class AppLocalizationsEn extends AppLocalizations {
   String get replace => 'Replace';
 
   @override
-  String overBy(String amount) {
-    return '⚠ Over by $amount';
+  String overBy(Object amount) {
+    return '⚠️ Over by $amount';
   }
 
   @override
   String get offlineBanner =>
       'You\'re offline — changes will sync when reconnected';
+
+  @override
+  String get backendErrorTitle => 'Server Connection Error';
+
+  @override
+  String get backendErrorSubtitle =>
+      'We couldn\'t retrieve your transaction history. Please check your internet connection or try again later.';
+
+  @override
+  String get photoUploadFailed => 'Failed to upload photo';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String buyActionAmount(Object amount, Object assetName) {
+    return '🛒 Buy $amount of $assetName';
+  }
+
+  @override
+  String sellActionPercent(Object percent, Object assetName) {
+    return '💰 Sell $percent% of $assetName';
+  }
+
+  @override
+  String currentPriceLabel(Object price) {
+    return '$price current price';
+  }
+
+  @override
+  String alpacaSymbolLabel(Object symbol) {
+    return 'Alpaca symbol: $symbol';
+  }
+
+  @override
+  String dashboardBuySuccess(Object amount, Object assetName) {
+    return '✅ Bought $amount of $assetName';
+  }
+
+  @override
+  String orderSubmittedSuccess(Object actionType) {
+    return '✅ $actionType — order submitted to Alpaca';
+  }
+
+  @override
+  String get boughtLabel => 'Bought';
+
+  @override
+  String get soldLabel => 'Sold';
+
+  @override
+  String suggestedLabel(Object amount, Object horizon) {
+    return '$amount suggested • $horizon';
+  }
+
+  @override
+  String tradeBuyLabel(Object amount, Object assetName) {
+    return 'Trade: BUY $amount of $assetName';
+  }
+
+  @override
+  String tradeSellLabel(Object percent, Object assetName) {
+    return 'Trade: SELL $percent% of $assetName';
+  }
+
+  @override
+  String unrealizedPnlLabel(Object amount) {
+    return '$amount unrealized P&L';
+  }
+
+  @override
+  String cashLabel(Object amount) {
+    return 'Cash: $amount';
+  }
+
+  @override
+  String buyingPowerLabel(Object amount) {
+    return 'Buying power: $amount';
+  }
+
+  @override
+  String unitsLabel(Object count) {
+    return '$count units';
+  }
+
+  @override
+  String valueLabel(Object amount) {
+    return 'Value: $amount';
+  }
+
+  @override
+  String pnlLabel(Object amount) {
+    return 'P&L: $amount';
+  }
+
+  @override
+  String get closePositionBtn => 'Close Position';
+
+  @override
+  String closedSuccess(Object assetName) {
+    return '✅ Closed $assetName — order submitted';
+  }
+
+  @override
+  String get passwordUpdatedSuccessfully => 'Password updated successfully!';
+
+  @override
+  String get emailAlreadyInUse => 'This email is already in use.';
+
+  @override
+  String get weakPassword => 'Password must be at least 6 characters.';
+
+  @override
+  String get invalidEmail => 'Please enter a valid email.';
+
+  @override
+  String get registrationFailed => 'Registration failed';
+
+  @override
+  String get unexpectedError =>
+      'An unexpected error occurred. Please try again.';
+
+  @override
+  String get userNotFound => 'No account found with this email.';
+
+  @override
+  String get wrongPassword => 'Incorrect password.';
+
+  @override
+  String get loginFailed => 'Login failed';
+
+  @override
+  String get googleSignInCancelled => 'Google sign in was cancelled.';
+
+  @override
+  String get googleSignInFailed => 'Google sign in failed. Please try again.';
+
+  @override
+  String get passwordResetFailed => 'Failed to send password reset email';
+
+  @override
+  String get changePasswordUserNotFound => 'User not found.';
+
+  @override
+  String get changePasswordWrongPassword =>
+      'The old password you entered is incorrect.';
+
+  @override
+  String get errorNoMarketData => '⚠️ No market data — skipping cycle.';
+
+  @override
+  String get errorAnalysisFailed => '❌ Analysis failed — API error.';
+
+  @override
+  String errorParsePositions(Object error) {
+    return '⚠️ Could not parse position decisions: $error';
+  }
+
+  @override
+  String errorParseBuyOpps(Object error) {
+    return '⚠️ Could not parse buy opportunities: $error';
+  }
+
+  @override
+  String errorCycle(Object error) {
+    return '❌ Cycle error: $error';
+  }
+
+  @override
+  String get alpaca_not_configured_settings =>
+      'Alpaca API not configured. Add your API keys in Settings.';
+
+  @override
+  String get alpaca_not_configured => 'Alpaca not configured.';
+
+  @override
+  String get order_failed => 'Order failed.';
+
+  @override
+  String close_failed(String error, Object statusCode) {
+    return 'Close failed ($error).';
+  }
+
+  @override
+  String sell_failed(String error, Object statusCode) {
+    return 'Sell failed ($error).';
+  }
+
+  @override
+  String alpaca_api_error(String message) {
+    return 'Alpaca error: $message';
+  }
+
+  @override
+  String alpaca_exception(String exception) {
+    return 'An unexpected error occurred: $exception';
+  }
+
+  @override
+  String registration_failed(String message) {
+    return 'Registration failed: $message';
+  }
+
+  @override
+  String login_failed(String message) {
+    return 'Login failed: $message';
+  }
+
+  @override
+  String password_reset_failed(String message) {
+    return 'Password reset failed: $message';
+  }
+
+  @override
+  String auth_generic_message(String message) {
+    return 'Authentication error: $message';
+  }
+
+  @override
+  String auto_trade_enabled(String interval) {
+    return '🤖 Auto-trade enabled. Cycle every $interval.';
+  }
+
+  @override
+  String get auto_trade_disabled => '⏸ Auto-trade disabled.';
+
+  @override
+  String get cycle_started_gathering =>
+      '📡 Cycle started — gathering live market data...';
+
+  @override
+  String get no_market_data => '⚠️ No market data — skipping cycle.';
+
+  @override
+  String data_ready(Object assets, Object news, Object positions, Object cash) {
+    return '✅ Data ready: $assets assets, $news headlines, $positions open positions, \$$cash cash';
+  }
+
+  @override
+  String get step_analyzing_sentiment =>
+      '🔍 Step 1/3 — Analyzing market sentiment & news...';
+
+  @override
+  String get analysis_failed => '❌ Analysis failed — API error.';
+
+  @override
+  String sentiment_preview(Object preview) {
+    return '📊 Sentiment: $preview...';
+  }
+
+  @override
+  String get step_evaluating_positions =>
+      '⚖️ Step 2/3 — Evaluating each open position...';
+
+  @override
+  String position_hold(Object name, Object reason) {
+    return '✅ HOLD $name: $reason';
+  }
+
+  @override
+  String position_action(Object action, Object name, Object reason) {
+    return '⚡ $action $name: $reason';
+  }
+
+  @override
+  String position_closed(Object name) {
+    return '✅ $name closed at market price';
+  }
+
+  @override
+  String parse_positions_error(Object error) {
+    return '⚠️ Could not parse position decisions: $error';
+  }
+
+  @override
+  String get no_open_positions => '📂 No open positions to evaluate.';
+
+  @override
+  String get step_scanning_buy_opps =>
+      '🔎 Step 3/3 — Scanning for new buy opportunities...';
+
+  @override
+  String parse_buy_opps_error(Object error) {
+    return '⚠️ Could not parse buy opportunities: $error';
+  }
+
+  @override
+  String buy_opportunities_found(Object count) {
+    return '💡 Found $count buy opportunities — awaiting your approval.';
+  }
+
+  @override
+  String get no_buy_opportunities =>
+      '📉 No strong buy opportunities found. Cash held for next cycle.';
+
+  @override
+  String cycle_complete_with_sells(Object count, Object nextRun) {
+    return '✅ Cycle complete. $count sell(s) executed. Next run: $nextRun';
+  }
+
+  @override
+  String cycle_complete_no_sells(Object nextRun) {
+    return '✅ Cycle complete. Next run: $nextRun';
+  }
+
+  @override
+  String cycle_error(Object error) {
+    return '❌ Cycle error: $error';
+  }
+
+  @override
+  String get budget_warning_title => 'Budget Warning';
+
+  @override
+  String budget_warning_body(Object category, Object percentUsed) {
+    return 'You have used $percentUsed% of your $category budget.';
+  }
+
+  @override
+  String get category_transport => 'Transportation';
+
+  @override
+  String get category_bills => 'Bills & Utilities';
+
+  @override
+  String recurring_fallback(String title) {
+    return '$title (recurring)';
+  }
+
+  @override
+  String auto_prefix(String note) {
+    return '[Auto] $note';
+  }
+
+  @override
+  String get cloudinary_upload_failed =>
+      'Cloudinary upload failed. Please try again.';
+
+  @override
+  String get failed_to_upload =>
+      'Failed to upload image due to a network or system error.';
+
+  @override
+  String notifBudgetExceededTitle(Object title) {
+    return '🚨 Budget Exceeded: $title';
+  }
+
+  @override
+  String notifBudgetExceededBody(Object title) {
+    return 'You have gone over your $title budget!';
+  }
+
+  @override
+  String notifBudgetWarningTitle(Object title) {
+    return '⚠️ Budget Alert: $title';
+  }
+
+  @override
+  String notifBudgetWarningBody(Object days, Object percent, Object title) {
+    return 'You\'ve used $percent% of your $title budget with $days days left.';
+  }
+
+  @override
+  String get notifSavingsTitle => '🎉 Savings Goal Progress';
+
+  @override
+  String notifSavingsBody(Object percent) {
+    return 'You\'re $percent% of the way to your monthly savings goal!';
+  }
+
+  @override
+  String get notifWeeklyTitle => 'Your Weekly Spending Recap 📊';
+
+  @override
+  String notifWeeklyBody(Object category, Object percent) {
+    return 'You used $percent% of your budget. Most spent: $category.';
+  }
+
+  @override
+  String get removePhoto => 'Remove Photo';
+
+  @override
+  String get removePhotoConfirm =>
+      'Are you sure you want to remove your profile picture?';
+
+  @override
+  String get remove => 'Remove';
+
+  @override
+  String get removingPhoto => 'Removing photo...';
+
+  @override
+  String get photoRemoved => 'Profile picture removed';
+
+  @override
+  String get photoRemoveFailed => 'Failed to remove photo';
 }

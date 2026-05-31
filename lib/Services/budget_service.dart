@@ -144,14 +144,6 @@ class BudgetService {
       note: note,
     );
 
-    // Check if user is near limit → send notification
-    double newRatio = newSpent / budget.allocated;
-    if (newRatio >= 0.8) {
-      await NotificationService.showBudgetWarning(
-        budgetTitle: budget.categoryKey,
-        percentUsed: (newRatio * 100).round(),
-      );
-    }
   }
 
   // -------------------------------------------------------

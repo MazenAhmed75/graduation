@@ -7,10 +7,15 @@ class CurrencyFormatter {
   static String format(double amount, String locale) {
     final formatter = NumberFormat.currency(
       locale: locale,
-      symbol: '$', // Fixed the stray slash from the original snippet
+      symbol: '\$',
       decimalDigits: 2,
     );
-    return formatter.format(amount);
+
+    // 1. Format the number normally using intl
+    String formattedAmount = formatter.format(amount);
+
+    // 2. Force the digits into Arabic if the locale is Arabic
+    return formattedAmount.toLocalizedDigits(locale);
   }
 
   /// Centralized parser: Safely converts both English and Eastern Arabic digits into a standard double.
@@ -25,6 +30,9 @@ class CurrencyFormatter {
     for (int i = 0; i < 10; i++) {
       standardizedNumbers = standardizedNumbers.replaceAll(arabicDigits[i], englishDigits[i]);
     }
+
+    // Also standardize the Arabic decimal separator to a standard dot
+    standardizedNumbers = standardizedNumbers.replaceAll('٫', '.').replaceAll(',', '');
 
     return double.tryParse(standardizedNumbers) ?? defaultValue;
   }
@@ -41,7 +49,7 @@ class ArabicNumberInputFormatter extends TextInputFormatter {
       TextEditingValue oldValue,
       TextEditingValue newValue,
       ) {
-    if (locale != 'ar') return newValue;
+    if (!locale.startsWith('ar')) return newValue;
 
     String text = newValue.text;
     const englishDigits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
@@ -55,5 +63,26 @@ class ArabicNumberInputFormatter extends TextInputFormatter {
       text: text,
       selection: newValue.selection,
     );
+  }
+}
+
+// ==========================================
+// THE NEW EXTENSION
+// ==========================================
+extension ArabicNumbersExtension on String {
+  /// Converts English digits to Eastern Arabic numerals if the locale is Arabic
+  String toLocalizedDigits(String locale) {
+    // Check if the locale starts with 'ar' (covers 'ar', 'ar_EG', 'ar_SA', etc.)
+    if (!locale.startsWith('ar')) return this;
+
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const arabic = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩'];
+
+    String result = this;
+    for (int i = 0; i < english.length; i++) {
+      result = result.replaceAll(english[i], arabic[i]);
+    }
+
+    return result;
   }
 }

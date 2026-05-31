@@ -45,11 +45,6 @@ class AppLocalizationsAr extends AppLocalizations {
   String get available => 'المتاح';
 
   @override
-  String daysLeft(int days) {
-    return 'باقي $days يوم هذا الشهر';
-  }
-
-  @override
   String get completed => 'مكتمل';
 
   @override
@@ -298,7 +293,10 @@ class AppLocalizationsAr extends AppLocalizations {
   String get emailHint => 'you@example.com';
 
   @override
-  String get passwordHint => '6 أحرف على الأقل';
+  String get passwordHintRegister => '٦ أحرف على الأقل';
+
+  @override
+  String get passwordHintLogin => 'أدخل كلمة المرور';
 
   @override
   String get confirmPasswordHint => 'أعد إدخال كلمة المرور';
@@ -319,7 +317,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get enterPasswordError => 'من فضلك أدخل كلمة المرور';
 
   @override
-  String get passwordLengthError => 'كلمة المرور يجب أن تكون 6 أحرف على الأقل';
+  String get passwordLengthError => 'كلمة المرور يجب أن تكون ٦ أحرف على الأقل';
 
   @override
   String get confirmPasswordError => 'من فضلك أكد كلمة المرور';
@@ -350,7 +348,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alpacaDescription =>
-      'تداول الذهب والفضة والبيتكوين والإيثريوم والأسهم من حساب واحد.\n\nابدأ بالتداول التجريبي مجانًا (100 ألف دولار وهمي).';
+      'تداول الذهب والفضة والبيتكوين والإيثريوم والأسهم من حساب واحد.\n\nابدأ بالتداول التجريبي مجانًا (١٠٠ ألف دولار وهمي).';
 
   @override
   String get connectAlpacaFirst => 'قم بربط Alpaca أولاً';
@@ -388,7 +386,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alpacaIntro =>
-      'تداول الذهب والفضة والبيتكوين والإيثريوم والأسهم — كل ذلك من حساب واحد.\n\nابدأ بالتداول التجريبي المجاني (100 ألف دولار افتراضي).';
+      'تداول الذهب والفضة والبيتكوين والإيثريوم والأسهم — كل ذلك من حساب واحد.\n\nابدأ بالتداول التجريبي المجاني (١٠٠ ألف دولار افتراضي).';
 
   @override
   String get chatWithAi => 'أو فقط تحدث مع الذكاء الاصطناعي ←';
@@ -406,7 +404,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get showOpportunities => 'عرض الفرص';
 
   @override
-  String get investBestPick => 'استثمر in أفضل فرصة';
+  String get investBestPick => 'استثمر في أفضل فرصة';
 
   @override
   String get fullAutoScan => 'فحص تلقائي كامل';
@@ -440,7 +438,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get livePortfolio => 'المحفظة المباشرة';
 
   @override
-  String get autoRefresh30s => 'تحديث تلقائي كل 30 ثانية';
+  String get autoRefresh30s => 'تحديث تلقائي كل ٣٠ ثانية';
 
   @override
   String get entryPrice => 'سعر الدخول';
@@ -530,16 +528,16 @@ class AppLocalizationsAr extends AppLocalizations {
   String get alpacaSymbol => 'رمز Alpaca';
 
   @override
-  String get realOrderWarning => 'سيتم تنفيذ أمر حقيقي على Alpaca';
+  String get realOrderWarning => '⚠️ سيؤدي هذا إلى تقديم طلب حقيقي على Alpaca.';
 
   @override
-  String get paperTradeWarning => 'تداول تجريبي — لا يتم استخدام أموال حقيقية';
+  String get paperTradeWarning => '📄 تداول ورقي — لن يتم تحريك أموال حقيقية.';
 
   @override
-  String get executeBuy => 'تنفيذ الشراء';
+  String get executeBuy => 'تنفيذ الشراء ✓';
 
   @override
-  String get executeSell => 'تنفيذ البيع';
+  String get executeSell => 'تنفيذ البيع ✓';
 
   @override
   String get boughtOrderSubmitted => 'تم إرسال أمر الشراء إلى Alpaca';
@@ -590,7 +588,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get alpacaPaperInfo =>
-      '💰 يمنحك ألباكا 100,000 دولار افتراضي في الوضع التجريبي.';
+      '💰 يمنحك ألباكا ١٠٠,٠٠٠ دولار افتراضي في الوضع التجريبي.';
 
   @override
   String get alpacaTradingMode => 'وضع التداول';
@@ -838,17 +836,17 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get resetPasswordDescription =>
-      'أدخل البريد الإلكتروني المرتبط بحسابك وسنرسل إليك رسالة تحتوي على تعليمات لإعادة تعيين كلمة المرور.';
+      'أدخل عنوان بريدك الإلكتروني وسنرسل لك رابطًا لإعادة تعيين كلمة المرور.';
 
   @override
   String get resetPasswordEmailSentDescription =>
-      'تحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور. إذا لم يظهر خلال بضع دقائق، تحقق من مجلد الرسائل غير المرغوب فيها.';
+      'يرجى التحقق من بريدك الإلكتروني للحصول على رابط إعادة تعيين كلمة المرور.';
 
   @override
-  String get pleaseEnterEmail => 'يرجى إدخال بريدك الإلكتروني';
+  String get pleaseEnterEmail => 'يرجى إدخال البريد الإلكتروني';
 
   @override
-  String get pleaseEnterValidEmail => 'يرجى إدخال بريد إلكتروني صالح';
+  String get pleaseEnterValidEmail => 'يرجى إدخال بريد إلكتروني صحيح';
 
   @override
   String get sendResetLink => 'إرسال رابط إعادة التعيين';
@@ -858,7 +856,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get passwordResetEmailSent =>
-      'تم إرسال رابط إعادة تعيين كلمة المرور إلى بريدك الإلكتروني!';
+      'تم إرسال بريد إعادة تعيين كلمة المرور بنجاح!';
 
   @override
   String get choosePhotoSource => 'اختر مصدر الصورة';
@@ -912,7 +910,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get save => 'حفظ';
 
   @override
-  String get appVersion => 'إصدار التطبيق 1.0.0';
+  String get appVersion => 'إصدار التطبيق ١.٠.٠';
 
   @override
   String get recurring => 'متكرر';
@@ -1093,6 +1091,11 @@ class AppLocalizationsAr extends AppLocalizations {
   String get spendingInsights => 'تحليلات الإنفاق';
 
   @override
+  String daysLeft(int days) {
+    return 'باقي $days يوم هذا الشهر';
+  }
+
+  @override
   String onTrack(int count) {
     return '$count على المسار الصحيح';
   }
@@ -1143,7 +1146,7 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String budgetFullyUsedInsight(Object days) {
-    return 'تم استخدام الميزانية بالكامل. قد تنفد خلال $days يوم.';
+    return 'تم استخدام Mيزانية بالكامل. قد تنفد خلال $days يوم.';
   }
 
   @override
@@ -1156,7 +1159,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get byCategory => 'حسب الفئة';
 
   @override
-  String get allocated => ' المخصص';
+  String get allocated => 'Allocated';
+
+  @override
+  String get spendingReportSpent => 'Spent';
+
+  @override
+  String get spendingReportRemaining => 'Remaining';
 
   @override
   String get used => 'المستخدم';
@@ -1241,13 +1250,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get category_travel => 'سفر';
 
   @override
-  String get category_entertainment => 'ترفيه';
+  String get category_entertainment => 'الترفيه';
 
   @override
-  String get category_food => 'طعام';
+  String get category_food => 'الطعام والمطاعم';
 
   @override
-  String get category_shopping => 'تسوق';
+  String get category_shopping => 'التسوق';
 
   @override
   String get category_custom => 'فئة خاصه';
@@ -1274,11 +1283,407 @@ class AppLocalizationsAr extends AppLocalizations {
   String get replace => 'استبدال';
 
   @override
-  String overBy(String amount) {
+  String overBy(Object amount) {
     return '⚠ تجاوز بمقدار $amount';
   }
 
   @override
   String get offlineBanner =>
       'أنت غير متصل — ستتم مزامنة التغييرات عند إعادة الاتصال';
+
+  @override
+  String get backendErrorTitle => 'خطأ في الاتصال بالخادم';
+
+  @override
+  String get backendErrorSubtitle =>
+      'تعذر جلب سجل المعاملات الخاصة بك. يرجى التحقق من اتصالك بالإنترنت أو المحاولة مرة أخرى لاحقاً.';
+
+  @override
+  String get photoUploadFailed => 'فشل تحميل الصورة';
+
+  @override
+  String get error => 'خطأ';
+
+  @override
+  String buyActionAmount(Object amount, Object assetName) {
+    return '🛒 شراء $amount من $assetName';
+  }
+
+  @override
+  String sellActionPercent(Object percent, Object assetName) {
+    return '💰 بيع $percent% من $assetName';
+  }
+
+  @override
+  String currentPriceLabel(Object price) {
+    return '$price السعر الحالي';
+  }
+
+  @override
+  String alpacaSymbolLabel(Object symbol) {
+    return 'رمز ألباكا: $symbol';
+  }
+
+  @override
+  String dashboardBuySuccess(Object amount, Object assetName) {
+    return '✅ تم شراء $amount من $assetName';
+  }
+
+  @override
+  String orderSubmittedSuccess(Object actionType) {
+    return '✅ $actionType — تم تقديم الطلب إلى Alpaca';
+  }
+
+  @override
+  String get boughtLabel => 'تم الشراء';
+
+  @override
+  String get soldLabel => 'تم البيع';
+
+  @override
+  String suggestedLabel(Object amount, Object horizon) {
+    return 'مقترح $amount • $horizon';
+  }
+
+  @override
+  String tradeBuyLabel(Object amount, Object assetName) {
+    return 'صفقة: شراء $amount من $assetName';
+  }
+
+  @override
+  String tradeSellLabel(Object percent, Object assetName) {
+    return 'صفقة: بيع $percent% من $assetName';
+  }
+
+  @override
+  String unrealizedPnlLabel(Object amount) {
+    return '$amount أرباح/خسائر غير محققة';
+  }
+
+  @override
+  String cashLabel(Object amount) {
+    return 'النقدي: $amount';
+  }
+
+  @override
+  String buyingPowerLabel(Object amount) {
+    return 'القدرة الشرائية: $amount';
+  }
+
+  @override
+  String unitsLabel(Object count) {
+    return '$count وحدات';
+  }
+
+  @override
+  String valueLabel(Object amount) {
+    return 'القيمة: $amount';
+  }
+
+  @override
+  String pnlLabel(Object amount) {
+    return 'الأرباح والخسائر: $amount';
+  }
+
+  @override
+  String get closePositionBtn => 'إغلاق المركز';
+
+  @override
+  String closedSuccess(Object assetName) {
+    return '✅ تم إغلاق $assetName — تم تقديم الطلب';
+  }
+
+  @override
+  String get passwordUpdatedSuccessfully => 'تم تحديث كلمة المرور بنجاح!';
+
+  @override
+  String get emailAlreadyInUse => 'هذا البريد الإلكتروني مسجل بالفعل.';
+
+  @override
+  String get weakPassword => 'يجب أن تتكون كلمة المرور من 6 أحرف على الأقل.';
+
+  @override
+  String get invalidEmail => 'يرجى إدخال بريد إلكتروني صحيح.';
+
+  @override
+  String get registrationFailed => 'فشل التسجيل';
+
+  @override
+  String get unexpectedError => 'حدث خطأ غير متوقع. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get userNotFound => 'لم يتم العثور على حساب بهذا البريد الإلكتروني.';
+
+  @override
+  String get wrongPassword => 'كلمة المرور غير صحيحة.';
+
+  @override
+  String get loginFailed => 'فشل تسجيل الدخول';
+
+  @override
+  String get googleSignInCancelled => 'تم إلغاء تسجيل الدخول باستخدام جوجل.';
+
+  @override
+  String get googleSignInFailed =>
+      'فشل تسجيل الدخول باستخدام جوجل. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get passwordResetFailed => 'فشل إرسال بريد إعادة تعيين كلمة المرور';
+
+  @override
+  String get changePasswordUserNotFound => 'لم يتم العثور على المستخدم.';
+
+  @override
+  String get changePasswordWrongPassword =>
+      'كلمة المرور القديمة التي أدخلتها غير صحيحة.';
+
+  @override
+  String get errorNoMarketData => '⚠️ لا توجد بيانات سوق — تخطي الدورة.';
+
+  @override
+  String get errorAnalysisFailed =>
+      '❌ فشل التحليل — خطأ في واجهة برمجة التطبيقات.';
+
+  @override
+  String errorParsePositions(Object error) {
+    return '⚠️ تعذر تحليل قرارات المراكز: $error';
+  }
+
+  @override
+  String errorParseBuyOpps(Object error) {
+    return '⚠️ تعذر تحليل فرص الشراء: $error';
+  }
+
+  @override
+  String errorCycle(Object error) {
+    return '❌ خطأ في الدورة: $error';
+  }
+
+  @override
+  String get alpaca_not_configured_settings =>
+      'واجهة برمجة تطبيقات Alpaca غير مكوّنة. يرجى إضافة مفاتيح الـ API في الإعدادات.';
+
+  @override
+  String get alpaca_not_configured => 'Alpaca غير مكوّن.';
+
+  @override
+  String get order_failed => 'فشل الطلب';
+
+  @override
+  String close_failed(String error, Object statusCode) {
+    return 'فشل الإغلاق ($statusCode)';
+  }
+
+  @override
+  String sell_failed(String error, Object statusCode) {
+    return 'فشل البيع ($statusCode)';
+  }
+
+  @override
+  String alpaca_api_error(String message) {
+    return 'Alpaca error: $message';
+  }
+
+  @override
+  String alpaca_exception(String exception) {
+    return 'An unexpected error occurred: $exception';
+  }
+
+  @override
+  String registration_failed(String message) {
+    return 'Registration failed: $message';
+  }
+
+  @override
+  String login_failed(String message) {
+    return 'Login failed: $message';
+  }
+
+  @override
+  String password_reset_failed(String message) {
+    return 'Password reset failed: $message';
+  }
+
+  @override
+  String auth_generic_message(String message) {
+    return 'Authentication error: $message';
+  }
+
+  @override
+  String auto_trade_enabled(String interval) {
+    return '🤖 تم تمكين التداول الآلي. الدورة كل $interval.';
+  }
+
+  @override
+  String get auto_trade_disabled => '⏸ تم تعطيل التداول الآلي.';
+
+  @override
+  String get cycle_started_gathering =>
+      '📡 بدأت الدورة — جاري جمع بيانات السوق الحية...';
+
+  @override
+  String get no_market_data => '⚠️ لا توجد بيانات سوق — تخطي الدورة.';
+
+  @override
+  String data_ready(Object assets, Object news, Object positions, Object cash) {
+    return '✅ البيانات جاهزة: $assets من الأصول، $news عناوين الأخبار، $positions صفقات مفتوحة، \$$cash نقدًا';
+  }
+
+  @override
+  String get step_analyzing_sentiment =>
+      '🔍 الخطوة ١/٣ — تحليل معنويات السوق والأخبار...';
+
+  @override
+  String get analysis_failed => '❌ فشل التحليل — خطأ في واجهة برمجة التطبيقات.';
+
+  @override
+  String sentiment_preview(Object preview) {
+    return '📊 معنويات السوق: $preview...';
+  }
+
+  @override
+  String get step_evaluating_positions =>
+      '⚖️ الخطوة ٢/٣ — تقييم كل صفقة مفتوحة...';
+
+  @override
+  String position_hold(Object name, Object reason) {
+    return '✅ احتفاظ $name: $reason';
+  }
+
+  @override
+  String position_action(Object action, Object name, Object reason) {
+    return '⚡ $action $name: $reason';
+  }
+
+  @override
+  String position_closed(Object name) {
+    return '✅ تم إغلاق $name بسعر السوق';
+  }
+
+  @override
+  String parse_positions_error(Object error) {
+    return '⚠️ تعذر تحليل قرارات المراكز: $error';
+  }
+
+  @override
+  String get no_open_positions => '📂 لا توجد صفقات مفتوحة للتقييم.';
+
+  @override
+  String get step_scanning_buy_opps =>
+      '🔎 الخطوة ٣/٣ — البحث عن فرص شراء جديدة...';
+
+  @override
+  String parse_buy_opps_error(Object error) {
+    return '⚠️ تعذر تحليل فرص الشراء: $error';
+  }
+
+  @override
+  String buy_opportunities_found(Object count) {
+    return '💡 تم العثور على $count من فرص الشراء — في انتظار موافقتك.';
+  }
+
+  @override
+  String get no_buy_opportunities =>
+      '📉 لم يتم العثور على فرص شراء قوية. تم الاحتفاظ بالنقد للدورة القادمة.';
+
+  @override
+  String cycle_complete_with_sells(Object count, Object nextRun) {
+    return '✅ اكتملت الدورة. تم تنفيذ $count عملية (عمليات) بيع. التشغيل القادم: $nextRun';
+  }
+
+  @override
+  String cycle_complete_no_sells(Object nextRun) {
+    return '✅ اكتملت الدورة. التشغيل القادم: $nextRun';
+  }
+
+  @override
+  String cycle_error(Object error) {
+    return '❌ خطأ في الدورة: $error';
+  }
+
+  @override
+  String get budget_warning_title => 'تحذير الميزانية';
+
+  @override
+  String budget_warning_body(Object category, Object percentUsed) {
+    return 'لقد استهلكت $percentUsed٪ من ميزانية $category.';
+  }
+
+  @override
+  String get category_transport => 'المواصلات';
+
+  @override
+  String get category_bills => 'الفواتير والخدمات';
+
+  @override
+  String recurring_fallback(String title) {
+    return '$title (متكرر)';
+  }
+
+  @override
+  String auto_prefix(String note) {
+    return '[تلقائي] $note';
+  }
+
+  @override
+  String get cloudinary_upload_failed =>
+      'فشل الرفع إلى كلوديناري. يرجى المحاولة مرة أخرى.';
+
+  @override
+  String get failed_to_upload => 'فشل رفع الصورة بسبب خطأ في الشبكة أو النظام.';
+
+  @override
+  String notifBudgetExceededTitle(Object title) {
+    return '🚨 تجاوز الميزانية: $title';
+  }
+
+  @override
+  String notifBudgetExceededBody(Object title) {
+    return 'لقد تجاوزت ميزانية $title!';
+  }
+
+  @override
+  String notifBudgetWarningTitle(Object title) {
+    return '⚠️ تنبيه الميزانية: $title';
+  }
+
+  @override
+  String notifBudgetWarningBody(Object days, Object percent, Object title) {
+    return 'لقد استخدمت $percent٪ من ميزانية $title مع تبقي $days أيام.';
+  }
+
+  @override
+  String get notifSavingsTitle => '🎉 تقدم هدف الادخار';
+
+  @override
+  String notifSavingsBody(Object percent) {
+    return 'أنت في $percent٪ من طريقك نحو هدفك الشهري للادخار!';
+  }
+
+  @override
+  String get notifWeeklyTitle => 'ملخص إنفاقك الأسبوعي 📊';
+
+  @override
+  String notifWeeklyBody(Object category, Object percent) {
+    return 'استخدمت $percent٪ من ميزانيتك. الأكثر إنفاقاً: $category.';
+  }
+
+  @override
+  String get removePhoto => 'حذف الصورة';
+
+  @override
+  String get removePhotoConfirm =>
+      'هل أنت متأكد أنك تريد حذف صورة الملف الشخصي؟';
+
+  @override
+  String get remove => 'حذف';
+
+  @override
+  String get removingPhoto => 'جارٍ حذف الصورة...';
+
+  @override
+  String get photoRemoved => 'تم حذف صورة الملف الشخصي';
+
+  @override
+  String get photoRemoveFailed => 'فشل حذف الصورة';
 }

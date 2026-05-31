@@ -274,7 +274,7 @@ class HomeScreen extends StatelessWidget {
                                         BorderRadius.circular(16),
                                       ),
                                       child: Text(
-                                        l10n.daysLeftText(daysLeft),
+                                        l10n.daysLeftText(daysLeft).toLocalizedDigits(locale),
                                         style: const TextStyle(
                                           fontSize: 10,
                                           fontWeight: FontWeight.bold,
@@ -292,7 +292,7 @@ class HomeScreen extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.end,
                                   children: [
                                     Text(
-                                      '${NumberFormat.decimalPattern(locale).format(savingsPercent)}%',
+                                      '${NumberFormat.decimalPattern(locale).format(savingsPercent)}%'.toLocalizedDigits(locale),
                                       style: const TextStyle(
                                         fontSize: 36,
                                         fontWeight: FontWeight.w800,
@@ -500,7 +500,7 @@ class HomeScreen extends StatelessWidget {
                                     ? CategoryLocalization.getCategoryName(context, budget.customTitle, '')
                                     : CategoryLocalization.getCategoryName(context, budget.categoryKey, budget.customTitle),
                                 l10n.amountLeftText(
-                                  NumberFormat.decimalPattern(locale).format(budget.remaining),
+                                  NumberFormat.decimalPattern(locale).format(budget.remaining).toLocalizedDigits(locale),
                                 ),
                                 budget.spentRatio,
                                 _getIconData(budget.iconName),

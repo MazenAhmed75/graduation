@@ -572,13 +572,8 @@
   "used": "Used",
   "noBudgetData": "No budget data to display.",
   "aiInsightLabel": "AI Financial Insight",
-  "@aiInsightLabel": {
-    "description": "Label above the Gemini insight card"
-  },
   "aiInsightRefreshTooltip": "Refresh",
-  "@aiInsightRefreshTooltip": {},
   "aiInsightJustNow": "Just now",
-  "@aiInsightJustNow": {},
   "aiInsightMinutesAgo": "{n} min ago",
   "@aiInsightMinutesAgo": {
     "placeholders": {
@@ -592,17 +587,10 @@
     }
   },
   "aiInsightErrorMsg": "Could not load AI insight.",
-  "@aiInsightErrorMsg": {},
   "aiInsightRetryBtn": "Retry",
-  "@aiInsightRetryBtn": {},
   "budgetsScreenTitle": "Budgets",
-  "@budgetsScreenTitle": {},
   "reportsTitle": "Reports",
-  "@reportsTitle": {
-    "description": "Reports screen app bar title"
-  },
   "localInsightsSectionTitle": "Quick Insights",
-  "@localInsightsSectionTitle": {},
   "insightHighestSpending": "{category} is your biggest expense at {percent} of its budget.",
   "@insightHighestSpending": {
     "placeholders": {
@@ -661,11 +649,6 @@
   "replaceCategoriesWarning": "Applying this template will remove your current category budgets and replace them with the template categories.",
   "replace": "Replace",
   "overBy": "⚠️ Over by {amount}",
-  "@overBy": {
-    "placeholders": {
-      "amount": { "type": "String" }
-    }
-  },
   "offlineBanner": "You're offline — changes will sync when reconnected",
   "backendErrorTitle": "Server Connection Error",
   "backendErrorSubtitle": "We couldn't retrieve your transaction history. Please check your internet connection or try again later.",
@@ -776,5 +759,216 @@
       "assetName": {}
     }
   },
-  "passwordUpdatedSuccessfully": "Password updated successfully!"
+  "passwordUpdatedSuccessfully": "Password updated successfully!",
+  "emailAlreadyInUse": "This email is already in use.",
+  "weakPassword": "Password must be at least 6 characters.",
+  "invalidEmail": "Please enter a valid email.",
+  "registrationFailed": "Registration failed",
+  "unexpectedError": "An unexpected error occurred. Please try again.",
+  "userNotFound": "No account found with this email.",
+  "wrongPassword": "Incorrect password.",
+  "loginFailed": "Login failed",
+  "googleSignInCancelled": "Google sign in was cancelled.",
+  "googleSignInFailed": "Google sign in failed. Please try again.",
+  "passwordResetFailed": "Failed to send password reset email",
+  "changePasswordUserNotFound": "User not found.",
+  "changePasswordWrongPassword": "The old password you entered is incorrect.",
+  "errorNoMarketData": "⚠️ No market data — skipping cycle.",
+  "errorAnalysisFailed": "❌ Analysis failed — API error.",
+  "errorParsePositions": "⚠️ Could not parse position decisions: {error}",
+  "errorParseBuyOpps": "⚠️ Could not parse buy opportunities: {error}",
+  "errorCycle": "❌ Cycle error: {error}",
+  "alpaca_not_configured_settings": "Alpaca API not configured. Add your API keys in Settings.",
+  "alpaca_not_configured": "Alpaca not configured.",
+  "order_failed": "Order failed.",
+  "close_failed": "Close failed ({error}).",
+  "@close_failed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "sell_failed": "Sell failed ({error}).",
+  "@sell_failed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "alpaca_api_error": "Alpaca error: {message}",
+  "@alpaca_api_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+  "alpaca_exception": "An unexpected error occurred: {exception}",
+  "@alpaca_exception": {
+    "placeholders": {
+      "exception": { "type": "String" }
+    }
+  },
+  "registration_failed": "Registration failed: {message}",
+  "@registration_failed": {
+    "placeholders": { "message": { "type": "String" } }
+  },
+  "login_failed": "Login failed: {message}",
+  "@login_failed": {
+    "placeholders": { "message": { "type": "String" } }
+  },
+  "password_reset_failed": "Password reset failed: {message}",
+  "@password_reset_failed": {
+    "placeholders": { "message": { "type": "String" } }
+  },
+  "auth_generic_message": "Authentication error: {message}",
+  "@auth_generic_message": {
+    "placeholders": { "message": { "type": "String" } }
+  },
+  "auto_trade_enabled": "🤖 Auto-trade enabled. Cycle every {interval}.",
+  "@auto_trade_enabled": {
+    "placeholders": {
+      "interval": { "type": "String" }
+    }
+  },
+  "auto_trade_disabled": "⏸ Auto-trade disabled.",
+  "cycle_started_gathering": "📡 Cycle started — gathering live market data...",
+  "no_market_data": "⚠️ No market data — skipping cycle.",
+  "data_ready": "✅ Data ready: {assets} assets, {news} headlines, {positions} open positions, ${cash} cash",
+  "@data_ready": {
+    "placeholders": {
+      "assets": {},
+      "news": {},
+      "positions": {},
+      "cash": {}
+    }
+  },
+  "step_analyzing_sentiment": "🔍 Step 1/3 — Analyzing market sentiment & news...",
+  "analysis_failed": "❌ Analysis failed — API error.",
+  "sentiment_preview": "📊 Sentiment: {preview}...",
+  "@sentiment_preview": {
+    "placeholders": {
+      "preview": {}
+    }
+  },
+  "step_evaluating_positions": "⚖️ Step 2/3 — Evaluating each open position...",
+  "position_hold": "✅ HOLD {name}: {reason}",
+  "@position_hold": {
+    "placeholders": {
+      "name": {},
+      "reason": {}
+    }
+  },
+  "position_action": "⚡ {action} {name}: {reason}",
+  "@position_action": {
+    "placeholders": {
+      "action": {},
+      "name": {},
+      "reason": {}
+    }
+  },
+  "position_closed": "✅ {name} closed at market price",
+  "@position_closed": {
+    "placeholders": {
+      "name": {}
+    }
+  },
+  "parse_positions_error": "⚠️ Could not parse position decisions: {error}",
+  "@parse_positions_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "no_open_positions": "📂 No open positions to evaluate.",
+  "step_scanning_buy_opps": "🔎 Step 3/3 — Scanning for new buy opportunities...",
+  "parse_buy_opps_error": "⚠️ Could not parse buy opportunities: {error}",
+  "@parse_buy_opps_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "buy_opportunities_found": "💡 Found {count} buy opportunities — awaiting your approval.",
+  "@buy_opportunities_found": {
+    "placeholders": {
+      "count": {}
+    }
+  },
+  "no_buy_opportunities": "📉 No strong buy opportunities found. Cash held for next cycle.",
+  "cycle_complete_with_sells": "✅ Cycle complete. {count} sell(s) executed. Next run: {nextRun}",
+  "@cycle_complete_with_sells": {
+    "placeholders": {
+      "count": {},
+      "nextRun": {}
+    }
+  },
+  "cycle_complete_no_sells": "✅ Cycle complete. Next run: {nextRun}",
+  "@cycle_complete_no_sells": {
+    "placeholders": {
+      "nextRun": {}
+    }
+  },
+  "cycle_error": "❌ Cycle error: {error}",
+  "@cycle_error": {
+    "placeholders": {
+      "error": {}
+    }
+  },
+  "budget_warning_title": "Budget Warning",
+  "budget_warning_body": "You have used {percentUsed}% of your {category} budget.",
+  "category_food": "Food & Dining",
+  "category_transport": "Transportation",
+  "category_shopping": "Shopping",
+  "category_entertainment": "Entertainment",
+  "category_bills": "Bills & Utilities",
+  "recurring_fallback": "{title} (recurring)",
+  "@recurring_fallback": {
+    "description": "Fallback text for a recurring transaction without a specific note",
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
+  "auto_prefix": "[Auto] {note}",
+  "@auto_prefix": {
+    "description": "Prefix applied to automatically generated recurring transactions",
+    "placeholders": {
+      "note": { "type": "String" }
+    }
+  },
+  "cloudinary_upload_failed": "Cloudinary upload failed. Please try again.",
+  "@cloudinary_upload_failed": {
+    "description": "Error displayed when the server rejects the profile picture upload"
+  },
+  "failed_to_upload": "Failed to upload image due to a network or system error.",
+  "@failed_to_upload": {
+    "description": "Generic fallback upload failure message"
+  },
+  "notifBudgetExceededTitle": "🚨 Budget Exceeded: {title}",
+  "@notifBudgetExceededTitle": {},
+  "notifBudgetExceededBody": "You have gone over your {title} budget!",
+  "@notifBudgetExceededBody": {},
+  "notifBudgetWarningTitle": "⚠️ Budget Alert: {title}",
+  "@notifBudgetWarningTitle": {},
+  "notifBudgetWarningBody": "You've used {percent}% of your {title} budget with {days} days left.",
+  "@notifBudgetWarningBody": {},
+  "notifSavingsTitle": "🎉 Savings Goal Progress",
+  "@notifSavingsTitle": {},
+  "notifSavingsBody": "You're {percent}% of the way to your monthly savings goal!",
+  "@notifSavingsBody": {},
+  "notifWeeklyTitle": "Your Weekly Spending Recap 📊",
+  "@notifWeeklyTitle": {},
+  "notifWeeklyBody": "You used {percent}% of your budget. Most spent: {category}.",
+  "@notifWeeklyBody": {},
+  "removePhoto": "Remove Photo",
+  "@removePhoto": { "description": "Option to remove profile picture" },
+
+  "removePhotoConfirm": "Are you sure you want to remove your profile picture?",
+  "@removePhotoConfirm": { "description": "Confirmation message before removing photo" },
+
+  "remove": "Remove",
+  "@remove": { "description": "Confirm remove action button" },
+
+  "removingPhoto": "Removing photo...",
+  "@removingPhoto": { "description": "Loading message while removing photo" },
+
+  "photoRemoved": "Profile picture removed",
+  "@photoRemoved": { "description": "Success message after removing photo" },
+
+  "photoRemoveFailed": "Failed to remove photo",
+  "@photoRemoveFailed": { "description": "Error message when photo removal fails" }
 }

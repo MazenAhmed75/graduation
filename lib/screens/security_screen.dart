@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../services/auth_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import '../utils/error_resolver.dart';
 
 class SecurityScreen extends StatefulWidget {
   const SecurityScreen({super.key});
@@ -33,7 +34,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context);
+    final l10n = AppLocalizations.of(context)!;
     // IMPORTANT: Check the login provider.
     // We cannot change passwords for Google users via Firebase Auth.
     final isGoogle = _authService.isGoogleUser();
@@ -195,6 +196,7 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
   /// Handles the process of re-authenticating and then updating the password.
   Future<void> _handleUpdatePassword() async {
+    final l10n = AppLocalizations.of(context);
     // Stop if the UI validation (empty fields, short passwords) fails
     if (!_formKey.currentState!.validate()) return;
 
@@ -209,16 +211,20 @@ class _SecurityScreenState extends State<SecurityScreen> {
 
     if (mounted) {
       setState(() => _isLoading = false);
+
       if (error == null) {
         // Successful update
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text(l10n.passwordUpdatedSuccessfully))
         );
         Navigator.pop(context); // Return to profile
-      } else {
-        // Shows error if old password was wrong or there was a network issue
+      } else if (error.errorKey != null && error.errorKey!.isNotEmpty) {
+        // Shows localized error if old password was wrong or there was a network issue
         ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text(error), backgroundColor: Colors.red)
+          SnackBar(
+            content: Text(context.translateError(error.errorKey, error.errorArgs)),
+            backgroundColor: Colors.red,
+          ),
         );
       }
     }

@@ -7,6 +7,7 @@ import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
 import '../utils/budget_categories.dart';
 import 'package:intl/intl.dart';
+import '../utils/currency_formatter.dart';
 
 // ============================================================
 // RecurringScreen
@@ -174,15 +175,22 @@ class _RecurringCard extends StatelessWidget {
     final bgColor = isWithdraw
         ? const Color(0xFFE24B4A).withOpacity(0.08)
         : AppTheme.primaryContainer;
-    final amountLabel =
-    isWithdraw ? '- \$${item.amount.toStringAsFixed(2)}' : '+ \$${item.amount.toStringAsFixed(2)}';
+
+    // 1. Get the current locale
+    final locale = Localizations.localeOf(context).languageCode;
+
+    // 2. Format the amount safely using your custom formatter
+    final formattedAmount = CurrencyFormatter.format(item.amount, locale);
+    final amountLabel = isWithdraw ? '- $formattedAmount' : '+ $formattedAmount';
 
     // Fallback names for months if your generated l10n does not have specific month names
     final months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
-    final due = '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day}';
+
+    // 3. Apply the extension to the day integer
+    final due = '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day.toString().toLocalizedDigits(locale)}';
 
     //  Dynamic translation fix
     String displayNote = item.note;

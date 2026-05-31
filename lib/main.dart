@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter/foundation.dart'; // 👈 for kIsWeb
+import 'dart:io';                          // 👈 for Platform.isAndroid
 import 'firebase_options.dart';
 import 'theme.dart';
 import 'main_screen.dart';
@@ -10,7 +12,27 @@ import 'services/locale_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:workmanager/workmanager.dart';
+import 'services/notification_service.dart';
+import 'utils/app_state.dart';
+import 'utils/budget_checker.dart';
+import 'services/auth_service.dart';
 
+
+// ── Stored globally so it's never garbage collected ──────────
+final AppState _appState = AppState();
+
+
+@pragma('vm:entry-point')
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    if (task == "budgetHealthCheck") {
+      await BudgetChecker.runDailyCheck();
+    }
+    return Future.value(true);
+  });
+}
 // ── Global notifier — any widget can call this to switch language ─
 final ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('en'));
 
@@ -31,6 +53,28 @@ Future<void> main() async {
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED, // cache everything
   );
 
+  // ── Notifications: only on mobile, never on web ───────────
+  if (!kIsWeb) {
+    try {
+      await NotificationService.initialize();
+    } catch (e) {
+      // Don't crash the app if notifications fail to initialize
+      debugPrint('Notification init failed: $e');
+    }
+  }
+
+  // ── AppState: tracks foreground/background ─────────────────
+  _appState.init();
+
+  // ── Workmanager: only on Android/iOS, not web ─────────────
+  if (!kIsWeb && (Platform.isAndroid || Platform.isIOS)) {
+    await Workmanager().initialize(callbackDispatcher);
+    await Workmanager().registerPeriodicTask(
+      "daily-budget-check",
+      "budgetHealthCheck",
+      frequency: const Duration(hours: 24),
+    );
+  }
   runApp(const MindfulCuratorApp());
 }
 
@@ -64,23 +108,21 @@ class MindfulCuratorApp extends StatelessWidget {
           // CHANGE: Use StreamBuilder to check login state
           // ========================================================
 
-          // ── Auth gate: shows login or main screen ───────────
+          // ── Auth gate: shows login or main screen ──────────
           home: StreamBuilder<User?>(
-            stream: FirebaseAuth.instance.authStateChanges(),
+            stream: AuthService().authStateChanges, // 👈 Consuming single-instance stream abstraction cleanly
             builder: (context, snapshot) {
-              // Show loading while checking auth state
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Scaffold(
                   body: Center(child: CircularProgressIndicator()),
                 );
               }
 
-              // If logged in, show MainScreen
               if (snapshot.hasData) {
+                // 📝 Note: SharedPreferences write operation successfully extracted to AuthService listener
                 return const MainScreen();
               }
 
-              // If not logged in, show LoginScreen
               return const LoginScreen();
             },
           ),

@@ -70,7 +70,7 @@ class RecurringService {
       budgetTitle: budget.customTitle.isNotEmpty ? budget.customTitle : budget.categoryKey,
       amount: amount,
       type: type,
-      note: note.isNotEmpty ? note : '${budget.customTitle.isNotEmpty ? budget.customTitle : budget.categoryKey} (recurring)',
+      note: note.isNotEmpty ? note : 'recurring_fallback:${budget.customTitle.isNotEmpty ? budget.customTitle : budget.categoryKey}',
       frequency: frequency,
       nextDueDate: nextDueDate,
       isActive: true,
@@ -117,14 +117,14 @@ class RecurringService {
           userId: userId,
           budget: budget,
           amount: recurring.amount,
-          note: '[Auto] ${recurring.note}',
+          note: 'auto_prefix:${recurring.note}',
         );
       } else {
         await _budgetService.deposit(
           userId: userId,
           budget: budget,
           amount: recurring.amount,
-          note: '[Auto] ${recurring.note}',
+          note: 'auto_prefix:${recurring.note}',
         );
       }
 

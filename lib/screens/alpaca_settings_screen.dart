@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme.dart';
+import 'dart:ui' as ui;
 import '../Services/alpaca_service.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
@@ -130,7 +131,7 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
           const SizedBox(height: 8),
           TextField(
             controller: _keyCtrl,
-            textDirection: TextDirection.ltr,
+            textDirection: ui.TextDirection.ltr,
             decoration: InputDecoration(
               hintText: l10n.alpacaApiKeyHint,
               hintStyle: const TextStyle(color: AppTheme.outlineVariant),
@@ -150,7 +151,7 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
           TextField(
             controller: _secretCtrl,
             obscureText: _obscure,
-            textDirection: TextDirection.ltr,
+            textDirection: ui.TextDirection.ltr,
             decoration: InputDecoration(
               hintText: l10n.alpacaSecretHint,
               hintStyle: const TextStyle(color: AppTheme.outlineVariant),
@@ -234,7 +235,10 @@ class _AlpacaSettingsScreenState extends State<AlpacaSettingsScreen> {
   }
 
   Widget _step(int num, String text) {
-    final formattedNum = NumberFormat('#', Localizations.localeOf(context).languageCode).format(num);
+    final locale = Localizations.localeOf(context).languageCode;
+    // Add the extension to the end of the NumberFormat!
+    final formattedNum = NumberFormat('#', locale).format(num).toLocalizedDigits(locale);
+
     return Padding(
       padding: const EdgeInsets.only(bottom: 6),
       child: Row(children: [

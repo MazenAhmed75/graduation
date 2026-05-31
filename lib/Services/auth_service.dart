@@ -1,9 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // 👈 Added for background token synchronization
 import '../models/user_model.dart';
 
 class AuthService {
+  // ── Singleton Configuration ─────────────────────────────────────────
+  AuthService._internal() {
+    // Automatically manage caching the userId safely whenever auth state changes
+    _auth.authStateChanges().listen((User? user) async {
+      if (user != null) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userId', user.uid);
+        print('💾 Centralized Auth: Cached userId locally (${user.uid})');
+      }
+    });
+  }
+
+  static final AuthService instance = AuthService._internal();
+
+  // Factory constructor returns the exact same instance every single time
+  factory AuthService() => instance;
+  // ────────────────────────────────────────────────────────────────────
+
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn(
@@ -23,7 +42,7 @@ class AuthService {
   // -------------------------------------------------------
   // REGISTER: Create a new account with email/password
   // -------------------------------------------------------
-  Future<String?> register({
+  Future<AuthResult?> register({
     required String name,
     required String email,
     required String password,
@@ -54,30 +73,34 @@ class AuthService {
           .set(newUser.toMap());
 
       print('✅ User created in Firestore: ${result.user!.uid}');
-      return null; // Success
+      return AuthResult(success: true); // Success
 
-    } on FirebaseAuthException catch (e) {
+    }on FirebaseAuthException catch (e) {
       print('❌ Registration error: ${e.code}');
       if (e.code == 'email-already-in-use') {
-        return 'This email is already registered.';
+        return AuthResult(success: false, errorKey: 'email_already_in_use');
       }
       if (e.code == 'weak-password') {
-        return 'Password must be at least 6 characters.';
+        return AuthResult(success: false, errorKey: 'weak_password');
       }
       if (e.code == 'invalid-email') {
-        return 'Please enter a valid email address.';
+        return AuthResult(success: false, errorKey: 'invalid_email');
       }
-      return 'Registration failed: ${e.message}';
+      return AuthResult(
+        success: false,
+        errorKey: 'registration_failed',
+        errorArgs: [e.message ?? ''],
+      );
     } catch (e) {
       print('❌ Unexpected error: $e');
-      return 'An unexpected error occurred. Please try again.';
+      return AuthResult(success: false, errorKey: 'unexpected_error');
     }
   }
 
   // -------------------------------------------------------
   // LOGIN: Sign in with email and password
   // -------------------------------------------------------
-  Future<String?> login({
+  Future<AuthResult?> login({
     required String email,
     required String password,
   }) async {
@@ -87,38 +110,40 @@ class AuthService {
         password: password,
       );
       print('✅ Login successful');
-      return null; // Success
+      return AuthResult(success: true);
 
     } on FirebaseAuthException catch (e) {
       print('❌ Login error: ${e.code}');
       if (e.code == 'user-not-found') {
-        return 'No account found with this email.';
+        return AuthResult(success: false, errorKey: 'user_not_found');
       }
       if (e.code == 'wrong-password') {
-        return 'Incorrect password.';
+        return AuthResult(success: false, errorKey: 'wrong_password');
       }
       if (e.code == 'invalid-email') {
-        return 'Please enter a valid email address.';
+        return AuthResult(success: false, errorKey: 'invalid_email');
       }
-      return 'Login failed: ${e.message}';
+      return AuthResult(
+        success: false,
+        errorKey: 'login_failed',
+        errorArgs: [e.message ?? ''],
+      );
     } catch (e) {
       print('❌ Unexpected error: $e');
-      return 'An unexpected error occurred. Please try again.';
+      return AuthResult(success: false, errorKey: 'unexpected_error');
     }
   }
-
   // -------------------------------------------------------
   // GOOGLE SIGN-IN: Sign in with Google account
   // -------------------------------------------------------
-  Future<String?> signInWithGoogle() async {
+  Future<AuthResult?> signInWithGoogle() async {
     try {
       // Step 1: Trigger Google Sign-In flow
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
       if (googleUser == null) {
-        return 'Google sign-in cancelled.';
+        return AuthResult(success: false, errorKey: 'google_sign_in_cancelled');
       }
-
       // Step 2: Get Google auth credentials
       final GoogleSignInAuthentication googleAuth =
       await googleUser.authentication;
@@ -161,33 +186,37 @@ class AuthService {
         print('✅ Existing Google user logged in');
       }
 
-      return null; // Success
+      return AuthResult(success: true);
 
     } catch (e) {
       print('❌ Google sign-in error: $e');
-      return 'Google sign-in failed. Please try again.';
+      return AuthResult(success: false, errorKey: 'google_sign_in_failed');
     }
   }
 // -------------------------------------------------------
 // FORGOT PASSWORD: Send a password reset email
 // -------------------------------------------------------
-  Future<String?> sendPasswordResetEmail(String email) async {
+  Future<AuthResult> sendPasswordResetEmail(String email) async {
     try {
       await _auth.sendPasswordResetEmail(email: email);
       print('✅ Password reset email sent to $email');
-      return null; // Success
+      return AuthResult(success: true);
     } on FirebaseAuthException catch (e) {
       print('❌ Password reset error: ${e.code}');
       if (e.code == 'user-not-found') {
-        return 'No account found with this email.';
+        return AuthResult(success: false, errorKey: 'user_not_found');
       }
       if (e.code == 'invalid-email') {
-        return 'Please enter a valid email address.';
+        return AuthResult(success: false, errorKey: 'invalid_email');
       }
-      return 'Failed to send reset email: ${e.message}';
+      return AuthResult(
+        success: false,
+        errorKey: 'password_reset_failed',
+        errorArgs: [e.message ?? ''],
+      );
     } catch (e) {
       print('❌ Unexpected error: $e');
-      return 'An unexpected error occurred. Please try again.';
+      return AuthResult(success: false, errorKey: 'unexpected_error');
     }
   }
   // ------------------------------------------------------------------------
@@ -207,15 +236,18 @@ class AuthService {
   }
 
 // Change Password Logic
-  Future<String?> changePassword({
+  Future<AuthResult?> changePassword({
     required String oldPassword,
     required String newPassword,
   }) async {
     try {
       User? user = _auth.currentUser;
-      if (user == null || user.email == null) return 'User not found.';
 
-      // 1. Re-authenticate the user (Crucial for security)
+      if (user == null || user.email == null) {
+        return AuthResult(success: false, errorKey: 'change_password_user_not_found');
+      }
+
+      // 1. Re-authenticate the user
       AuthCredential credential = EmailAuthProvider.credential(
         email: user.email!,
         password: oldPassword,
@@ -226,14 +258,18 @@ class AuthService {
       // 2. Update the password
       await user.updatePassword(newPassword);
 
-      return null; // Success
+      return AuthResult(success: true);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'wrong-password') {
-        return 'The old password you entered is incorrect.';
+        return AuthResult(success: false, errorKey: 'change_password_wrong_password');
       }
-      return e.message;
+      return AuthResult(
+        success: false,
+        errorKey: 'auth_generic_message',
+        errorArgs: [e.message ?? ''],
+      );
     } catch (e) {
-      return 'An unexpected error occurred.';
+      return AuthResult(success: false, errorKey: 'unexpected_error');
     }
   }
   // -------------------------------------------------------
@@ -244,4 +280,14 @@ class AuthService {
     await _auth.signOut();
     print('✅ Logout successful');
   }
+}
+
+
+// helper class for localizing back end errors
+class AuthResult {
+  final bool success;
+  final String? errorKey;
+  final List<String>? errorArgs;
+
+  AuthResult({required this.success, this.errorKey, this.errorArgs});
 }

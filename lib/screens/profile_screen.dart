@@ -21,18 +21,26 @@ class ProfileScreen extends StatelessWidget {
   // ============================================================
   // PHOTO UPLOAD: Opens camera or gallery, uploads to Firebase
   // ============================================================
-  Future<void> _pickAndUploadImage(BuildContext context, String userId) async {
+  Future<void> _pickAndUploadImage(
+      BuildContext context,
+      String userId, {
+        bool hasPhoto = false, // 👈 Controls whether the remove option is shown
+      }) async {
     final l10n = AppLocalizations.of(context);
     final ImagePicker picker = ImagePicker();
     final StorageService storageService = StorageService();
     final UserService userService = UserService();
 
-    // Step 1: Ask user to choose Camera or Gallery
-    final source = await showDialog<ImageSource>(
+    // ============================================================
+    // STEP 1: Ask user to choose Camera, Gallery, or Remove Photo
+    // ============================================================
+    final choice = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.choosePhotoSource),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -44,12 +52,18 @@ class ProfileScreen extends StatelessWidget {
                   color: AppTheme.primaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.camera_alt, color: AppTheme.primary),
+                child: const Icon(
+                  Icons.camera_alt,
+                  color: AppTheme.primary,
+                ),
               ),
-              title: Text(l10n.takePhoto,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
-              onTap: () => Navigator.pop(context, ImageSource.camera),
+              title: Text(
+                l10n.takePhoto,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () => Navigator.pop(context, 'camera'),
             ),
+
             ListTile(
               leading: Container(
                 width: 40,
@@ -58,21 +72,71 @@ class ProfileScreen extends StatelessWidget {
                   color: AppTheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Icon(Icons.photo_library,
-                    color: AppTheme.secondary),
+                child: const Icon(
+                  Icons.photo_library,
+                  color: AppTheme.secondary,
+                ),
               ),
-              title: Text(l10n.chooseFromGallery,
-                  style: const TextStyle(fontWeight: FontWeight.w600)),
-              onTap: () => Navigator.pop(context, ImageSource.gallery),
+              title: Text(
+                l10n.chooseFromGallery,
+                style: const TextStyle(fontWeight: FontWeight.w600),
+              ),
+              onTap: () => Navigator.pop(context, 'gallery'),
             ),
+
+            // Only show this option when the user already has a photo
+            if (hasPhoto) ...[
+              const Divider(),
+              ListTile(
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: AppTheme.errorContainer,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(
+                    Icons.delete_outline,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                title: Text(
+                  l10n.removePhoto,
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.error,
+                  ),
+                ),
+                onTap: () => Navigator.pop(context, 'remove'),
+              ),
+            ],
           ],
         ),
       ),
     );
 
-    if (source == null || !context.mounted) return;
+    if (!context.mounted) return;
 
-    // Step 2: Pick the image
+    // ============================================================
+    // STEP 2: Handle photo removal if selected
+    // ============================================================
+    if (choice == 'remove') {
+      await _removeProfilePicture(context, userId);
+      return;
+    }
+
+    // Convert dialog result into ImageSource
+    final ImageSource? source = choice == 'camera'
+        ? ImageSource.camera
+        : choice == 'gallery'
+        ? ImageSource.gallery
+        : null;
+
+    if (source == null) return;
+
+    // ============================================================
+    // STEP 3: Pick the image from Camera or Gallery
+    // ============================================================
     final XFile? image = await picker.pickImage(
       source: source,
       maxWidth: 512,
@@ -82,7 +146,9 @@ class ProfileScreen extends StatelessWidget {
 
     if (image == null || !context.mounted) return;
 
-    // Step 3: Show loading dialog
+    // ============================================================
+    // STEP 4: Show loading dialog while uploading
+    // ============================================================
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -104,21 +170,30 @@ class ProfileScreen extends StatelessWidget {
     );
 
     try {
-      // Step 4: Read as bytes — works on ALL platforms (no dart:io needed)
+      // ============================================================
+      // STEP 5: Read image as bytes
+      // Works on ALL Flutter platforms (mobile, desktop, web)
+      // without requiring dart:io File access.
+      // ============================================================
       final imageBytes = await image.readAsBytes();
 
-      // Step 5: Upload to Firebase Storage
+      // ============================================================
+      // STEP 6: Upload image bytes to Firebase Storage
+      // Returns a public download URL.
+      // ============================================================
       final photoUrl = await storageService.uploadProfilePicture(
-        context,
         userId,
         imageBytes,
       );
 
-      // Step 6: Save URL to Firestore
+      // ============================================================
+      // STEP 7: Save photo URL to Firestore user document
+      // ============================================================
       await userService.updatePhotoUrl(userId, photoUrl);
 
       if (context.mounted) {
         Navigator.pop(context); // Close loading dialog
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(l10n.profileUpdated),
@@ -129,9 +204,89 @@ class ProfileScreen extends StatelessWidget {
     } catch (e) {
       if (context.mounted) {
         Navigator.pop(context); // Close loading dialog
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${l10n.photoUploadFailed}: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+// DELETE PHOTO FROM FIREBASE STORAGE
+  Future<void> _removeProfilePicture(BuildContext context, String userId) async {
+    final l10n = AppLocalizations.of(context);
+
+    // Confirm before deleting
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(l10n.removePhoto),
+        content: Text(l10n.removePhotoConfirm),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(l10n.cancel),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(
+              l10n.remove,
+              style: TextStyle(color: Theme.of(context).colorScheme.error),
+            ),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm != true || !context.mounted) return;
+
+    // Show loading
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => Center(
+        child: Card(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                const SizedBox(height: 16),
+                Text(l10n.removingPhoto),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    try {
+      final StorageService storageService = StorageService();
+      final UserService userService = UserService();
+
+      await storageService.deleteProfilePicture(userId); // deletes from Firebase Storage
+      await userService.updatePhotoUrl(userId, '');       // clears URL in Firestore
+
+      if (context.mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(l10n.photoRemoved),
+            backgroundColor: AppTheme.primary,
+          ),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${l10n.photoRemoveFailed}: $e'),
             backgroundColor: Colors.red,
           ),
         );
@@ -192,7 +347,11 @@ class ProfileScreen extends StatelessWidget {
               builder: (context, snapshot) {
                 final user = snapshot.data;
                 return GestureDetector(
-                  onTap: () => _pickAndUploadImage(context, userId),
+                  onTap: () => _pickAndUploadImage(
+                    context,
+                    userId,
+                    hasPhoto: user?.photoUrl != null && user!.photoUrl.isNotEmpty,
+                  ),
                   child: Container(
                     width: 40,
                     height: 40,
@@ -281,7 +440,11 @@ class ProfileScreen extends StatelessWidget {
                     ),
                     // Camera badge — tap to change photo
                     GestureDetector(
-                      onTap: () => _pickAndUploadImage(context, userId),
+                      onTap: () => _pickAndUploadImage(
+                        context,
+                        userId,
+                        hasPhoto: user.photoUrl.isNotEmpty,
+                      ),
                       child: Container(
                         width: 36,
                         height: 36,

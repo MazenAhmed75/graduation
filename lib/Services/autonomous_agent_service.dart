@@ -85,7 +85,7 @@ class AutonomousAgentService {
   Duration            interval      = const Duration(hours: 1);
 
   // Callbacks wired by InvestScreen
-  void Function(String msg, {bool isError, bool isTrade})? onLog;
+  void Function(String key, {Map<String, String>? args, bool isError, bool isTrade})? onLog;
   Future<void> Function(String symbol)?   onAutoSell;    // auto-executed sell
   void Function(List<BuyOpportunity>)?    onBuyOpps;     // show to user for approval
 
@@ -97,7 +97,7 @@ class AutonomousAgentService {
 
   void enable({
     Duration? cycleInterval,
-    void Function(String, {bool isError, bool isTrade})? onLog,
+    void Function(String, {Map<String, String>? args, bool isError, bool isTrade})? onLog,
     Future<void> Function(String)? onAutoSell,
     void Function(List<BuyOpportunity>)? onBuyOpps,
   }) {
@@ -108,7 +108,7 @@ class AutonomousAgentService {
     this.onAutoSell = onAutoSell;
     this.onBuyOpps  = onBuyOpps;
 
-    _log('🤖 Auto-trade enabled. Cycle every ${_fmtDuration(interval)}.');
+    _log('auto_trade_enabled', args: {'interval': _fmtDuration(interval)});
     _runCycle();  // run immediately
     _timer = Timer.periodic(interval, (_) {
       if (!_cycleRunning) _runCycle();
@@ -121,11 +121,11 @@ class AutonomousAgentService {
     _enabled = false;
     _cycleRunning = false;
     _phase = AgentCyclePhase.idle;
-    _log('⏸ Auto-trade disabled.');
+    _log('auto_trade_disabled');
   }
 
   void updateCallbacks({
-    void Function(String, {bool isError, bool isTrade})? onLog,
+    void Function(String, {Map<String, String>? args, bool isError, bool isTrade})? onLog,
     Future<void> Function(String)? onAutoSell,
     void Function(List<BuyOpportunity>)? onBuyOpps,
   }) {
@@ -144,7 +144,7 @@ class AutonomousAgentService {
     try {
       // ── Phase 1: Gather data ─────────────────────────────────────────────
       _phase = AgentCyclePhase.gathering;
-      _log('📡 Cycle started — gathering live market data...');
+      _log('cycle_started_gathering');
 
       final assets    = await MarketService().fetchAllPrices();
       final news      = await NewsService().fetchFinancialNews();
@@ -153,14 +153,16 @@ class AutonomousAgentService {
       final cash      = account?.cash ?? 0;
 
       if (assets.isEmpty) {
-        _log('⚠️ No market data — skipping cycle.', isError: true);
+        _log('no_market_data', isError: true);
         return;
       }
 
-      _log('✅ Data ready: ${assets.length} assets, '
-          '${news.length} headlines, '
-          '${positions.length} open positions, '
-          '\$${cash.toStringAsFixed(0)} cash');
+      _log('data_ready', args: {
+        'assets': assets.length.toString(),
+        'news': news.length.toString(),
+        'positions': positions.length.toString(),
+        'cash': cash.toStringAsFixed(0),
+      });
 
       // Build context strings
       final priceCtx = assets
@@ -185,7 +187,7 @@ class AutonomousAgentService {
 
       // ── Phase 2: Market sentiment analysis ──────────────────────────────
       _phase = AgentCyclePhase.analyzing;
-      _log('🔍 Step 1/3 — Analyzing market sentiment & news...');
+      _log('step_analyzing_sentiment');
 
       final sentiment = await _ask('''
 You are a senior market analyst at a wealth management firm.
@@ -211,14 +213,16 @@ Max 250 words. Be precise and data-driven.
 ''');
 
       if (sentiment == null) {
-        _log('❌ Analysis failed — API error.', isError: true);
+        _log('analysis_failed', isError: true);
         return;
       }
-      _log('📊 Sentiment: ${sentiment.substring(0, sentiment.length.clamp(0, 120))}...');
+      _log('sentiment_preview', args: {
+        'preview': sentiment.substring(0, sentiment.length.clamp(0, 120)),
+      });
 
       // ── Phase 3: Position-by-position decisions ──────────────────────────
       _phase = AgentCyclePhase.deciding;
-      _log('⚖️ Step 2/3 — Evaluating each open position...');
+      _log('step_evaluating_positions');
 
       final List<PositionDecision> posDecisions = [];
       int sellsExecuted = 0;
@@ -285,29 +289,32 @@ Output ONLY valid JSON array (no other text):
                 posDecisions.add(decision);
 
                 if (action == 'hold') {
-                  _log('✅ HOLD ${pos.displayName}: $reason');
+                  _log('position_hold', args: {'name': pos.displayName, 'reason': reason});
                 } else if (action == 'sell' || action == 'sell_partial') {
-                  _log('⚡ ${action.toUpperCase()} ${pos.displayName}: $reason',
-                      isTrade: true);
+                  _log('position_action', isTrade: true, args: {
+                    'action': action.toUpperCase(),
+                    'name': pos.displayName,
+                    'reason': reason,
+                  });
                   // AUTO-EXECUTE the sell
                   if (onAutoSell != null) {
                     await onAutoSell!(pos.symbol);
                     sellsExecuted++;
-                    _log('✅ ${pos.displayName} closed at market price', isTrade: true);
+                    _log('position_closed', isTrade: true, args: {'name': pos.displayName});
                   }
                 }
               }
             }
           } catch (e) {
-            _log('⚠️ Could not parse position decisions: $e', isError: true);
+            _log('parse_positions_error', isError: true, args: {'error': e.toString()});
           }
         }
       } else {
-        _log('📂 No open positions to evaluate.');
+        _log('no_open_positions');
       }
 
       // ── Phase 4: Find NEW buy opportunities (user must approve) ──────────
-      _log('🔎 Step 3/3 — Scanning for new buy opportunities...');
+      _log('step_scanning_buy_opps');
 
       final oppsJson = await _ask('''
 You are an investment opportunity analyst at a private wealth firm.
@@ -360,19 +367,17 @@ If no clear opportunities, output: []
               ));
             }
           }
-        } catch (e) {
-          _log('⚠️ Could not parse buy opportunities: $e', isError: true);
-        }
-      }
+        }  catch (e) {
+      _log('parse_buy_opps_error', isError: true, args: {'error': e.toString()});
+    }
+  }
 
-      if (buyOpps.isNotEmpty) {
-        _log('💡 Found ${buyOpps.length} buy opportunities — awaiting your approval.',
-            isTrade: true);
-        onBuyOpps?.call(buyOpps);
-      } else {
-        _log('📉 No strong buy opportunities found. Cash held for next cycle.');
-      }
-
+    if (buyOpps.isNotEmpty) {
+    _log('buy_opportunities_found', isTrade: true, args: {'count': buyOpps.length.toString()});
+    onBuyOpps?.call(buyOpps);
+    } else {
+    _log('no_buy_opportunities');
+    }
       // Save report
       lastReport = AgentCycleReport(
         runAt:            DateTime.now(),
@@ -383,13 +388,18 @@ If no clear opportunities, output: []
         sellsExecuted:    sellsExecuted,
       );
 
-      _phase = AgentCyclePhase.idle;
-      final nextRun = DateTime.now().add(interval);
-      _log('✅ Cycle complete. ${sellsExecuted > 0 ? "$sellsExecuted sell(s) executed. " : ""}'
-          'Next run: ${nextRun.hour.toString().padLeft(2,"0")}:${nextRun.minute.toString().padLeft(2,"0")}');
-    } catch (e) {
-      _log('❌ Cycle error: $e', isError: true);
-    } finally {
+    _phase = AgentCyclePhase.idle;
+    final nextRun = DateTime.now().add(interval);
+    final timeStr = '${nextRun.hour.toString().padLeft(2,"0")}:${nextRun.minute.toString().padLeft(2,"0")}';
+
+    if (sellsExecuted > 0) {
+    _log('cycle_complete_with_sells', args: {'count': sellsExecuted.toString(), 'nextRun': timeStr});
+    } else {
+    _log('cycle_complete_no_sells', args: {'nextRun': timeStr});
+    }
+  } catch (e) {
+  _log('cycle_error', isError: true, args: {'error': e.toString()});
+  }  finally {
       _cycleRunning = false;
       _phase = AgentCyclePhase.idle;
     }
@@ -434,8 +444,8 @@ If no clear opportunities, output: []
     }
   }
 
-  void _log(String msg, {bool isError = false, bool isTrade = false}) =>
-      onLog?.call(msg, isError: isError, isTrade: isTrade);
+  void _log(String key, {Map<String, String>? args, bool isError = false, bool isTrade = false}) =>
+  onLog?.call(key, args: args, isError: isError, isTrade: isTrade);
 
   String _fmtDuration(Duration d) {
     if (d.inHours >= 1) return '${d.inHours}h';

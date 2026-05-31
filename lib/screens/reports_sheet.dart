@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';          // ✅ FIX 1: needed for addPostFrameCallback
 import 'package:fl_chart/fl_chart.dart';
 import '../models/budget_model.dart';
 import '../theme.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
 import '../utils/category_localization.dart';
 import 'package:intl/intl.dart';
-import '../utils/currency_formatter.dart'; // Adjust path if necessary
+import '../utils/currency_formatter.dart';
 
 /// Open with: showReportsSheet(context, budgets)
 void showReportsSheet(BuildContext context, List<BudgetModel> budgets) {
@@ -13,6 +14,7 @@ void showReportsSheet(BuildContext context, List<BudgetModel> budgets) {
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
+    useRootNavigator: true,                        // ✅ FIX 2: prevents mouse-tracker crash on dismiss
     builder: (_) => ReportsSheet(budgets: budgets),
   );
 }
@@ -31,7 +33,6 @@ class _ReportsSheetState extends State<ReportsSheet>
   late TabController _tab;
   int _touchedPieIndex = -1;
 
-  // A simple palette for chart slices
   static const _palette = [
     Color(0xFF4CAF50),
     Color(0xFF2196F3),
@@ -61,7 +62,8 @@ class _ReportsSheetState extends State<ReportsSheet>
     final budgets = widget.budgets;
     final totalAllocated = budgets.fold(0.0, (s, b) => s + b.allocated);
     final totalSpent = budgets.fold(0.0, (s, b) => s + b.spent);
-    final totalRemaining = (totalAllocated - totalSpent).clamp(0.0, double.infinity);
+    final totalRemaining =
+    (totalAllocated - totalSpent).clamp(0.0, double.infinity);
 
     return DraggableScrollableSheet(
       initialChildSize: 0.75,
@@ -74,7 +76,7 @@ class _ReportsSheetState extends State<ReportsSheet>
         ),
         child: Column(
           children: [
-            // ── Handle ──────────────────────────────────────────────────────
+            // ── Handle ────────────────────────────────────────────────────
             const SizedBox(height: 12),
             Center(
               child: Container(
@@ -88,7 +90,7 @@ class _ReportsSheetState extends State<ReportsSheet>
             ),
             const SizedBox(height: 16),
 
-            // ── Header ──────────────────────────────────────────────────────
+            // ── Header ────────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -105,7 +107,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                     ),
                   ),
                   const SizedBox(width: 12),
-                   Text(
+                  Text(
                     l10n.spendingReport,
                     style: TextStyle(
                       fontSize: 20,
@@ -119,7 +121,7 @@ class _ReportsSheetState extends State<ReportsSheet>
             ),
             const SizedBox(height: 16),
 
-            // ── Summary totals ───────────────────────────────────────────────
+            // ── Summary totals ────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -146,27 +148,24 @@ class _ReportsSheetState extends State<ReportsSheet>
             ),
             const SizedBox(height: 12),
 
-            // ── Tabs ─────────────────────────────────────────────────────────
+            // ── Tabs ──────────────────────────────────────────────────────
             TabBar(
               controller: _tab,
               labelColor: AppTheme.primary,
               unselectedLabelColor: AppTheme.onSurfaceVariant,
               indicatorColor: AppTheme.primary,
-              tabs:  [
-              Tab(text: l10n.breakdown),
+              tabs: [
+                Tab(text: l10n.breakdown),
                 Tab(text: l10n.byCategory),
               ],
             ),
 
-            // ── Tab views ────────────────────────────────────────────────────
+            // ── Tab views ─────────────────────────────────────────────────
             Expanded(
               child: TabBarView(
                 controller: _tab,
                 children: [
-                  // TAB 1 — Pie chart (spent vs remaining)
                   _buildPieTab(budgets, totalSpent, totalAllocated, controller),
-
-                  // TAB 2 — Bar chart (allocated vs spent per category)
                   _buildBarTab(budgets, controller),
                 ],
               ),
@@ -177,7 +176,7 @@ class _ReportsSheetState extends State<ReportsSheet>
     );
   }
 
-  // ── PIE CHART TAB ──────────────────────────────────────────────────────────
+  // ── PIE CHART TAB ────────────────────────────────────────────────────────
 
   Widget _buildPieTab(
       List<BudgetModel> budgets,
@@ -190,6 +189,7 @@ class _ReportsSheetState extends State<ReportsSheet>
       return Center(child: Text(l10n.noBudgetData));
     }
 
+    final localeCode = Localizations.localeOf(context).languageCode;
     final spentPercent =
     ((totalSpent / totalAllocated) * 100).clamp(0.0, 100.0).round();
 
@@ -218,6 +218,12 @@ class _ReportsSheetState extends State<ReportsSheet>
         ),
       );
     }
+// ADD THIS GUARD right here, before the return ListView(
+    // fl_chart crashes with "No element" when sections is empty
+    // and the mouse hovers over where the chart would be
+    if (sections.isEmpty) {
+      return Center(child: Text(l10n.noBudgetData));
+    }
 
     return ListView(
       controller: scroll,
@@ -234,17 +240,23 @@ class _ReportsSheetState extends State<ReportsSheet>
                   centerSpaceRadius: 60,
                   sectionsSpace: 2,
                   pieTouchData: PieTouchData(
+                    // ✅ FIX 3: defer setState to after the mouse-tracker
+                    //    finishes its current update cycle — fixes the
+                    //    !_debugDuringDeviceUpdate crash on web
                     touchCallback: (event, response) {
-                      setState(() {
-                        if (!event.isInterestedForInteractions ||
-                            response == null ||
-                            response.touchedSection == null) {
-                          _touchedPieIndex = -1;
-                          return;
-                        }
-                        _touchedPieIndex =
-                            response.touchedSection!.touchedSectionIndex;
-                      });
+                      final newIndex =
+                      (event.isInterestedForInteractions &&
+                          response?.touchedSection != null)
+                          ? response!.touchedSection!.touchedSectionIndex
+                          : -1;
+
+                      if (newIndex != _touchedPieIndex) {
+                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                          if (mounted) {
+                            setState(() => _touchedPieIndex = newIndex);
+                          }
+                        });
+                      }
                     },
                   ),
                 ),
@@ -253,15 +265,16 @@ class _ReportsSheetState extends State<ReportsSheet>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    '${NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(spentPercent)}%',
+                    '${NumberFormat.decimalPattern(localeCode).format(spentPercent)}%'
+                        .toLocalizedDigits(localeCode),
                     style: const TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.w800,
                       color: AppTheme.onSurface,
                     ),
                   ),
-                   Text(
-  l10n.used,
+                  Text(
+                    l10n.used,
                     style: TextStyle(
                       fontSize: 12,
                       color: AppTheme.onSurfaceVariant,
@@ -276,10 +289,13 @@ class _ReportsSheetState extends State<ReportsSheet>
         // Legend
         ...List.generate(budgets.length, (i) {
           final b = budgets[i];
-          final localeCode = Localizations.localeOf(context).languageCode;
           final intFormatter = NumberFormat.decimalPattern(localeCode);
-          final percentFormatter = NumberFormat.decimalPattern(localeCode)..maximumFractionDigits = 1;
-          final pctValue = totalAllocated > 0 ? ((b.spent / totalAllocated) * 100) : 0.0;
+          final percentFormatter =
+          NumberFormat.decimalPattern(localeCode)
+            ..maximumFractionDigits = 1;
+          final pctValue =
+          totalAllocated > 0 ? ((b.spent / totalAllocated) * 100) : 0.0;
+
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
             child: Row(
@@ -307,7 +323,8 @@ class _ReportsSheetState extends State<ReportsSheet>
                   ),
                 ),
                 Text(
-                  '${intFormatter.format(b.spent)}  (${percentFormatter.format(pctValue)}%)',
+                  '${intFormatter.format(b.spent)}  (${percentFormatter.format(pctValue)}%)'
+                      .toLocalizedDigits(localeCode),
                   style: const TextStyle(
                     fontSize: 13,
                     color: AppTheme.onSurfaceVariant,
@@ -321,13 +338,15 @@ class _ReportsSheetState extends State<ReportsSheet>
     );
   }
 
-  // ── BAR CHART TAB ──────────────────────────────────────────────────────────
+  // ── BAR CHART TAB ────────────────────────────────────────────────────────
 
   Widget _buildBarTab(List<BudgetModel> budgets, ScrollController scroll) {
     final l10n = AppLocalizations.of(context)!;
     if (budgets.isEmpty) {
-      return  Center(child: Text(l10n.noBudgetData));
+      return Center(child: Text(l10n.noBudgetData));
     }
+
+    final localeCode = Localizations.localeOf(context).languageCode;
 
     final maxY = budgets
         .map((b) => b.allocated > b.spent ? b.allocated : b.spent)
@@ -390,7 +409,9 @@ class _ReportsSheetState extends State<ReportsSheet>
                     showTitles: true,
                     reservedSize: 40,
                     getTitlesWidget: (value, _) => Text(
-                      NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(value),
+                      NumberFormat.decimalPattern(localeCode)
+                          .format(value)
+                          .toLocalizedDigits(localeCode),
                       style: const TextStyle(
                         fontSize: 10,
                         color: AppTheme.onSurfaceVariant,
@@ -413,8 +434,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                       );
                       return Padding(
                         padding: const EdgeInsets.only(top: 6),
-                        child:
-                        Text(
+                        child: Text(
                           label,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -422,7 +442,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                             fontSize: 10,
                             color: AppTheme.onSurfaceVariant,
                           ),
-                        )
+                        ),
                       );
                     },
                   ),
@@ -443,9 +463,7 @@ class _ReportsSheetState extends State<ReportsSheet>
         ...List.generate(budgets.length, (i) {
           final b = budgets[i];
           final ratio = b.spentRatio.clamp(0.0, 1.0);
-
-          // 1. Define the localized number formatter here
-          final detailsFormatter = NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode);
+          final detailsFormatter = NumberFormat.decimalPattern(localeCode);
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
@@ -476,9 +494,9 @@ class _ReportsSheetState extends State<ReportsSheet>
                         ),
                       ),
                     ),
-                    // 2. Use the formatter here to translate the numbers
                     Text(
-                      '${detailsFormatter.format(b.spent)} / ${detailsFormatter.format(b.allocated)}',
+                      '${detailsFormatter.format(b.spent)} / ${detailsFormatter.format(b.allocated)}'
+                          .toLocalizedDigits(localeCode),
                       style: const TextStyle(
                         fontSize: 12,
                         color: AppTheme.onSurfaceVariant,
@@ -520,7 +538,7 @@ class _TotalChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
+    final localeCode = Localizations.localeOf(context).languageCode;
     return Expanded(
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
@@ -542,7 +560,9 @@ class _TotalChip extends StatelessWidget {
             ),
             const SizedBox(height: 2),
             Text(
-              NumberFormat.decimalPattern(Localizations.localeOf(context).languageCode).format(amount),
+              NumberFormat.decimalPattern(localeCode)
+                  .format(amount)
+                  .toLocalizedDigits(localeCode),
               style: TextStyle(
                 fontSize: 15,
                 fontWeight: FontWeight.w800,
@@ -575,7 +595,10 @@ class _LegendDot extends StatelessWidget {
         const SizedBox(width: 6),
         Text(
           label,
-          style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant),
+          style: const TextStyle(
+            fontSize: 12,
+            color: AppTheme.onSurfaceVariant,
+          ),
         ),
       ],
     );

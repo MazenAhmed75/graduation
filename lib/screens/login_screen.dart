@@ -4,6 +4,7 @@ import '../services/auth_service.dart';
 import 'register_screen.dart';
 import 'forgot_password_screen.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import '../utils/error_resolver.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -42,10 +43,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (mounted) {
       setState(() => _isLoading = false);
 
-      if (error != null) {
+
+
+      if (error != null && error.errorKey != null && error.errorKey!.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error),
+            content: Text(
+              context.translateError(error.errorKey, error.errorArgs),
+            ),
             backgroundColor: Colors.red,
           ),
         );
@@ -64,10 +69,14 @@ class _LoginScreenState extends State<LoginScreen> {
     if (mounted) {
       setState(() => _isLoading = false);
 
-      if (error != null) {
+
+
+      if (error != null && error.errorKey != null && error.errorKey!.isNotEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(error),
+            content: Text(
+              context.translateError(error.errorKey, error.errorArgs),
+            ), // Wrapped correctly here
             backgroundColor: Colors.red,
           ),
         );

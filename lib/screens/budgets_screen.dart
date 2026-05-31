@@ -1608,14 +1608,14 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                           // The total budget ceiling the user set for this category
                           amount: CurrencyFormatter.format(budget.allocated, locale),
                           // How much has been spent so far this month
-                          spentText: l10n.spentAmount(formatNum.format(budget.spent)),
+                          spentText: l10n.spentAmount(formatNum.format(budget.spent).toLocalizedDigits(locale)),
 
                           // ── Left / Over label ────────────────────────────────────────────────
                           // Normal:     "X left"       → how much remains before hitting the limit
                           // Over budget: "⚠ Over by X" → how far past the limit the user has gone
                           leftText: isOverBudget
-                              ? l10n.overBy(formatNum.format(budget.spent - budget.allocated))
-                              : l10n.leftAmount(formatNum.format(budget.remaining)),
+                              ? l10n.overBy(formatNum.format(budget.spent - budget.allocated).toLocalizedDigits(locale))
+                              : l10n.leftAmount(formatNum.format(budget.remaining).toLocalizedDigits(locale)),
                           // Red when over budget, default grey otherwise (null = use card default)
                           leftTextColor: isOverBudget ? Colors.redAccent : null,
 

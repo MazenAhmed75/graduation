@@ -170,12 +170,6 @@ abstract class AppLocalizations {
   /// **'Available'**
   String get available;
 
-  /// No description provided for @daysLeft.
-  ///
-  /// In en, this message translates to:
-  /// **'{days} days left this month'**
-  String daysLeft(int days);
-
   /// No description provided for @completed.
   ///
   /// In en, this message translates to:
@@ -383,7 +377,7 @@ abstract class AppLocalizations {
   /// No description provided for @email.
   ///
   /// In en, this message translates to:
-  /// **'EMAIL'**
+  /// **'Email'**
   String get email;
 
   /// No description provided for @free.
@@ -656,11 +650,17 @@ abstract class AppLocalizations {
   /// **'you@example.com'**
   String get emailHint;
 
-  /// No description provided for @passwordHint.
+  /// No description provided for @passwordHintRegister.
   ///
   /// In en, this message translates to:
   /// **'At least 6 characters'**
-  String get passwordHint;
+  String get passwordHintRegister;
+
+  /// No description provided for @passwordHintLogin.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter your password'**
+  String get passwordHintLogin;
 
   /// No description provided for @confirmPasswordHint.
   ///
@@ -1073,25 +1073,25 @@ abstract class AppLocalizations {
   /// No description provided for @realOrderWarning.
   ///
   /// In en, this message translates to:
-  /// **'This will place a REAL order on Alpaca.'**
+  /// **'⚠️ This will place a REAL order on Alpaca.'**
   String get realOrderWarning;
 
   /// No description provided for @paperTradeWarning.
   ///
   /// In en, this message translates to:
-  /// **'Paper trade — no real money moves.'**
+  /// **'📄 Paper trade — no real money moves.'**
   String get paperTradeWarning;
 
   /// No description provided for @executeBuy.
   ///
   /// In en, this message translates to:
-  /// **'Execute Buy'**
+  /// **'Execute Buy ✓'**
   String get executeBuy;
 
   /// No description provided for @executeSell.
   ///
   /// In en, this message translates to:
-  /// **'Execute Sell'**
+  /// **'Execute Sell ✓'**
   String get executeSell;
 
   /// No description provided for @boughtOrderSubmitted.
@@ -1607,13 +1607,13 @@ abstract class AppLocalizations {
   /// No description provided for @resetPasswordDescription.
   ///
   /// In en, this message translates to:
-  /// **'Enter the email associated with your account and we\'ll send an email with instructions to reset your password.'**
+  /// **'Enter your email address and we\'ll send you a link to reset your password.'**
   String get resetPasswordDescription;
 
   /// No description provided for @resetPasswordEmailSentDescription.
   ///
   /// In en, this message translates to:
-  /// **'Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.'**
+  /// **'Check your email for a link to reset your password.'**
   String get resetPasswordEmailSentDescription;
 
   /// No description provided for @pleaseEnterEmail.
@@ -1625,7 +1625,7 @@ abstract class AppLocalizations {
   /// No description provided for @pleaseEnterValidEmail.
   ///
   /// In en, this message translates to:
-  /// **'Please enter a valid email'**
+  /// **'Please enter a valid email address'**
   String get pleaseEnterValidEmail;
 
   /// No description provided for @sendResetLink.
@@ -1643,7 +1643,7 @@ abstract class AppLocalizations {
   /// No description provided for @passwordResetEmailSent.
   ///
   /// In en, this message translates to:
-  /// **'Password reset link sent to your email!'**
+  /// **'Password reset email sent successfully!'**
   String get passwordResetEmailSent;
 
   /// No description provided for @choosePhotoSource.
@@ -2090,6 +2090,12 @@ abstract class AppLocalizations {
   /// **'Spending Insights'**
   String get spendingInsights;
 
+  /// No description provided for @daysLeft.
+  ///
+  /// In en, this message translates to:
+  /// **'{days} days left this month'**
+  String daysLeft(int days);
+
   /// No description provided for @onTrack.
   ///
   /// In en, this message translates to:
@@ -2180,6 +2186,18 @@ abstract class AppLocalizations {
   /// **'Allocated'**
   String get allocated;
 
+  /// No description provided for @spendingReportSpent.
+  ///
+  /// In en, this message translates to:
+  /// **'Spent'**
+  String get spendingReportSpent;
+
+  /// No description provided for @spendingReportRemaining.
+  ///
+  /// In en, this message translates to:
+  /// **'Remaining'**
+  String get spendingReportRemaining;
+
   /// No description provided for @used.
   ///
   /// In en, this message translates to:
@@ -2192,7 +2210,7 @@ abstract class AppLocalizations {
   /// **'No budget data to display.'**
   String get noBudgetData;
 
-  /// Label above the Gemini insight card
+  /// No description provided for @aiInsightLabel.
   ///
   /// In en, this message translates to:
   /// **'AI Financial Insight'**
@@ -2240,7 +2258,7 @@ abstract class AppLocalizations {
   /// **'Budgets'**
   String get budgetsScreenTitle;
 
-  /// Reports screen app bar title
+  /// No description provided for @reportsTitle.
   ///
   /// In en, this message translates to:
   /// **'Reports'**
@@ -2288,13 +2306,13 @@ abstract class AppLocalizations {
   /// **'{category} is almost at its limit ({percent}).'**
   String insightNearLimit(String category, String percent);
 
-  /// Error shown when Cloudinary upload fails
+  /// No description provided for @cloudinaryUploadFailed.
   ///
   /// In en, this message translates to:
   /// **'Cloudinary upload failed'**
   String get cloudinaryUploadFailed;
 
-  /// Generic upload failure message
+  /// No description provided for @failedToUpload.
   ///
   /// In en, this message translates to:
   /// **'Failed to upload'**
@@ -2321,7 +2339,7 @@ abstract class AppLocalizations {
   /// No description provided for @category_food.
   ///
   /// In en, this message translates to:
-  /// **'Food'**
+  /// **'Food & Dining'**
   String get category_food;
 
   /// No description provided for @category_shopping.
@@ -2375,14 +2393,590 @@ abstract class AppLocalizations {
   /// No description provided for @overBy.
   ///
   /// In en, this message translates to:
-  /// **'⚠ Over by {amount}'**
-  String overBy(String amount);
+  /// **'⚠️ Over by {amount}'**
+  String overBy(Object amount);
 
-  /// Banner shown at the top of the screen when the device has no internet connection
+  /// No description provided for @offlineBanner.
   ///
   /// In en, this message translates to:
   /// **'You\'re offline — changes will sync when reconnected'**
   String get offlineBanner;
+
+  /// No description provided for @backendErrorTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Server Connection Error'**
+  String get backendErrorTitle;
+
+  /// No description provided for @backendErrorSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'We couldn\'t retrieve your transaction history. Please check your internet connection or try again later.'**
+  String get backendErrorSubtitle;
+
+  /// No description provided for @photoUploadFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload photo'**
+  String get photoUploadFailed;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @buyActionAmount.
+  ///
+  /// In en, this message translates to:
+  /// **'🛒 Buy {amount} of {assetName}'**
+  String buyActionAmount(Object amount, Object assetName);
+
+  /// No description provided for @sellActionPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'💰 Sell {percent}% of {assetName}'**
+  String sellActionPercent(Object percent, Object assetName);
+
+  /// No description provided for @currentPriceLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{price} current price'**
+  String currentPriceLabel(Object price);
+
+  /// No description provided for @alpacaSymbolLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Alpaca symbol: {symbol}'**
+  String alpacaSymbolLabel(Object symbol);
+
+  /// No description provided for @dashboardBuySuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Bought {amount} of {assetName}'**
+  String dashboardBuySuccess(Object amount, Object assetName);
+
+  /// No description provided for @orderSubmittedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ {actionType} — order submitted to Alpaca'**
+  String orderSubmittedSuccess(Object actionType);
+
+  /// No description provided for @boughtLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Bought'**
+  String get boughtLabel;
+
+  /// No description provided for @soldLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Sold'**
+  String get soldLabel;
+
+  /// No description provided for @suggestedLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} suggested • {horizon}'**
+  String suggestedLabel(Object amount, Object horizon);
+
+  /// No description provided for @tradeBuyLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade: BUY {amount} of {assetName}'**
+  String tradeBuyLabel(Object amount, Object assetName);
+
+  /// No description provided for @tradeSellLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Trade: SELL {percent}% of {assetName}'**
+  String tradeSellLabel(Object percent, Object assetName);
+
+  /// No description provided for @unrealizedPnlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{amount} unrealized P&L'**
+  String unrealizedPnlLabel(Object amount);
+
+  /// No description provided for @cashLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cash: {amount}'**
+  String cashLabel(Object amount);
+
+  /// No description provided for @buyingPowerLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Buying power: {amount}'**
+  String buyingPowerLabel(Object amount);
+
+  /// No description provided for @unitsLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} units'**
+  String unitsLabel(Object count);
+
+  /// No description provided for @valueLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'Value: {amount}'**
+  String valueLabel(Object amount);
+
+  /// No description provided for @pnlLabel.
+  ///
+  /// In en, this message translates to:
+  /// **'P&L: {amount}'**
+  String pnlLabel(Object amount);
+
+  /// No description provided for @closePositionBtn.
+  ///
+  /// In en, this message translates to:
+  /// **'Close Position'**
+  String get closePositionBtn;
+
+  /// No description provided for @closedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Closed {assetName} — order submitted'**
+  String closedSuccess(Object assetName);
+
+  /// No description provided for @passwordUpdatedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Password updated successfully!'**
+  String get passwordUpdatedSuccessfully;
+
+  /// No description provided for @emailAlreadyInUse.
+  ///
+  /// In en, this message translates to:
+  /// **'This email is already in use.'**
+  String get emailAlreadyInUse;
+
+  /// No description provided for @weakPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Password must be at least 6 characters.'**
+  String get weakPassword;
+
+  /// No description provided for @invalidEmail.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid email.'**
+  String get invalidEmail;
+
+  /// No description provided for @registrationFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed'**
+  String get registrationFailed;
+
+  /// No description provided for @unexpectedError.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred. Please try again.'**
+  String get unexpectedError;
+
+  /// No description provided for @userNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No account found with this email.'**
+  String get userNotFound;
+
+  /// No description provided for @wrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect password.'**
+  String get wrongPassword;
+
+  /// No description provided for @loginFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed'**
+  String get loginFailed;
+
+  /// No description provided for @googleSignInCancelled.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign in was cancelled.'**
+  String get googleSignInCancelled;
+
+  /// No description provided for @googleSignInFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Google sign in failed. Please try again.'**
+  String get googleSignInFailed;
+
+  /// No description provided for @passwordResetFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to send password reset email'**
+  String get passwordResetFailed;
+
+  /// No description provided for @changePasswordUserNotFound.
+  ///
+  /// In en, this message translates to:
+  /// **'User not found.'**
+  String get changePasswordUserNotFound;
+
+  /// No description provided for @changePasswordWrongPassword.
+  ///
+  /// In en, this message translates to:
+  /// **'The old password you entered is incorrect.'**
+  String get changePasswordWrongPassword;
+
+  /// No description provided for @errorNoMarketData.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ No market data — skipping cycle.'**
+  String get errorNoMarketData;
+
+  /// No description provided for @errorAnalysisFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Analysis failed — API error.'**
+  String get errorAnalysisFailed;
+
+  /// No description provided for @errorParsePositions.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Could not parse position decisions: {error}'**
+  String errorParsePositions(Object error);
+
+  /// No description provided for @errorParseBuyOpps.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Could not parse buy opportunities: {error}'**
+  String errorParseBuyOpps(Object error);
+
+  /// No description provided for @errorCycle.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Cycle error: {error}'**
+  String errorCycle(Object error);
+
+  /// No description provided for @alpaca_not_configured_settings.
+  ///
+  /// In en, this message translates to:
+  /// **'Alpaca API not configured. Add your API keys in Settings.'**
+  String get alpaca_not_configured_settings;
+
+  /// No description provided for @alpaca_not_configured.
+  ///
+  /// In en, this message translates to:
+  /// **'Alpaca not configured.'**
+  String get alpaca_not_configured;
+
+  /// No description provided for @order_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Order failed.'**
+  String get order_failed;
+
+  /// No description provided for @close_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Close failed ({error}).'**
+  String close_failed(String error, Object statusCode);
+
+  /// No description provided for @sell_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Sell failed ({error}).'**
+  String sell_failed(String error, Object statusCode);
+
+  /// No description provided for @alpaca_api_error.
+  ///
+  /// In en, this message translates to:
+  /// **'Alpaca error: {message}'**
+  String alpaca_api_error(String message);
+
+  /// No description provided for @alpaca_exception.
+  ///
+  /// In en, this message translates to:
+  /// **'An unexpected error occurred: {exception}'**
+  String alpaca_exception(String exception);
+
+  /// No description provided for @registration_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Registration failed: {message}'**
+  String registration_failed(String message);
+
+  /// No description provided for @login_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Login failed: {message}'**
+  String login_failed(String message);
+
+  /// No description provided for @password_reset_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'Password reset failed: {message}'**
+  String password_reset_failed(String message);
+
+  /// No description provided for @auth_generic_message.
+  ///
+  /// In en, this message translates to:
+  /// **'Authentication error: {message}'**
+  String auth_generic_message(String message);
+
+  /// No description provided for @auto_trade_enabled.
+  ///
+  /// In en, this message translates to:
+  /// **'🤖 Auto-trade enabled. Cycle every {interval}.'**
+  String auto_trade_enabled(String interval);
+
+  /// No description provided for @auto_trade_disabled.
+  ///
+  /// In en, this message translates to:
+  /// **'⏸ Auto-trade disabled.'**
+  String get auto_trade_disabled;
+
+  /// No description provided for @cycle_started_gathering.
+  ///
+  /// In en, this message translates to:
+  /// **'📡 Cycle started — gathering live market data...'**
+  String get cycle_started_gathering;
+
+  /// No description provided for @no_market_data.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ No market data — skipping cycle.'**
+  String get no_market_data;
+
+  /// No description provided for @data_ready.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Data ready: {assets} assets, {news} headlines, {positions} open positions, \${cash} cash'**
+  String data_ready(Object assets, Object news, Object positions, Object cash);
+
+  /// No description provided for @step_analyzing_sentiment.
+  ///
+  /// In en, this message translates to:
+  /// **'🔍 Step 1/3 — Analyzing market sentiment & news...'**
+  String get step_analyzing_sentiment;
+
+  /// No description provided for @analysis_failed.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Analysis failed — API error.'**
+  String get analysis_failed;
+
+  /// No description provided for @sentiment_preview.
+  ///
+  /// In en, this message translates to:
+  /// **'📊 Sentiment: {preview}...'**
+  String sentiment_preview(Object preview);
+
+  /// No description provided for @step_evaluating_positions.
+  ///
+  /// In en, this message translates to:
+  /// **'⚖️ Step 2/3 — Evaluating each open position...'**
+  String get step_evaluating_positions;
+
+  /// No description provided for @position_hold.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ HOLD {name}: {reason}'**
+  String position_hold(Object name, Object reason);
+
+  /// No description provided for @position_action.
+  ///
+  /// In en, this message translates to:
+  /// **'⚡ {action} {name}: {reason}'**
+  String position_action(Object action, Object name, Object reason);
+
+  /// No description provided for @position_closed.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ {name} closed at market price'**
+  String position_closed(Object name);
+
+  /// No description provided for @parse_positions_error.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Could not parse position decisions: {error}'**
+  String parse_positions_error(Object error);
+
+  /// No description provided for @no_open_positions.
+  ///
+  /// In en, this message translates to:
+  /// **'📂 No open positions to evaluate.'**
+  String get no_open_positions;
+
+  /// No description provided for @step_scanning_buy_opps.
+  ///
+  /// In en, this message translates to:
+  /// **'🔎 Step 3/3 — Scanning for new buy opportunities...'**
+  String get step_scanning_buy_opps;
+
+  /// No description provided for @parse_buy_opps_error.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Could not parse buy opportunities: {error}'**
+  String parse_buy_opps_error(Object error);
+
+  /// No description provided for @buy_opportunities_found.
+  ///
+  /// In en, this message translates to:
+  /// **'💡 Found {count} buy opportunities — awaiting your approval.'**
+  String buy_opportunities_found(Object count);
+
+  /// No description provided for @no_buy_opportunities.
+  ///
+  /// In en, this message translates to:
+  /// **'📉 No strong buy opportunities found. Cash held for next cycle.'**
+  String get no_buy_opportunities;
+
+  /// No description provided for @cycle_complete_with_sells.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Cycle complete. {count} sell(s) executed. Next run: {nextRun}'**
+  String cycle_complete_with_sells(Object count, Object nextRun);
+
+  /// No description provided for @cycle_complete_no_sells.
+  ///
+  /// In en, this message translates to:
+  /// **'✅ Cycle complete. Next run: {nextRun}'**
+  String cycle_complete_no_sells(Object nextRun);
+
+  /// No description provided for @cycle_error.
+  ///
+  /// In en, this message translates to:
+  /// **'❌ Cycle error: {error}'**
+  String cycle_error(Object error);
+
+  /// No description provided for @budget_warning_title.
+  ///
+  /// In en, this message translates to:
+  /// **'Budget Warning'**
+  String get budget_warning_title;
+
+  /// No description provided for @budget_warning_body.
+  ///
+  /// In en, this message translates to:
+  /// **'You have used {percentUsed}% of your {category} budget.'**
+  String budget_warning_body(Object category, Object percentUsed);
+
+  /// No description provided for @category_transport.
+  ///
+  /// In en, this message translates to:
+  /// **'Transportation'**
+  String get category_transport;
+
+  /// No description provided for @category_bills.
+  ///
+  /// In en, this message translates to:
+  /// **'Bills & Utilities'**
+  String get category_bills;
+
+  /// Fallback text for a recurring transaction without a specific note
+  ///
+  /// In en, this message translates to:
+  /// **'{title} (recurring)'**
+  String recurring_fallback(String title);
+
+  /// Prefix applied to automatically generated recurring transactions
+  ///
+  /// In en, this message translates to:
+  /// **'[Auto] {note}'**
+  String auto_prefix(String note);
+
+  /// Error displayed when the server rejects the profile picture upload
+  ///
+  /// In en, this message translates to:
+  /// **'Cloudinary upload failed. Please try again.'**
+  String get cloudinary_upload_failed;
+
+  /// Generic fallback upload failure message
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to upload image due to a network or system error.'**
+  String get failed_to_upload;
+
+  /// No description provided for @notifBudgetExceededTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🚨 Budget Exceeded: {title}'**
+  String notifBudgetExceededTitle(Object title);
+
+  /// No description provided for @notifBudgetExceededBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You have gone over your {title} budget!'**
+  String notifBudgetExceededBody(Object title);
+
+  /// No description provided for @notifBudgetWarningTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'⚠️ Budget Alert: {title}'**
+  String notifBudgetWarningTitle(Object title);
+
+  /// No description provided for @notifBudgetWarningBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'ve used {percent}% of your {title} budget with {days} days left.'**
+  String notifBudgetWarningBody(Object days, Object percent, Object title);
+
+  /// No description provided for @notifSavingsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'🎉 Savings Goal Progress'**
+  String get notifSavingsTitle;
+
+  /// No description provided for @notifSavingsBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You\'re {percent}% of the way to your monthly savings goal!'**
+  String notifSavingsBody(Object percent);
+
+  /// No description provided for @notifWeeklyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Weekly Spending Recap 📊'**
+  String get notifWeeklyTitle;
+
+  /// No description provided for @notifWeeklyBody.
+  ///
+  /// In en, this message translates to:
+  /// **'You used {percent}% of your budget. Most spent: {category}.'**
+  String notifWeeklyBody(Object category, Object percent);
+
+  /// Option to remove profile picture
+  ///
+  /// In en, this message translates to:
+  /// **'Remove Photo'**
+  String get removePhoto;
+
+  /// Confirmation message before removing photo
+  ///
+  /// In en, this message translates to:
+  /// **'Are you sure you want to remove your profile picture?'**
+  String get removePhotoConfirm;
+
+  /// Confirm remove action button
+  ///
+  /// In en, this message translates to:
+  /// **'Remove'**
+  String get remove;
+
+  /// Loading message while removing photo
+  ///
+  /// In en, this message translates to:
+  /// **'Removing photo...'**
+  String get removingPhoto;
+
+  /// Success message after removing photo
+  ///
+  /// In en, this message translates to:
+  /// **'Profile picture removed'**
+  String get photoRemoved;
+
+  /// Error message when photo removal fails
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to remove photo'**
+  String get photoRemoveFailed;
 }
 
 class _AppLocalizationsDelegate

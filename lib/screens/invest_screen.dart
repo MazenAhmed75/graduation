@@ -142,7 +142,7 @@ class _InvestScreenState extends State<InvestScreen>
 
     AutonomousAgentService().enable(
       cycleInterval: const Duration(hours: 1),
-      onLog: (msg, {bool isError = false, bool isTrade = false}) {
+      onLog: (msg, {Map<String, String>? args, bool isError = false, bool isTrade = false}) {
         if (mounted) _logAgent(msg,
             type: isError ? 'error' : isTrade ? 'trade' : 'status');
       },
@@ -153,7 +153,7 @@ class _InvestScreenState extends State<InvestScreen>
           _logAgent(
             result.success
                 ? '✅ ${AppLocalizations.of(context).autoSold(symbol)}'
-                : '❌ ${AppLocalizations.of(context).autoSellFailed(result.error ?? "")}',
+                : '❌ ${AppLocalizations.of(context).autoSellFailed(result.errorKey ?? "")}',
             type: result.success ? 'trade' : 'error',
           );
           await _silentAlpacaRefresh();
@@ -284,7 +284,7 @@ class _InvestScreenState extends State<InvestScreen>
           ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C),
       content: Text(result.success
           ? AppLocalizations.of(context).dashboardBuySuccess('\$${opp.suggestedUsd.toStringAsFixed(0)}', opp.assetName)
-          : '❌ ${result.error}'),
+          : '❌ ${result.errorKey}'),
       duration: const Duration(seconds: 5),
     ));
     if (result.success) {
@@ -331,7 +331,7 @@ class _InvestScreenState extends State<InvestScreen>
 
   Future<void> _confirmAndTrade(AgentAction action) async {
     final asset = _assets.firstWhere(
-        (a) => a.id == action.assetId,
+            (a) => a.id == action.assetId,
         orElse: () => _assets.first);
     final alpacaSymbol = AlpacaSymbols.getSymbol(action.assetId);
 
@@ -348,55 +348,60 @@ class _InvestScreenState extends State<InvestScreen>
           Text(action.type == 'buy' ? AppLocalizations.of(context).confirmBuy : AppLocalizations.of(context).confirmSell,
               style: const TextStyle(fontWeight: FontWeight.bold)),
         ]),
-        content: Column(mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Container(
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              color: AppTheme.primaryContainer.withOpacity(0.4),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text(action.type == 'buy'
-                  ? AppLocalizations.of(context).buyActionAmount('\$${action.usdAmount.toStringAsFixed(2)}', asset.name)
-                  : AppLocalizations.of(context).sellActionPercent((action.sellFraction * 100).toStringAsFixed(0), asset.name),
-                  style: const TextStyle(fontWeight: FontWeight.bold,
-                      color: AppTheme.primary, fontSize: 15)),
-              const SizedBox(height: 4),
-              Text(AppLocalizations.of(context).currentPriceLabel(asset.displayPrice),
-                  style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
-              if (alpacaSymbol != null)
-                Text(AppLocalizations.of(context).alpacaSymbolLabel(alpacaSymbol),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(14),
+              decoration: BoxDecoration(
+                color: AppTheme.primaryContainer.withOpacity(0.4),
+                borderRadius: BorderRadius.circular(14),
+              ),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                Text(action.type == 'buy'
+                // The backslash here properly escapes your $ currency symbol!
+                    ? AppLocalizations.of(context).buyActionAmount('\$${action.usdAmount.toStringAsFixed(2)}', asset.name)
+                    : AppLocalizations.of(context).sellActionPercent((action.sellFraction * 100).toStringAsFixed(0), asset.name),
+                    style: const TextStyle(fontWeight: FontWeight.bold,
+                        color: AppTheme.primary, fontSize: 15)),
+                const SizedBox(height: 4),
+                Text(AppLocalizations.of(context).currentPriceLabel(asset.displayPrice),
                     style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
-            ]),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(color: AppTheme.surfaceContainerLow,
-                borderRadius: BorderRadius.circular(12)),
-            child: Text('🤖 ${action.reasoning}',
-                style: const TextStyle(fontSize: 13, color: AppTheme.onSurface, height: 1.4)),
-          ),
-          const SizedBox(height: 10),
-      Text(
-        _alpacaSvc.isConfigured
-            ? AppLocalizations.of(context).realOrderWarning
-            : AppLocalizations.of(context).paperTradeWarning,
-        style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant,
-            fontStyle: FontStyle.italic),
-      ),
-          ),
-        ]),
+                if (alpacaSymbol != null)
+                  Text(AppLocalizations.of(context).alpacaSymbolLabel(alpacaSymbol),
+                      style: const TextStyle(color: AppTheme.onSurfaceVariant, fontSize: 12)),
+              ]),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: AppTheme.surfaceContainerLow,
+                  borderRadius: BorderRadius.circular(12)),
+              child: Text('🤖 ${action.reasoning}',
+                  style: const TextStyle(fontSize: 13, color: AppTheme.onSurface, height: 1.4)),
+            ),
+            const SizedBox(height: 10),
+            Text(
+              _alpacaSvc.isConfigured
+                  ? AppLocalizations.of(context).realOrderWarning
+                  : AppLocalizations.of(context).paperTradeWarning,
+              style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant,
+                  fontStyle: FontStyle.italic),
+            ),
+          ], // --> The layout-breaking bracket that was here is now gone
+        ),
         actions: [
-    TextButton(onPressed: () => Navigator.pop(context, false),
-    child: Text(AppLocalizations.of(context).cancel)),
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: Text(AppLocalizations.of(context).cancel)
+          ),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primary, foregroundColor: Colors.white,
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-    onPressed: () => Navigator.pop(context, true),
-    child: Text(action.type == 'buy' ? AppLocalizations.of(context).executeBuy : AppLocalizations.of(context).executeSell),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(action.type == 'buy' ? AppLocalizations.of(context).executeBuy : AppLocalizations.of(context).executeSell),
           ),
         ],
       ),
@@ -414,7 +419,7 @@ class _InvestScreenState extends State<InvestScreen>
         result = await _alpacaSvc.closePosition(alpacaSymbol);
       } else {
         final pos = _positions.firstWhere(
-            (p) => p.symbol == alpacaSymbol,
+                (p) => p.symbol == alpacaSymbol,
             orElse: () => AlpacaPosition(
               symbol: alpacaSymbol, qty: 0, avgEntryPrice: 0,
               currentPrice: 0, marketValue: 0, unrealizedPl: 0, unrealizedPlpc: 0,
@@ -427,12 +432,12 @@ class _InvestScreenState extends State<InvestScreen>
     if (!mounted) return;
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       backgroundColor: result.success ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C),
-    content: Text(
-    result.success
-    ? (action.type == 'buy'
-    ? AppLocalizations.of(context).orderSubmittedSuccess(AppLocalizations.of(context).boughtLabel)
-        : AppLocalizations.of(context).orderSubmittedSuccess(AppLocalizations.of(context).soldLabel))
-        : '❌ ${result.error}',
+      content: Text(
+        result.success
+            ? (action.type == 'buy'
+            ? AppLocalizations.of(context).orderSubmittedSuccess(AppLocalizations.of(context).boughtLabel)
+            : AppLocalizations.of(context).orderSubmittedSuccess(AppLocalizations.of(context).soldLabel))
+            : '❌ ${result.errorKey}',
         style: const TextStyle(color: Colors.white),
       ),
       duration: const Duration(seconds: 5),
@@ -1251,7 +1256,7 @@ class _InvestScreenState extends State<InvestScreen>
           ? const Color(0xFF1B5E20) : const Color(0xFFB71C1C),
       content: Text(result.success
           ? AppLocalizations.of(context).closedSuccess(pos.displayName)
-          : '❌ ${result.error}'),
+          : '❌ ${result.errorKey}'),
       duration: const Duration(seconds: 5),
     ));
     if (result.success) {
