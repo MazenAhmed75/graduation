@@ -194,10 +194,12 @@ class _ReportsSheetState extends State<ReportsSheet>
     ((totalSpent / totalAllocated) * 100).clamp(0.0, 100.0).round();
 
     final sections = <PieChartSectionData>[];
+    int sectionIndex = 0;
     for (var i = 0; i < budgets.length; i++) {
       final b = budgets[i];
       if (b.spent <= 0) continue;
-      final isTouched = i == _touchedPieIndex;
+      // Change 'i == _touchedPieIndex' to check against sectionIndex instead:
+      final isTouched = sectionIndex == _touchedPieIndex;
       sections.add(
         PieChartSectionData(
           value: b.spent,
@@ -217,6 +219,7 @@ class _ReportsSheetState extends State<ReportsSheet>
           ),
         ),
       );
+      sectionIndex++;
     }
 // ADD THIS GUARD right here, before the return ListView(
     // fl_chart crashes with "No element" when sections is empty
@@ -251,7 +254,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                           : -1;
 
                       if (newIndex != _touchedPieIndex) {
-                        SchedulerBinding.instance.addPostFrameCallback((_) {
+                        Future(() {
                           if (mounted) {
                             setState(() => _touchedPieIndex = newIndex);
                           }
@@ -355,6 +358,7 @@ class _ReportsSheetState extends State<ReportsSheet>
 
     final groups = List.generate(budgets.length, (i) {
       final b = budgets[i];
+      final bool isOverspent = b.spent > b.allocated;
       return BarChartGroupData(
         x: i,
         barRods: [
@@ -366,7 +370,7 @@ class _ReportsSheetState extends State<ReportsSheet>
           ),
           BarChartRodData(
             toY: b.spent,
-            color: _palette[i % _palette.length],
+            color: isOverspent ? Colors.redAccent : _palette[i % _palette.length],
             width: 12,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -394,6 +398,20 @@ class _ReportsSheetState extends State<ReportsSheet>
           child: BarChart(
             BarChartData(
               maxY: maxY,
+              // arabic numbers in bar chart
+              barTouchData: BarTouchData(
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    return BarTooltipItem(
+                      NumberFormat.decimalPattern(localeCode)
+                          .format(rod.toY)
+                          .toLocalizedDigits(localeCode),
+                      const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    );
+                  },
+                ),
+              ),
+
               gridData: FlGridData(
                 show: true,
                 drawVerticalLine: false,
@@ -464,6 +482,7 @@ class _ReportsSheetState extends State<ReportsSheet>
           final b = budgets[i];
           final ratio = b.spentRatio.clamp(0.0, 1.0);
           final detailsFormatter = NumberFormat.decimalPattern(localeCode);
+          final bool isOverspent = b.spent > b.allocated;
 
           return Padding(
             padding: const EdgeInsets.symmetric(vertical: 6),
@@ -512,7 +531,7 @@ class _ReportsSheetState extends State<ReportsSheet>
                     minHeight: 5,
                     backgroundColor: Colors.grey[200],
                     valueColor: AlwaysStoppedAnimation(
-                      _palette[i % _palette.length],
+                      isOverspent ? Colors.redAccent : _palette[i % _palette.length],
                     ),
                   ),
                 ),

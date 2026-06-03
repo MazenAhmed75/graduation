@@ -1159,13 +1159,13 @@ class AppLocalizationsAr extends AppLocalizations {
   String get byCategory => 'حسب الفئة';
 
   @override
-  String get allocated => 'Allocated';
+  String get allocated => 'المخصص';
 
   @override
-  String get spendingReportSpent => 'Spent';
+  String get spendingReportSpent => 'المصروف';
 
   @override
-  String get spendingReportRemaining => 'Remaining';
+  String get spendingReportRemaining => 'المتبقي';
 
   @override
   String get used => 'المستخدم';
@@ -1253,7 +1253,7 @@ class AppLocalizationsAr extends AppLocalizations {
   String get category_entertainment => 'الترفيه';
 
   @override
-  String get category_food => 'الطعام والمطاعم';
+  String get category_food => 'الطعام ';
 
   @override
   String get category_shopping => 'التسوق';
@@ -1470,43 +1470,43 @@ class AppLocalizationsAr extends AppLocalizations {
   String get order_failed => 'فشل الطلب';
 
   @override
-  String close_failed(String error, Object statusCode) {
-    return 'فشل الإغلاق ($statusCode)';
+  String close_failed(String error) {
+    return 'فشل الإغلاق ($error).';
   }
 
   @override
-  String sell_failed(String error, Object statusCode) {
-    return 'فشل البيع ($statusCode)';
+  String sell_failed(String error) {
+    return 'فشل البيع ($error).';
   }
 
   @override
   String alpaca_api_error(String message) {
-    return 'Alpaca error: $message';
+    return 'خطأ في Alpaca: $message';
   }
 
   @override
   String alpaca_exception(String exception) {
-    return 'An unexpected error occurred: $exception';
+    return 'حدث خطأ غير متوقع: $exception';
   }
 
   @override
   String registration_failed(String message) {
-    return 'Registration failed: $message';
+    return 'فشل التسجيل: $message';
   }
 
   @override
   String login_failed(String message) {
-    return 'Login failed: $message';
+    return 'فشل تسجيل الدخول: $message';
   }
 
   @override
   String password_reset_failed(String message) {
-    return 'Password reset failed: $message';
+    return 'فشل إعادة تعيين كلمة المرور: $message';
   }
 
   @override
   String auth_generic_message(String message) {
-    return 'Authentication error: $message';
+    return 'خطأ في المصادقة: $message';
   }
 
   @override

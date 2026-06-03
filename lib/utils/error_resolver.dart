@@ -22,9 +22,9 @@ extension LocalizedErrorResolver on BuildContext {
       case 'order_failed':
         return localizations.order_failed;
       case 'close_failed':
-        return localizations.close_failed(primaryArg, secondaryArg);
+        return localizations.close_failed(primaryArg);
       case 'sell_failed':
-        return localizations.sell_failed(primaryArg, secondaryArg);
+        return localizations.sell_failed(primaryArg);
       case 'alpaca_api_error':
         return localizations.alpaca_api_error(primaryArg);
       case 'alpaca_exception':
@@ -32,6 +32,11 @@ extension LocalizedErrorResolver on BuildContext {
 
 
     // ── AUTH SERVICE KEYS ───────────────────────────────────────────
+      case 'invalid_credential':
+        return Localizations.localeOf(this).languageCode == 'ar'
+            ? 'البريد الإلكتروني أو كلمة المرور غير صحيحة.'
+            : 'Invalid email address or password.';
+
       case 'email_already_in_use':          return localizations.emailAlreadyInUse;
       case 'weak_password':                 return localizations.weakPassword;
       case 'invalid_email':                 return localizations.invalidEmail;
@@ -43,11 +48,25 @@ extension LocalizedErrorResolver on BuildContext {
       case 'change_password_user_not_found': return localizations.changePasswordUserNotFound;
       case 'change_password_wrong_password': return localizations.changePasswordWrongPassword;
 
-      case 'registration_failed':           return localizations.registration_failed(primaryArg);
-      case 'login_failed':                  return localizations.login_failed(primaryArg);
-      case 'password_reset_failed':         return localizations.password_reset_failed(primaryArg);
-      case 'auth_generic_message':          return localizations.auth_generic_message(primaryArg);
+      case 'registration_failed':
+        return Localizations.localeOf(this).languageCode == 'ar'
+            ? 'حدث خطأ أثناء إنشاء الحساب. يرجى المحاولة مرة أخرى.'
+            : 'An error occurred during registration. Please try again.';
 
+      case 'login_failed':
+        return Localizations.localeOf(this).languageCode == 'ar'
+            ? 'فشل تسجيل الدخول. يرجى التحقق من بياناتك.'
+            : 'Login failed. Please check your credentials.';
+
+      case 'password_reset_failed':
+        return Localizations.localeOf(this).languageCode == 'ar'
+            ? 'فشل إرسال بريد إعادة التعيين. يرجى المحاولة مرة أخرى.'
+            : 'Failed to send reset email. Please try again.';
+
+      case 'auth_generic_message':
+        return Localizations.localeOf(this).languageCode == 'ar'
+            ? 'حدث خطأ في المصادقة. يرجى المحاولة لاحقاً.'
+            : 'An authentication error occurred. Please try again later.';
 
     // ── AGENT SERVICE LOGS ───────────────────────────────────────────
       case 'auto_trade_enabled':
@@ -118,7 +137,7 @@ extension LocalizedErrorResolver on BuildContext {
 
     // Fallback category translations dynamically evaluated
       case 'category_food':
-        return Localizations.localeOf(this).languageCode == 'ar' ? 'الطعام والمطاعم' : 'Food & Dining';
+        return Localizations.localeOf(this).languageCode == 'ar' ? 'الطعام ' : 'Food & Dining';
       case 'category_transport':
         return Localizations.localeOf(this).languageCode == 'ar' ? 'المواصلات' : 'Transportation';
       case 'category_shopping':

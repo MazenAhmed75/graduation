@@ -2676,13 +2676,13 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Close failed ({error}).'**
-  String close_failed(String error, Object statusCode);
+  String close_failed(String error);
 
   /// No description provided for @sell_failed.
   ///
   /// In en, this message translates to:
   /// **'Sell failed ({error}).'**
-  String sell_failed(String error, Object statusCode);
+  String sell_failed(String error);
 
   /// No description provided for @alpaca_api_error.
   ///

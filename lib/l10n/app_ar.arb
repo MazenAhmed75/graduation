@@ -30,6 +30,7 @@
   "categoryName": "اسم الفئة",
   "categorySubtitle": "وصف مختصر (اختياري)",
   "allocatedAmount": "المبلغ المخصص",
+  "allocated": "المخصص",
   "categories": "الفئات",
   "saveAsTemplate": "حفظ كقالب",
   "useTemplate": "استخدام قالب",
@@ -803,7 +804,7 @@
   "cycle_error": "❌ خطأ في الدورة: {error}",
   "budget_warning_title": "تحذير الميزانية",
   "budget_warning_body": "لقد استهلكت {percentUsed}٪ من ميزانية {category}.",
-  "category_food": "الطعام والمطاعم",
+  "category_food": "الطعام ",
   "category_transport": "المواصلات",
   "category_shopping": "التسوق",
   "category_entertainment": "الترفيه",
@@ -851,5 +852,63 @@
   "remove": "حذف",
   "removingPhoto": "جارٍ حذف الصورة...",
   "photoRemoved": "تم حذف صورة الملف الشخصي",
-  "photoRemoveFailed": "فشل حذف الصورة"
+  "photoRemoveFailed": "فشل حذف الصورة",
+  "spendingReportRemaining": "المتبقي",
+  "spendingReportSpent": "المصروف",
+  "allocated": "المخصص",
+  "close_failed": "فشل الإغلاق ({error}).",
+  "@close_failed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "sell_failed": "فشل البيع ({error}).",
+  "@sell_failed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+
+  "alpaca_api_error": "خطأ في Alpaca: {message}",
+  "@alpaca_api_error": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
+  "alpaca_exception": "حدث خطأ غير متوقع: {exception}",
+  "@alpaca_exception": {
+    "placeholders": {
+      "exception": { "type": "String" }
+    }
+  },
+
+  "registration_failed": "فشل التسجيل: {message}",
+  "@registration_failed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
+  "login_failed": "فشل تسجيل الدخول: {message}",
+  "@login_failed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
+  "password_reset_failed": "فشل إعادة تعيين كلمة المرور: {message}",
+  "@password_reset_failed": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  },
+
+  "auth_generic_message": "خطأ في المصادقة: {message}",
+  "@auth_generic_message": {
+    "placeholders": {
+      "message": { "type": "String" }
+    }
+  }
 }

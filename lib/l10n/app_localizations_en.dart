@@ -1474,12 +1474,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get order_failed => 'Order failed.';
 
   @override
-  String close_failed(String error, Object statusCode) {
+  String close_failed(String error) {
     return 'Close failed ($error).';
   }
 
   @override
-  String sell_failed(String error, Object statusCode) {
+  String sell_failed(String error) {
     return 'Sell failed ($error).';
   }
 

@@ -490,8 +490,11 @@ class HomeScreen extends StatelessWidget {
                         ),
                         child: Column(
                           children: budgets.take(3).map((budget) {
-                            final colors =
-                            _getColorsForScheme(budget.colorScheme);
+                            final colors = CategoryUIHelper.getColorsForScheme(budget.colorScheme);
+
+                            // 1. check for overspent
+                            final bool isOverspent = budget.spent > budget.allocated;
+
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 4.0),
                               child: _buildMiniBudgetCard(
@@ -503,10 +506,11 @@ class HomeScreen extends StatelessWidget {
                                   NumberFormat.decimalPattern(locale).format(budget.remaining).toLocalizedDigits(locale),
                                 ),
                                 budget.spentRatio,
-                                _getIconData(budget.iconName),
+                                CategoryUIHelper.getIconData(budget.iconName),
                                 colors['iconBg']!,
                                 colors['iconColor']!,
-                                colors['progressColor']!,
+                                // 2. Change colors to reflect overspent
+                                isOverspent ? Colors.redAccent : colors['progressColor']!,
                               ),
                             );
                           }).toList(),
@@ -627,7 +631,7 @@ class HomeScreen extends StatelessWidget {
             ),
             child: FractionallySizedBox(
               alignment: AlignmentDirectional.centerStart,
-              widthFactor: fillRatio,
+              widthFactor: fillRatio.clamp(0.0, 1.0),
               child: Container(
                 decoration: BoxDecoration(
                   color: progressColor,
@@ -639,54 +643,6 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  Map<String, Color> _getColorsForScheme(String colorScheme) {
-    switch (colorScheme) {
-      case 'green':
-        return {
-          'iconBg': AppTheme.primaryContainer,
-          'iconColor': AppTheme.onPrimaryContainer,
-          'progressColor': AppTheme.primary,
-        };
-      case 'blue':
-        return {
-          'iconBg': AppTheme.secondaryContainer,
-          'iconColor': AppTheme.onSecondaryContainer,
-          'progressColor': AppTheme.secondary,
-        };
-      case 'yellow':
-        return {
-          'iconBg': AppTheme.tertiaryContainer,
-          'iconColor': AppTheme.onTertiaryContainer,
-          'progressColor': AppTheme.tertiary,
-        };
-      default:
-        return {
-          'iconBg': AppTheme.surfaceContainer,
-          'iconColor': AppTheme.onSurface,
-          'progressColor': AppTheme.primary,
-        };
-    }
-  }
-
-  IconData _getIconData(String iconName) {
-    switch (iconName) {
-      case 'shopping_cart':
-        return Icons.shopping_cart;
-      case 'home':
-        return Icons.home;
-      case 'theater_comedy':
-        return Icons.theater_comedy;
-      case 'flight_takeoff':
-        return Icons.flight_takeoff;
-      case 'restaurant':
-        return Icons.restaurant;
-      case 'directions_car':
-        return Icons.directions_car;
-      default:
-        return Icons.category;
-    }
   }
 
   static void _showEditSavingsGoalDialog(

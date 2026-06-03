@@ -75,7 +75,7 @@ class AuthService {
       print('✅ User created in Firestore: ${result.user!.uid}');
       return AuthResult(success: true); // Success
 
-    }on FirebaseAuthException catch (e) {
+    } on FirebaseAuthException catch (e) {
       print('❌ Registration error: ${e.code}');
       if (e.code == 'email-already-in-use') {
         return AuthResult(success: false, errorKey: 'email_already_in_use');
@@ -88,8 +88,7 @@ class AuthService {
       }
       return AuthResult(
         success: false,
-        errorKey: 'registration_failed',
-        errorArgs: [e.message ?? ''],
+        errorKey: 'registration_failed', // Removed errorArgs to block English leaks
       );
     } catch (e) {
       print('❌ Unexpected error: $e');
@@ -114,19 +113,22 @@ class AuthService {
 
     } on FirebaseAuthException catch (e) {
       print('❌ Login error: ${e.code}');
-      if (e.code == 'user-not-found') {
-        return AuthResult(success: false, errorKey: 'user_not_found');
-      }
-      if (e.code == 'wrong-password') {
-        return AuthResult(success: false, errorKey: 'wrong_password');
+
+      // Handle the modern Firebase unified error code
+      if (e.code == 'invalid-credential' ||
+          e.code == 'user-not-found' ||
+          e.code == 'wrong-password') {
+        return AuthResult(success: false, errorKey: 'invalid_credential');
       }
       if (e.code == 'invalid-email') {
         return AuthResult(success: false, errorKey: 'invalid_email');
       }
+
+      // Fallback: Do NOT pass e.message to the UI if you want full localization control
       return AuthResult(
         success: false,
         errorKey: 'login_failed',
-        errorArgs: [e.message ?? ''],
+        errorArgs: [], // Keep console logs in English, but keep UI clean
       );
     } catch (e) {
       print('❌ Unexpected error: $e');
@@ -203,7 +205,7 @@ class AuthService {
       return AuthResult(success: true);
     } on FirebaseAuthException catch (e) {
       print('❌ Password reset error: ${e.code}');
-      if (e.code == 'user-not-found') {
+      if (e.code == 'user-not-found' || e.code == 'invalid-credential') {
         return AuthResult(success: false, errorKey: 'user_not_found');
       }
       if (e.code == 'invalid-email') {
@@ -211,8 +213,7 @@ class AuthService {
       }
       return AuthResult(
         success: false,
-        errorKey: 'password_reset_failed',
-        errorArgs: [e.message ?? ''],
+        errorKey: 'password_reset_failed', // Removed errorArgs
       );
     } catch (e) {
       print('❌ Unexpected error: $e');
@@ -244,7 +245,8 @@ class AuthService {
       User? user = _auth.currentUser;
 
       if (user == null || user.email == null) {
-        return AuthResult(success: false, errorKey: 'change_password_user_not_found');
+        return AuthResult(
+            success: false, errorKey: 'change_password_user_not_found');
       }
 
       // 1. Re-authenticate the user
@@ -260,13 +262,14 @@ class AuthService {
 
       return AuthResult(success: true);
     } on FirebaseAuthException catch (e) {
-      if (e.code == 'wrong-password') {
-        return AuthResult(success: false, errorKey: 'change_password_wrong_password');
+      print('❌ Change password error: ${e.code}');
+      if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        return AuthResult(
+            success: false, errorKey: 'change_password_wrong_password');
       }
       return AuthResult(
         success: false,
-        errorKey: 'auth_generic_message',
-        errorArgs: [e.message ?? ''],
+        errorKey: 'auth_generic_message', // Removed errorArgs
       );
     } catch (e) {
       return AuthResult(success: false, errorKey: 'unexpected_error');

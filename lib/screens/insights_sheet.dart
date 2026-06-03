@@ -34,6 +34,7 @@ class InsightsSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
+    final localeCode = Localizations.localeOf(context).languageCode; // Get the current locale code
 
 
     final insights = BudgetInsightHelper.getAllInsights(
@@ -99,12 +100,9 @@ class InsightsSheet extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        l10n.daysLeft(daysLeft),
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: AppTheme.onSurfaceVariant,
-                        ),
-                      ),
+                        l10n.daysLeft(daysLeft).toLocalizedDigits(localeCode), // 👈 Updated
+                        style: const TextStyle(fontSize: 12, color: AppTheme.onSurfaceVariant),
+                      )
                     ],
                   ),
                 ],
@@ -117,15 +115,16 @@ class InsightsSheet extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
                 children: [
+                  // Change your chips to look like this:
                   _SummaryChip(
-                    label: l10n.onTrack(onTrack),
+                    label: l10n.onTrack(onTrack).toLocalizedDigits(localeCode),
                     icon: Icons.check_circle_rounded,
                     color: const Color(0xFF43A047),
                   ),
                   const SizedBox(width: 8),
                   if (overBudget > 0)
                     _SummaryChip(
-                      label: l10n.overBudget(overBudget),
+                      label: l10n.overBudget(overBudget).toLocalizedDigits(localeCode),
                       icon: Icons.warning_rounded,
                       color: const Color(0xFFD32F2F),
                     ),

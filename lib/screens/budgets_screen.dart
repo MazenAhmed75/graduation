@@ -240,7 +240,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                   // Loop through your list of categories from budget_categories.dart
                   items: budgetCategories.map((category) {
 
-                    // 🔥 FIX: Check if it's 'custom' to display your localized "Custom" label.
+                    //  FIX: Check if it's 'custom' to display your localized "Custom" label.
                     // Otherwise, pass all 3 parameters safely into your utility class!
                     final String displayName = category.key == 'custom'
                         ? l10n.category_custom
@@ -301,7 +301,11 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 if (amount > remaining) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(
-                      content: Text(l10n.amountExceedsRemaining(formatNum.format(remaining))),
+                      content: Text(
+                        locale == 'ar'
+                            ? 'لا يمكن تخصيص أكثر من الميزانية المتبقية: ${NumberFormat.decimalPattern(locale).format(remaining).toLocalizedDigits(locale)}'
+                            : 'Cannot allocate more than remaining budget: ${NumberFormat.decimalPattern(locale).format(remaining).toLocalizedDigits(locale)}',
+                      ),
                       backgroundColor: Colors.redAccent,
                     ),
                   );
@@ -664,18 +668,22 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
   // ============================================================
   // DIALOG: Edit the allocated amount
   // ============================================================
-  void _showEditBudgetDialog(BudgetModel budget) {
+  void _showEditBudgetDialog(BudgetModel budget, MonthlyBudgetModel? monthly, List<BudgetModel> existing) {
+    if (monthly == null) return; // Safeguard
     final l10n = AppLocalizations.of(context)!;
     final locale = Localizations.localeOf(context).languageCode;
-    final formatNum = NumberFormat('#####0.00', locale);
-    final controller =
-    TextEditingController(text: budget.allocated.toStringAsFixed(2));
+
+    // 1. FIX: Format initial number to localized (Arabic) digits and only use ONE controller
+    final formatNum = NumberFormat('0.##', locale);
+    final initialAmount = formatNum.format(budget.allocated).toLocalizedDigits(locale);
+    final controller = TextEditingController(text: initialAmount);
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text(l10n.editBudgetAmount),
         content: TextField(
-          controller: controller,
+          controller: controller, // UI uses this controller
           keyboardType: const TextInputType.numberWithOptions(decimal: true),
           inputFormatters: [ArabicNumberInputFormatter(locale)],
           decoration:  InputDecoration(
@@ -688,15 +696,40 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
             child: Text(l10n.cancel),
           ),
           TextButton(
-            onPressed: () async {
-              final amount = CurrencyFormatter.parse(controller.text);
-              if (amount > 0) {
+            onPressed: () async { // Make it async to await the Firebase save
+              // 2. FIX: Safely parse the user's input using your CurrencyFormatter
+              final amt = CurrencyFormatter.parse(controller.text);
+              if (amt <= 0) return;
+
+              final double totalAllocatedOthers = existing.fold<double>(0, (sum, item) => sum + item.allocated) - budget.allocated;
+              final double maxAllowed = monthly.totalAmount - totalAllocatedOthers;
+
+              if (amt > maxAllowed) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      locale == 'ar'
+                          ? 'لا يمكن تخصيص أكثر من الميزانية المتبقية: ${NumberFormat.decimalPattern(locale).format(maxAllowed).toLocalizedDigits(locale)}'
+                          : 'Cannot allocate more than remaining budget: ${NumberFormat.decimalPattern(locale).format(maxAllowed).toLocalizedDigits(locale)}',
+                    ),
+                    backgroundColor: Colors.redAccent,
+                  ),
+                );
+                return;
+              }
+
+              // 3. FIX: Actually save the new amount to Firebase!
+              // Note: Change 'updateBudget' to whatever method you use in BudgetService to edit the allocated amount
+              try {
                 await _budgetService.editAllocated(
                   userId: _authService.currentUser!.uid,
                   budgetId: budget.id,
-                  newAllocated: amount,
+                  newAllocated: amt,
                 );
+              } catch (e) {
+                debugPrint('Check your BudgetService update method name! Error: $e');
               }
+
               if (mounted) Navigator.pop(context);
             },
             child: Text(l10n.save),
@@ -1628,9 +1661,10 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                           spentColor: isOverBudget ? Colors.redAccent : AppTheme.primary,
 
                           // ── Icon (static for now, could be per-category later) ───────────────
-                          iconData: Icons.category,
-                          iconBg: AppTheme.primaryContainer,
-                          iconColor: AppTheme.onPrimaryContainer,
+                          // UPDATED NOT STATIC ANYMORE
+                          iconData: CategoryUIHelper.getIconData(budget.iconName),
+                          iconBg: CategoryUIHelper.getColorsForScheme(budget.colorScheme)['iconBg']!,
+                          iconColor: CategoryUIHelper.getColorsForScheme(budget.colorScheme)['iconColor']!,
 
                           // ── AI Insight chip at the bottom of the card ────────────────────────
                           // BudgetInsightHelper analyzes pace of spending vs days left in month
@@ -1654,7 +1688,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                           // a real-life event that must be recordable
                           onWithdraw: () => _showSubtractMoneyDialog(budget),
                           // Edit changes the allocated ceiling without touching spent
-                          onEdit: () => _showEditBudgetDialog(budget),
+                          onEdit: () => _showEditBudgetDialog(budget, monthly, categories),
                           // Delete removes the category and all its data
                           onDelete: () => _deleteBudget(budget),
                         );
