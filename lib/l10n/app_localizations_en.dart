@@ -216,7 +216,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get createFirstBudget => 'Create First Budget';
 
   @override
-  String get editSavingsGoal => 'Edit Savings Goal';
+  String get editSavingsGoal => 'Edit savings goal';
 
   @override
   String get monthlyGoal => 'Monthly Goal (\$)';
@@ -1691,4 +1691,29 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get photoRemoveFailed => 'Failed to remove photo';
+
+  @override
+  String get yearly => 'Yearly';
+
+  @override
+  String get noYearlyData => 'No yearly data available';
+
+  @override
+  String yearlyTotal(Object year) {
+    return 'Total $year';
+  }
+
+  @override
+  String get monthlyAverage => 'Monthly avg';
+
+  @override
+  String get monthlySavingsGoal => 'Monthly savings goal';
+
+  @override
+  String savedOutOfGoal(Object saved, Object goal) {
+    return '$saved saved out of $goal';
+  }
+
+  @override
+  String get goalReached => 'Goal reached!';
 }

@@ -910,5 +910,16 @@
     "placeholders": {
       "message": { "type": "String" }
     }
-  }
+  },
+    "yearly": "سنوي",
+    "noYearlyData": "لا توجد بيانات سنوية متاحة",
+    "yearlyTotal": "إجمالي {year}",
+    "monthlyAverage": "المتوسط الشهري",
+
+      "monthlySavingsGoal": "هدف الادخار الشهري",
+      "editSavingsGoal": "تعديل هدف الادخار",
+      "enterMonthlySavingsGoal": "أدخل هدف الادخار الشهري",
+      "savedOutOfGoal": "تم ادخار {saved} من أصل {goal}",
+       "goalReached": "تم تحقيق الهدف!"
+
 }

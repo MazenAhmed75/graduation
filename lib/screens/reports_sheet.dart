@@ -9,20 +9,45 @@ import 'package:intl/intl.dart';
 import '../utils/currency_formatter.dart';
 
 /// Open with: showReportsSheet(context, budgets)
-void showReportsSheet(BuildContext context, List<BudgetModel> budgets) {
+///
+/// To enable month navigation and yearly view, supply the optional callbacks:
+///   onLoadMonth      – called when the user taps < / >, returns budgets for that month
+///   onLoadYearlyTotals – called once; returns Map<month(1-12), totalSpent> for the year
+///   initialMonth     – which month is "current" (defaults to DateTime.now())
+void showReportsSheet(
+    BuildContext context,
+    List<BudgetModel> budgets, {
+      DateTime? initialMonth,
+      Future<List<BudgetModel>> Function(DateTime month)? onLoadMonth,
+      Future<Map<int, double>> Function(int year)? onLoadYearlyTotals,
+    }) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     useRootNavigator: true,                        // ✅ FIX 2: prevents mouse-tracker crash on dismiss
-    builder: (_) => ReportsSheet(budgets: budgets),
+    builder: (_) => ReportsSheet(
+      budgets: budgets,
+      initialMonth: initialMonth ?? DateTime.now(),
+      onLoadMonth: onLoadMonth,
+      onLoadYearlyTotals: onLoadYearlyTotals,
+    ),
   );
 }
 
 class ReportsSheet extends StatefulWidget {
   final List<BudgetModel> budgets;
+  final DateTime initialMonth;
+  final Future<List<BudgetModel>> Function(DateTime month)? onLoadMonth;
+  final Future<Map<int, double>> Function(int year)? onLoadYearlyTotals;
 
-  const ReportsSheet({super.key, required this.budgets});
+  const ReportsSheet({
+    super.key,
+    required this.budgets,
+    required this.initialMonth,
+    this.onLoadMonth,
+    this.onLoadYearlyTotals,
+  });
 
   @override
   State<ReportsSheet> createState() => _ReportsSheetState();
@@ -32,6 +57,15 @@ class _ReportsSheetState extends State<ReportsSheet>
     with SingleTickerProviderStateMixin {
   late TabController _tab;
   int _touchedPieIndex = -1;
+
+  // ── Month navigation state ─────────────────────────────────────────────
+  late DateTime _selectedMonth;
+  late List<BudgetModel> _displayedBudgets;
+  bool _isLoadingMonth = false;
+
+  // ── Yearly data state ──────────────────────────────────────────────────
+  Map<int, double> _yearlyTotals = {}; // key = month 1-12, value = total spent
+  bool _isLoadingYear = false;
 
   static const _palette = [
     Color(0xFF4CAF50),
@@ -44,10 +78,25 @@ class _ReportsSheetState extends State<ReportsSheet>
     Color(0xFF795548),
   ];
 
+  bool get _showYearlyTab => widget.onLoadYearlyTotals != null;
+
+  bool get _isCurrentMonth {
+    final now = DateTime.now();
+    return _selectedMonth.year == now.year &&
+        _selectedMonth.month == now.month;
+  }
+
   @override
   void initState() {
     super.initState();
-    _tab = TabController(length: 2, vsync: this);
+    _tab = TabController(length: _showYearlyTab ? 3 : 2, vsync: this);
+    _selectedMonth = DateTime(
+      widget.initialMonth.year,
+      widget.initialMonth.month,
+    );
+    _displayedBudgets = widget.budgets;
+
+    if (_showYearlyTab) _loadYearlyData();
   }
 
   @override
@@ -56,10 +105,57 @@ class _ReportsSheetState extends State<ReportsSheet>
     super.dispose();
   }
 
+  // ── Data loading helpers ───────────────────────────────────────────────
+
+  Future<void> _navigateMonth(int delta) async {
+    if (widget.onLoadMonth == null) return;
+
+    final newMonth = DateTime(
+      _selectedMonth.year,
+      _selectedMonth.month + delta,
+    );
+
+    setState(() {
+      _isLoadingMonth = true;
+      _touchedPieIndex = -1;
+    });
+
+    try {
+      final budgets = await widget.onLoadMonth!(newMonth);
+      if (mounted) {
+        setState(() {
+          _selectedMonth = newMonth;
+          _displayedBudgets = budgets;
+          _isLoadingMonth = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoadingMonth = false);
+    }
+  }
+
+  Future<void> _loadYearlyData() async {
+    if (widget.onLoadYearlyTotals == null) return;
+    setState(() => _isLoadingYear = true);
+    try {
+      final totals = await widget.onLoadYearlyTotals!(_selectedMonth.year);
+      if (mounted) {
+        setState(() {
+          _yearlyTotals = totals;
+          _isLoadingYear = false;
+        });
+      }
+    } catch (_) {
+      if (mounted) setState(() => _isLoadingYear = false);
+    }
+  }
+
+  // ── Build ──────────────────────────────────────────────────────────────
+
   @override
   Widget build(BuildContext context) {
     final l10n = AppLocalizations.of(context)!;
-    final budgets = widget.budgets;
+    final budgets = _displayedBudgets;
     final totalAllocated = budgets.fold(0.0, (s, b) => s + b.allocated);
     final totalSpent = budgets.fold(0.0, (s, b) => s + b.spent);
     final totalRemaining =
@@ -76,7 +172,7 @@ class _ReportsSheetState extends State<ReportsSheet>
         ),
         child: Column(
           children: [
-            // ── Handle ────────────────────────────────────────────────────
+            // ── Handle ──────────────────────────────────────────────────
             const SizedBox(height: 12),
             Center(
               child: Container(
@@ -90,7 +186,7 @@ class _ReportsSheetState extends State<ReportsSheet>
             ),
             const SizedBox(height: 16),
 
-            // ── Header ────────────────────────────────────────────────────
+            // ── Header ──────────────────────────────────────────────────
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Row(
@@ -119,59 +215,113 @@ class _ReportsSheetState extends State<ReportsSheet>
                 ],
               ),
             ),
-            const SizedBox(height: 16),
-
-            // ── Summary totals ────────────────────────────────────────────
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                children: [
-                  _TotalChip(
-                    label: l10n.allocated,
-                    amount: totalAllocated,
-                    color: AppTheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  _TotalChip(
-                    label: l10n.spent,
-                    amount: totalSpent,
-                    color: const Color(0xFFE57373),
-                  ),
-                  const SizedBox(width: 8),
-                  _TotalChip(
-                    label: l10n.remaining,
-                    amount: totalRemaining,
-                    color: const Color(0xFF43A047),
-                  ),
-                ],
-              ),
-            ),
             const SizedBox(height: 12),
 
-            // ── Tabs ──────────────────────────────────────────────────────
-            TabBar(
-              controller: _tab,
-              labelColor: AppTheme.primary,
-              unselectedLabelColor: AppTheme.onSurfaceVariant,
-              indicatorColor: AppTheme.primary,
-              tabs: [
-                Tab(text: l10n.breakdown),
-                Tab(text: l10n.byCategory),
-              ],
-            ),
+            // ── Month navigator (only when onLoadMonth is supplied) ──────
+            if (widget.onLoadMonth != null) _buildMonthNavigator(),
 
-            // ── Tab views ─────────────────────────────────────────────────
-            Expanded(
-              child: TabBarView(
+            const SizedBox(height: 12),
+
+            // ── Loading spinner while fetching a different month ─────────
+            if (_isLoadingMonth)
+              const Expanded(
+                child: Center(child: CircularProgressIndicator()),
+              )
+            else ...[
+              // ── Summary totals ─────────────────────────────────────────
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24),
+                child: Row(
+                  children: [
+                    _TotalChip(
+                      label: l10n.allocated,
+                      amount: totalAllocated,
+                      color: AppTheme.primary,
+                    ),
+                    const SizedBox(width: 8),
+                    _TotalChip(
+                      label: l10n.spent,
+                      amount: totalSpent,
+                      color: const Color(0xFFE57373),
+                    ),
+                    const SizedBox(width: 8),
+                    _TotalChip(
+                      label: l10n.remaining,
+                      amount: totalRemaining,
+                      color: const Color(0xFF43A047),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 12),
+
+              // ── Tabs ───────────────────────────────────────────────────
+              TabBar(
                 controller: _tab,
-                children: [
-                  _buildPieTab(budgets, totalSpent, totalAllocated, controller),
-                  _buildBarTab(budgets, controller),
+                labelColor: AppTheme.primary,
+                unselectedLabelColor: AppTheme.onSurfaceVariant,
+                indicatorColor: AppTheme.primary,
+                tabs: [
+                  Tab(text: l10n.breakdown),
+                  Tab(text: l10n.byCategory),
+                  // TODO: add l10n.yearly once you update your ARB files
+                  if (_showYearlyTab)  Tab(text: l10n.yearly),
                 ],
               ),
-            ),
+
+              // ── Tab views ──────────────────────────────────────────────
+              Expanded(
+                child: TabBarView(
+                  controller: _tab,
+                  children: [
+                    _buildPieTab(
+                        budgets, totalSpent, totalAllocated, controller),
+                    _buildBarTab(budgets, controller),
+                    if (_showYearlyTab) _buildYearlyTab(controller),
+                  ],
+                ),
+              ),
+            ],
           ],
         ),
+      ),
+    );
+  }
+
+  // ── MONTH NAVIGATOR ──────────────────────────────────────────────────────
+
+  Widget _buildMonthNavigator() {
+    final monthLabel = DateFormat('MMMM yyyy').format(_selectedMonth);
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          IconButton(
+            onPressed: _isLoadingMonth ? null : () => _navigateMonth(-1),
+            icon: const Icon(Icons.chevron_left_rounded),
+            color: AppTheme.primary,
+          ),
+          Text(
+            monthLabel,
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: AppTheme.onSurface,
+            ),
+          ),
+          IconButton(
+            onPressed: (_isLoadingMonth || _isCurrentMonth)
+                ? null
+                : () => _navigateMonth(1),
+            icon: Icon(
+              Icons.chevron_right_rounded,
+              color: _isCurrentMonth
+                  ? Colors.grey.shade300
+                  : AppTheme.primary,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -221,9 +371,7 @@ class _ReportsSheetState extends State<ReportsSheet>
       );
       sectionIndex++;
     }
-// ADD THIS GUARD right here, before the return ListView(
-    // fl_chart crashes with "No element" when sections is empty
-    // and the mouse hovers over where the chart would be
+
     if (sections.isEmpty) {
       return Center(child: Text(l10n.noBudgetData));
     }
@@ -250,7 +398,8 @@ class _ReportsSheetState extends State<ReportsSheet>
                       final newIndex =
                       (event.isInterestedForInteractions &&
                           response?.touchedSection != null)
-                          ? response!.touchedSection!.touchedSectionIndex
+                          ? response!
+                          .touchedSection!.touchedSectionIndex
                           : -1;
 
                       if (newIndex != _touchedPieIndex) {
@@ -293,8 +442,7 @@ class _ReportsSheetState extends State<ReportsSheet>
         ...List.generate(budgets.length, (i) {
           final b = budgets[i];
           final intFormatter = NumberFormat.decimalPattern(localeCode);
-          final percentFormatter =
-          NumberFormat.decimalPattern(localeCode)
+          final percentFormatter = NumberFormat.decimalPattern(localeCode)
             ..maximumFractionDigits = 1;
           final pctValue =
           totalAllocated > 0 ? ((b.spent / totalAllocated) * 100) : 0.0;
@@ -370,7 +518,8 @@ class _ReportsSheetState extends State<ReportsSheet>
           ),
           BarChartRodData(
             toY: b.spent,
-            color: isOverspent ? Colors.redAccent : _palette[i % _palette.length],
+            color:
+            isOverspent ? Colors.redAccent : _palette[i % _palette.length],
             width: 12,
             borderRadius: BorderRadius.circular(4),
           ),
@@ -398,7 +547,6 @@ class _ReportsSheetState extends State<ReportsSheet>
           child: BarChart(
             BarChartData(
               maxY: maxY,
-              // arabic numbers in bar chart
               barTouchData: BarTouchData(
                 touchTooltipData: BarTouchTooltipData(
                   getTooltipItem: (group, groupIndex, rod, rodIndex) {
@@ -406,12 +554,12 @@ class _ReportsSheetState extends State<ReportsSheet>
                       NumberFormat.decimalPattern(localeCode)
                           .format(rod.toY)
                           .toLocalizedDigits(localeCode),
-                      const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                      const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
                     );
                   },
                 ),
               ),
-
               gridData: FlGridData(
                 show: true,
                 drawVerticalLine: false,
@@ -531,7 +679,9 @@ class _ReportsSheetState extends State<ReportsSheet>
                     minHeight: 5,
                     backgroundColor: Colors.grey[200],
                     valueColor: AlwaysStoppedAnimation(
-                      isOverspent ? Colors.redAccent : _palette[i % _palette.length],
+                      isOverspent
+                          ? Colors.redAccent
+                          : _palette[i % _palette.length],
                     ),
                   ),
                 ),
@@ -542,7 +692,241 @@ class _ReportsSheetState extends State<ReportsSheet>
       ],
     );
   }
+
+  // ── YEARLY TAB ───────────────────────────────────────────────────────────
+
+  Widget _buildYearlyTab(ScrollController scroll) {
+    final localeCode = Localizations.localeOf(context).languageCode;
+    final l10n = AppLocalizations.of(context)!;
+
+    if (_isLoadingYear) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (_yearlyTotals.isEmpty) {
+      return  Center(child: Text(l10n.noYearlyData));
+    }
+
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
+    ];
+
+    final maxVal = _yearlyTotals.values.isEmpty
+        ? 1.0
+        : _yearlyTotals.values.reduce((a, b) => a > b ? a : b) * 1.2;
+
+    final currentMonthNum = _selectedMonth.month; // 1-based
+
+    final groups = List.generate(12, (i) {
+      final monthNum = i + 1;
+      final spent = _yearlyTotals[monthNum] ?? 0.0;
+      final isCurrent = monthNum == currentMonthNum;
+      return BarChartGroupData(
+        x: i,
+        barRods: [
+          BarChartRodData(
+            toY: spent,
+            color: isCurrent
+                ? AppTheme.primary
+                : AppTheme.primary.withOpacity(0.35),
+            width: 16,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ],
+      );
+    });
+
+    final yearlyTotal = _yearlyTotals.values.fold(0.0, (a, b) => a + b);
+    final monthsWithData =
+        _yearlyTotals.values.where((v) => v > 0).length;
+    final monthlyAvg =
+    monthsWithData > 0 ? yearlyTotal / monthsWithData : 0.0;
+    final formatter = NumberFormat.decimalPattern(localeCode);
+
+    return ListView(
+      controller: scroll,
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+      children: [
+        // ── Year summary chips ─────────────────────────────────────────
+        Row(
+          children: [
+            _TotalChip(
+              label: l10n.yearlyTotal(_selectedMonth.year),
+              amount: yearlyTotal,
+              color: AppTheme.primary,
+            ),
+            const SizedBox(width: 8),
+            _TotalChip(
+              label: l10n.monthlyAverage,
+              amount: monthlyAvg,
+              color: const Color(0xFF43A047),
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+
+        // ── 12-month bar chart ─────────────────────────────────────────
+        SizedBox(
+          height: 200,
+          child: BarChart(
+            BarChartData(
+              maxY: maxVal,
+              barTouchData: BarTouchData(
+                touchTooltipData: BarTouchTooltipData(
+                  getTooltipItem: (group, groupIndex, rod, rodIndex) {
+                    return BarTooltipItem(
+                      '${monthNames[group.x]}\n'
+                          '${formatter.format(rod.toY).toLocalizedDigits(localeCode)}',
+                      const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 12,
+                      ),
+                    );
+                  },
+                ),
+              ),
+              gridData: FlGridData(
+                show: true,
+                drawVerticalLine: false,
+                getDrawingHorizontalLine: (_) => FlLine(
+                  color: Colors.grey.shade200,
+                  strokeWidth: 1,
+                ),
+              ),
+              borderData: FlBorderData(show: false),
+              titlesData: FlTitlesData(
+                leftTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    reservedSize: 44,
+                    getTitlesWidget: (value, _) => Text(
+                      formatter
+                          .format(value)
+                          .toLocalizedDigits(localeCode),
+                      style: const TextStyle(
+                        fontSize: 9,
+                        color: AppTheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ),
+                ),
+                bottomTitles: AxisTitles(
+                  sideTitles: SideTitles(
+                    showTitles: true,
+                    getTitlesWidget: (value, _) {
+                      final i = value.toInt();
+                      if (i < 0 || i > 11) return const SizedBox.shrink();
+                      final isCurrent = (i + 1) == currentMonthNum;
+                      return Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          monthNames[i],
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: isCurrent
+                                ? FontWeight.bold
+                                : FontWeight.normal,
+                            color: isCurrent
+                                ? AppTheme.primary
+                                : AppTheme.onSurfaceVariant,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+                rightTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+                topTitles: const AxisTitles(
+                  sideTitles: SideTitles(showTitles: false),
+                ),
+              ),
+              barGroups: groups,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+
+        // ── Monthly breakdown list ─────────────────────────────────────
+        ...List.generate(12, (i) {
+          final monthNum = i + 1;
+          final spent = _yearlyTotals[monthNum] ?? 0.0;
+          if (spent <= 0) return const SizedBox.shrink();
+          final isCurrent = monthNum == currentMonthNum;
+
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 5),
+            child: Row(
+              children: [
+                // Month badge
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: isCurrent
+                        ? AppTheme.primary.withOpacity(0.12)
+                        : Colors.grey.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    monthNames[i],
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: isCurrent
+                          ? AppTheme.primary
+                          : AppTheme.onSurfaceVariant,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Progress bar
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(3),
+                    child: LinearProgressIndicator(
+                      value: maxVal > 0
+                          ? (spent / maxVal).clamp(0.0, 1.0)
+                          : 0,
+                      minHeight: 6,
+                      backgroundColor: Colors.grey.shade200,
+                      valueColor: AlwaysStoppedAnimation(
+                        isCurrent
+                            ? AppTheme.primary
+                            : AppTheme.primary.withOpacity(0.45),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 12),
+                // Amount
+                Text(
+                  formatter
+                      .format(spent)
+                      .toLocalizedDigits(localeCode),
+                  style: TextStyle(
+                    fontSize: 13,
+                    fontWeight:
+                    isCurrent ? FontWeight.w700 : FontWeight.w500,
+                    color: isCurrent
+                        ? AppTheme.primary
+                        : AppTheme.onSurfaceVariant,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }),
+      ],
+    );
+  }
 }
+
+// ── Helper widgets ───────────────────────────────────────────────────────────
 
 class _TotalChip extends StatelessWidget {
   final String label;

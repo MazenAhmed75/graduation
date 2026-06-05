@@ -7,31 +7,25 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:196484785411:android:5a2cce49fcd8cbb2117536",
-        "android_client_info": {
-          "package_name": "com.example.ai_financial_tracker"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCpdlLc59f6ped8ikbyd0xGMpdOBNDzjuA"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
         "mobilesdk_app_id": "1:196484785411:android:8015f27c6107689d117536",
         "android_client_info": {
           "package_name": "com.example.mindful_curator"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "196484785411-9o5qaouq4e46va010urtvl1bc9p2p4a7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mindful_curator",
+            "certificate_hash": "950a167385350f963dbafdd7fb6678267afeb71c"
+          }
+        },
+        {
+          "client_id": "196484785411-ikp1vrohbp45o0ib9vkqqllarpfhsih3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyCpdlLc59f6ped8ikbyd0xGMpdOBNDzjuA"
@@ -39,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "196484785411-ikp1vrohbp45o0ib9vkqqllarpfhsih3.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "196484785411-35nd1r00p90maogitmt19n9c6nfhekjc.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.mindfulCurator"
+              }
+            }
+          ]
         }
       }
     }

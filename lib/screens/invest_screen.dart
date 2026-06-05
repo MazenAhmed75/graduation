@@ -17,6 +17,7 @@ import '../widgets/invest_dashboard.dart';
 import '../Services/gemini_service.dart' show ChatMessage, AgentAction, OpportunityCard, GeminiService;
 import 'alpaca_settings_screen.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';
+import 'package:intl/intl.dart'; // Add this line
 
 class InvestScreen extends StatefulWidget {
   const InvestScreen({super.key});
@@ -213,6 +214,7 @@ class _InvestScreenState extends State<InvestScreen>
       setState(() {
         _assets         = results[0] as List<MarketAssetModel>;
         _news           = results[1] as List<NewsHeadline>;
+        _lastPriceUpdate = DateTime.now(); // Add this line to set the initial time!
         _loadingMarkets = false;
       });
     } catch (_) {
@@ -699,11 +701,11 @@ class _InvestScreenState extends State<InvestScreen>
 
             const Spacer(),
 
+
             if (_lastPriceUpdate != null)
               Text(
                 '${AppLocalizations.of(context).updated} '
-                    '${_lastPriceUpdate!.hour.toString().padLeft(2, '0')}:'
-                    '${_lastPriceUpdate!.minute.toString().padLeft(2, '0')}',
+                    '${DateFormat('HH:mm', Localizations.localeOf(context).languageCode).format(_lastPriceUpdate!)}',
                 style: const TextStyle(
                   fontSize: 11,
                   color: AppTheme.onSurfaceVariant,

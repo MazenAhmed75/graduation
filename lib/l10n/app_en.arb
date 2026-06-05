@@ -970,5 +970,23 @@
   "@photoRemoved": { "description": "Success message after removing photo" },
 
   "photoRemoveFailed": "Failed to remove photo",
-  "@photoRemoveFailed": { "description": "Error message when photo removal fails" }
+  "@photoRemoveFailed": { "description": "Error message when photo removal fails" },
+  "yearly": "Yearly",
+  "noYearlyData": "No yearly data available",
+  "yearlyTotal": "Total {year}",
+  "monthlyAverage": "Monthly avg",
+
+    "monthlySavingsGoal": "Monthly savings goal",
+    "editSavingsGoal": "Edit savings goal",
+    "enterMonthlySavingsGoal": "Enter your monthly savings goal",
+    "savedOutOfGoal": "{saved} saved out of {goal}",
+    "goalReached": "Goal reached!",
+    "@savedOutOfGoal": {
+      "description": "Shows how much the user saved compared to their monthly goal",
+      "placeholders": {
+        "saved": {},
+        "goal": {}
+      }
+    }
+
 }

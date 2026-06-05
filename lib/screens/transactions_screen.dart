@@ -354,23 +354,32 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
   // ── Summary row: total results + net amount ──────────────────
   Widget _buildSummaryRow(List<TransactionModel> filtered) {
     final l10n = AppLocalizations.of(context)!;
-    final totalIn = filtered.where((t) => t.type == 'deposit').fold(
-        0.0, (s, t) => s + t.amount);
-    final totalOut = filtered.where((t) => t.type == 'withdraw').fold(
-        0.0, (s, t) => s + t.amount);
-    final locale = Localizations
-        .localeOf(context)
-        .languageCode;
+    final locale = Localizations.localeOf(context).languageCode;
+
+    // 1. Isolate transactions to ONLY the current month for the totals
+    final now = DateTime.now();
+    final thisMonthTransactions = filtered.where((t) {
+      return t.createdAt.year == now.year && t.createdAt.month == now.month;
+    }).toList();
+
+    final totalIn = thisMonthTransactions
+        .where((t) => t.type == 'deposit')
+        .fold(0.0, (s, t) => s + t.amount);
+
+    final totalOut = thisMonthTransactions
+        .where((t) => t.type == 'withdraw')
+        .fold(0.0, (s, t) => s + t.amount);
+
+    // 2. Format the count and force localized Arabic digits
+    final rawCountFormat = NumberFormat.decimalPattern(locale).format(filtered.length);
+    final localizedCountString = rawCountFormat.toLocalizedDigits(locale);
 
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
       child: Row(
         children: [
           Text(
-            //  NEW LOCALIZED LINE:
-            l10n.transactionsCount(NumberFormat.decimalPattern(Localizations
-                .localeOf(context)
-                .languageCode).format(filtered.length)),
+            l10n.transactionsCount(localizedCountString),
             style: TextStyle(
               fontFamily: 'Manrope',
               fontSize: 12,
@@ -379,7 +388,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
             ),
           ),
           const Spacer(),
-
 
           if (totalIn > 0)
             Text(
@@ -407,7 +415,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
       ),
     );
   }
-
   // ── Date separator label ─────────────────────────────────────
   Widget _buildDateLabel(DateTime date) {
     final l10n = AppLocalizations.of(context)!;

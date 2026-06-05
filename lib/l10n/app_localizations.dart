@@ -509,7 +509,7 @@ abstract class AppLocalizations {
   /// No description provided for @editSavingsGoal.
   ///
   /// In en, this message translates to:
-  /// **'Edit Savings Goal'**
+  /// **'Edit savings goal'**
   String get editSavingsGoal;
 
   /// No description provided for @monthlyGoal.
@@ -2977,6 +2977,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to remove photo'**
   String get photoRemoveFailed;
+
+  /// No description provided for @yearly.
+  ///
+  /// In en, this message translates to:
+  /// **'Yearly'**
+  String get yearly;
+
+  /// No description provided for @noYearlyData.
+  ///
+  /// In en, this message translates to:
+  /// **'No yearly data available'**
+  String get noYearlyData;
+
+  /// No description provided for @yearlyTotal.
+  ///
+  /// In en, this message translates to:
+  /// **'Total {year}'**
+  String yearlyTotal(Object year);
+
+  /// No description provided for @monthlyAverage.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly avg'**
+  String get monthlyAverage;
+
+  /// No description provided for @monthlySavingsGoal.
+  ///
+  /// In en, this message translates to:
+  /// **'Monthly savings goal'**
+  String get monthlySavingsGoal;
+
+  /// Shows how much the user saved compared to their monthly goal
+  ///
+  /// In en, this message translates to:
+  /// **'{saved} saved out of {goal}'**
+  String savedOutOfGoal(Object saved, Object goal);
+
+  /// No description provided for @goalReached.
+  ///
+  /// In en, this message translates to:
+  /// **'Goal reached!'**
+  String get goalReached;
 }
 
 class _AppLocalizationsDelegate

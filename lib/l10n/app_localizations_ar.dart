@@ -1686,4 +1686,29 @@ class AppLocalizationsAr extends AppLocalizations {
 
   @override
   String get photoRemoveFailed => 'فشل حذف الصورة';
+
+  @override
+  String get yearly => 'سنوي';
+
+  @override
+  String get noYearlyData => 'لا توجد بيانات سنوية متاحة';
+
+  @override
+  String yearlyTotal(Object year) {
+    return 'إجمالي $year';
+  }
+
+  @override
+  String get monthlyAverage => 'المتوسط الشهري';
+
+  @override
+  String get monthlySavingsGoal => 'هدف الادخار الشهري';
+
+  @override
+  String savedOutOfGoal(Object saved, Object goal) {
+    return 'تم ادخار $saved من أصل $goal';
+  }
+
+  @override
+  String get goalReached => 'تم تحقيق الهدف!';
 }

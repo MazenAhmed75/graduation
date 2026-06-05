@@ -371,8 +371,9 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
       builder: (dialogContext) => StatefulBuilder(
         builder: (dialogContext, setDialogState) => AlertDialog(
           title: Text(l10n.addMoneyDeposit),
+          content: SingleChildScrollView(
 
-          content: Column(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
@@ -438,6 +439,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 ),
             ],
           ),
+        ),
 
           actions: [
             TextButton(
@@ -530,7 +532,8 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
         builder: (dialogContext, setDialogState) => AlertDialog(
           title: Text(l10n.subtractMoneySpend),
 
-          content: Column(
+          content: SingleChildScrollView(
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
@@ -596,6 +599,7 @@ class _BudgetsScreenState extends State<BudgetsScreen> {
                 ),
             ],
           ),
+        ),
 
           actions: [
             TextButton(

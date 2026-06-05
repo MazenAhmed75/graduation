@@ -183,20 +183,26 @@ class _RecurringCard extends StatelessWidget {
     final formattedAmount = CurrencyFormatter.format(item.amount, locale);
     final amountLabel = isWithdraw ? '- $formattedAmount' : '+ $formattedAmount';
 
-    // Fallback names for months if your generated l10n does not have specific month names
-    final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
+    // Use DateFormat for native localized months (Arabic/English)
+    final monthLabel = DateFormat('MMM', locale).format(item.nextDueDate);
+    final due = '$monthLabel ${item.nextDueDate.day.toString().toLocalizedDigits(locale)}';
 
-    // 3. Apply the extension to the day integer
-    final due = '${months[item.nextDueDate.month - 1]} ${item.nextDueDate.day.toString().toLocalizedDigits(locale)}';
-
-    //  Dynamic translation fix
+    // Dynamic translation fix (Scans for keywords like "travel" inside fallback text)
     String displayNote = item.note;
-    final cleanKey = item.note.replaceAll('(recurring)', '').replaceAll('(Recurring)', '').trim();
-    if (budgetCategories.any((c) => c.key == cleanKey)) {
-      displayNote = '${CategoryLocalization.getCategoryName(context, cleanKey, '')} (${l10n.recurring})';
+    final cleanKey = item.note.replaceAll(RegExp(r'\(recurring\)|recurring', caseSensitive: false), '').trim();
+
+    String? matchedCategoryKey;
+    for (final c in budgetCategories) {
+      if (cleanKey.toLowerCase().contains(c.key.toLowerCase()) ||
+          item.budgetTitle.toLowerCase().contains(c.key.toLowerCase())) {
+        matchedCategoryKey = c.key.toLowerCase();
+        break;
+      }
+    }
+
+    if (matchedCategoryKey != null) {
+      final localizedCategory = CategoryLocalization.getCategoryName(context, matchedCategoryKey, item.note);
+      displayNote = '$localizedCategory (${l10n.recurring})';
     }
 
 
@@ -271,10 +277,10 @@ class _RecurringCard extends StatelessWidget {
                         color: AppTheme.surfaceContainerLow,
                         borderRadius: BorderRadius.circular(6),
                       ),
-                      // Dynamic translation fix
+                      // Dynamic translation fix (Case-insensitive check)
                       child: Text(
-                        budgetCategories.any((c) => c.key == item.budgetTitle)
-                            ? CategoryLocalization.getCategoryName(context, item.budgetTitle, '')
+                        budgetCategories.any((c) => c.key.toLowerCase() == item.budgetTitle.toLowerCase())
+                            ? CategoryLocalization.getCategoryName(context, item.budgetTitle.toLowerCase(), item.budgetTitle)
                             : item.budgetTitle,
                         style: const TextStyle(
                           fontFamily: 'Manrope',
