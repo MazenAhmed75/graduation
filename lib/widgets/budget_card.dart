@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_non_null_assertion, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';

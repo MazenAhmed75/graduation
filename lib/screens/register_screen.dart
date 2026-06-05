@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../services/auth_service.dart';
@@ -123,8 +125,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 children: [
                   // Logo / Brand Section
                   Container(
-                    width: 100,
-                    height: 100,
+                    width: 80,
+                    height: 80,
                     decoration: BoxDecoration(
                       color: AppTheme.primaryContainer,
                       shape: BoxShape.circle,
@@ -142,7 +144,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: AppTheme.primary,
                     ),
                   ),
-                  const SizedBox(height: 32),
+                  const SizedBox(height: 16),
 
                   // Title
                   Text(
@@ -164,7 +166,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: AppTheme.onSurfaceVariant,
                     ),
                   ),
-                  const SizedBox(height: 48),
+                  const SizedBox(height: 16),
 
                   // Register Card
                   Container(
@@ -215,6 +217,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                           ),
                         ),
+                        SizedBox(height: 16,),
                         // Name Field
                         TextFormField(
                           controller: _nameController,
@@ -345,7 +348,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             return null;
                           },
                         ),
-                        const SizedBox(height: 32),
+                        const SizedBox(height: 16),
 
                         // Register Button
                         SizedBox(
@@ -383,7 +386,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
 
                   // Login Link
                   Row(

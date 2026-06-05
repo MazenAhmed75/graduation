@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/user_model.dart';
@@ -61,15 +63,17 @@ class HomeScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
-              children: [
-                // 2. BUILDER WRAPPER: Required to open drawer from a button
-                Builder(
-                  builder: (context) => IconButton(
-                    onPressed: () => Scaffold.of(context).openDrawer(),
-                    icon: const Icon(Icons.menu, color: AppTheme.primary),
-                    style: IconButton.styleFrom(
-                      backgroundColor: AppTheme.surfaceContainerLow,
+            Expanded(
+              child: Row(
+                children: [
+                  // 2. BUILDER WRAPPER: Required to open drawer from a button
+                  Builder(
+                    builder: (context) => IconButton(
+                      onPressed: () => Scaffold.of(context).openDrawer(),
+                      icon: const Icon(Icons.menu, color: AppTheme.primary),
+                      style: IconButton.styleFrom(
+                        backgroundColor: AppTheme.surfaceContainerLow,
+                      ),
                     ),
                   ),
                 ),
@@ -83,9 +87,10 @@ class HomeScreen extends StatelessWidget {
                     color: AppTheme.primary,
                     letterSpacing: -0.5,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
+            const SizedBox(width: 12),
             // Profile picture in top right — tap to go to profile tab
             StreamBuilder<UserModel?>(
               stream: userService.getUserStream(userId),

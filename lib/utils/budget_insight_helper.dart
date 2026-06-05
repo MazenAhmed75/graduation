@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_non_null_assertion, unused_field
+
 import 'package:flutter/material.dart';
 import '../models/budget_model.dart';
 import 'package:mindful_curator/l10n/app_localizations.dart';

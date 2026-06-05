@@ -1,3 +1,5 @@
+// ignore_for_file: unnecessary_import, deprecated_member_use, unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../theme.dart';

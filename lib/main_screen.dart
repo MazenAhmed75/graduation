@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_non_null_assertion
+
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:mindful_curator/theme.dart';

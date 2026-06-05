@@ -1,3 +1,5 @@
+// ignore_for_file: curly_braces_in_flow_control_structures, unused_field, deprecated_member_use, unused_element, unused_local_variable, unused_shown_name
+
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme.dart';

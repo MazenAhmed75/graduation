@@ -108,9 +108,9 @@ class InvestmentService {
       batch.update(posRef, {'quantity': newQty, 'buyPrice': newAvgPx, 'currentPrice': asset.price});
     } else {
       final model = InvestmentModel(
+        assetName: asset.name,
         id: asset.id, userId: uid,
         assetId: asset.id, assetSymbol: asset.symbol,
-        assetName: asset.name, emoji: asset.emoji,
         quantity: quantity, buyPrice: asset.price,
         currentPrice: asset.price, createdAt: DateTime.now(),
       );
@@ -122,7 +122,7 @@ class InvestmentService {
     final trade = TradeModel(
       id: tradeRef.id, userId: uid,
       assetId: asset.id, assetSymbol: asset.symbol,
-      assetName: asset.name, emoji: asset.emoji,
+      assetName: asset.name,
       action: 'buy', quantity: quantity,
       price: asset.price, totalUsd: usdAmount,
       aiReasoning: aiReasoning, createdAt: DateTime.now(),
@@ -170,7 +170,7 @@ class InvestmentService {
     final trade = TradeModel(
       id: tradeRef.id, userId: uid,
       assetId: asset.id, assetSymbol: asset.symbol,
-      assetName: asset.name, emoji: asset.emoji,
+      assetName: asset.name,
       action: 'sell', quantity: sellQty,
       price: asset.price, totalUsd: proceeds,
       aiReasoning: aiReasoning, createdAt: DateTime.now(),

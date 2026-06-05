@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unused_local_variable, unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';          // ✅ FIX 1: needed for addPostFrameCallback
 import 'package:fl_chart/fl_chart.dart';

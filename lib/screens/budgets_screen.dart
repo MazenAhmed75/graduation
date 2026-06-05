@@ -1,3 +1,5 @@
+// ignore_for_file: no_leading_underscores_for_local_identifiers, unnecessary_underscores, deprecated_member_use, use_build_context_synchronously, unnecessary_non_null_assertion
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/budget_model.dart';

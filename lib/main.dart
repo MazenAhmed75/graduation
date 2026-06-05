@@ -36,6 +36,10 @@ void callbackDispatcher() {
 // ── Global notifier — any widget can call this to switch language ─
 final ValueNotifier<Locale> appLocale = ValueNotifier(const Locale('en'));
 
+// ── Global notifier — any widget can call this to switch language ─
+Future<void> initializeNotifications() async {
+  await NotificationService.initialize();
+}
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -43,6 +47,9 @@ Future<void> main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   await dotenv.load(fileName: ".env");
+
+  // Initialize notifications
+  await initializeNotifications();
 
   // Load the user's saved language preference before showing the app
   appLocale.value = await LocaleService.getSavedLocale();
@@ -89,9 +96,10 @@ class MindfulCuratorApp extends StatelessWidget {
       valueListenable: appLocale,
       builder: (context, locale, _) {
         return MaterialApp(
-          title: 'Mindful Curator',
+          title: 'AI Based personal financial tracker',
           debugShowCheckedModeBanner: false,
           theme: AppTheme.theme,
+          
 
           // ── Localization setup ──────────────────────────────
           locale: locale,

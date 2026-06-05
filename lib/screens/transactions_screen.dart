@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use, unnecessary_non_null_assertion, unused_local_variable
+
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../models/transaction_model.dart';
@@ -488,8 +490,6 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                 fontSize: 13,
                 color: Colors.grey[500],
               ),
-            ),
-            if (hasFilters) ...[
               const SizedBox(height: 20),
               TextButton.icon(
                 onPressed: () =>
@@ -505,8 +505,24 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
                   foregroundColor: AppTheme.primary,
                 ),
               ),
+              if (hasFilters) ...[
+                const SizedBox(height: 20),
+                TextButton.icon(
+                  onPressed: () => setState(() {
+                    _searchController.clear();
+                    _searchQuery = '';
+                    _typeFilter = 'all';
+                    _categoryFilter = 'all';
+                  }),
+                  icon: const Icon(Icons.refresh_rounded),
+                  label: Text(l10n.clearFilters),
+                  style: TextButton.styleFrom(
+                    foregroundColor: AppTheme.primary,
+                  ),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
       ),
     );
